@@ -1,0 +1,51 @@
+{
+  "name": "voicebot",
+  "version": "0.0.1",
+  "description": "A voicebot for Google Meets",
+  "homepage": "https://github.com/balena-io/balena-typescript-skeleton#readme",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "keywords": [
+    "balena",
+    "typescript"
+  ],
+  "author": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/balena-io/balena-typescript-skeleton.git"
+  },
+  "bugs": {
+    "url": "https://github.com/balena-io/balena-typescript-skeleton/issues"
+  },
+  "files": [
+    "build/"
+  ],
+  "scripts": {
+    "clean": "rimraf build",
+    "build": "npm run clean && tsc",
+    "lint": "balena-lint --typescript lib tests",
+    "lint-fix": "balena-lint --typescript --fix lib tests",
+    "test:node": "mocha -r ts-node/register --reporter spec tests/**/*.spec.ts",
+    "test:browser": "karma start",
+    "test": "npm run build && npm run lint && npm run test:node && npm run test:browser",
+    "test:fast": "npm run build && npm run test:node",
+    "prepack": "npm run build"
+  },
+  "devDependencies": {
+    "@balena/lint": "^5.4.2",
+    "@types/chai": "^4.2.18",
+    "@types/chai-as-promised": "^7.1.4",
+    "@types/mocha": "^8.2.2",
+    "balena-config-karma": "^3.0.0",
+    "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
+    "husky": "^4.2.5",
+    "karma": "^6.3.2",
+    "lint-staged": "^11.0.0",
+    "mocha": "^8.4.0",
+    "rimraf": "^3.0.2",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.4"
+  }
+}
