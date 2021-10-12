@@ -7,11 +7,13 @@ By default since the bot isn't authenticated it will prompt people in the meet t
 ## TO DO 
 
  - [x] Listen for meeting URLs
- - [ ] Join meeting URLs
- - [ ] Capture transcribed voice
+ - [ ] Parsing calendar events, find meet URL's and join at designated time. 
+ - [x] Join the provided meeting URL's
+ - [x] Capture transcribed voice (Only capture the <span> tags, no processing)
+   - [ ] figure out how to properly merge updated CCs
  - [ ] Figure out sane authentication flow
  - [ ] Send transcribed voice to storage location (Google docs)
- - [ ] Perform a voice command
+ - [x] Perform a voice command
 
 ## Development
 
