@@ -71,6 +71,10 @@ export async function joinMeet(meetURL: string): Promise<void> {
 		await clickText(page, 'Apply');
 		await page.waitForTimeout(1000);
 
+		console.log('open people list to activate feature');
+		await clickText(page, 'people_outline');
+		await page.waitForTimeout(1000);
+
 		console.log('open chat section and send a message to all');
 		await clickText(page, 'chat');
 		await page.waitForTimeout(1500);
