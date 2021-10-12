@@ -1,9 +1,14 @@
-import * as Flowdock from './flowdock';
-import * as Storage from './storage';
-import * as Comments from './comments';
-import * as Eventdemo from './eventdemo';
+import fs = require('fs');
 
-export const all = [Flowdock, Storage, Comments, Eventdemo];
-export const flowdock = Flowdock;
-export const storage = Storage;
-export const comments = Comments;
+const files = fs.readdirSync(__dirname);
+
+export const all: any = [];
+
+for (const f of files) {
+	if (f.endsWith('.js') && f !== 'index.js') {
+		/* tslint:disable */
+		let module = require(`./${f}`);
+		/* tslint:enable */
+		all.push(module);
+	}
+}
