@@ -2,17 +2,24 @@
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin = require('puppeteer-extra-plugin-stealth');
 
+import * as features from './features';
+
 puppeteer.use(StealthPlugin());
 
 type Options = {
 	onEnd: () => void;
 };
 
+type CaptionHandler = (caption: string) => void;
+
 // TODOs
 // * replace every HACK
 // * replace all selector queries as they are bound to break
 
-export async function joinMeet(meetURL: string): Promise<void> {
+export async function joinMeet(
+	meetURL: string,
+	captionCallback: CaptionHandler,
+): Promise<void> {
 	const { browser, page } = await setup();
 	try {
 		// await page.goto('https://accounts.google.com/');
@@ -111,6 +118,10 @@ export async function joinMeet(meetURL: string): Promise<void> {
 			const texts = await Promise.all(
 				elems.map((el) => el.evaluate((node: any) => node.innerText)),
 			);
+
+			// TODO make this get captions better
+			captionCallback(texts[0]);
+
 			if (
 				texts.find((t) => /say[^a-z]*hello[^a-z]*jarvis/i.test(t)) &&
 				!sayHelloInProgress
@@ -140,7 +151,15 @@ export async function joinMeet(meetURL: string): Promise<void> {
 }
 
 export async function start(url: string, opts: Options) {
-	await joinMeet(url);
+	await joinMeet(url, (caption: string) => {
+		/* tslint:disable */
+		for (let i = 0; i < features.all.length; i++) {
+			// Run each feature with the given caption
+			features.all[i].run(caption);
+		}
+		/* tslint:enable */
+	});
+	// TODO make onEnd run when the meet is closed
 	setTimeout(opts.onEnd, 3000000);
 }
 
