@@ -8,6 +8,10 @@ type Options = {
 	onEnd: () => void;
 };
 
+// TODOs
+// * replace every HACK
+// * replace all selector queries as they are bound to break
+
 export async function joinMeet(meetURL: string): Promise<void> {
 	const { browser, page } = await setup();
 	try {
@@ -57,7 +61,16 @@ export async function joinMeet(meetURL: string): Promise<void> {
 		await page.waitForTimeout(100);
 
 		await clickText(page, 'Ask to join');
-		await page.waitForSelector('#tt-c6');
+
+		// either the call is recorded and we need to confirm or we eventually get in
+		const confirmOrIn = await page.waitForXPath(
+			"//*[contains(text(),'call_end')]|//*[contains(text(),'Join now')]",
+		);
+		if ((await confirmOrIn?.evaluate((n: any) => n.innerText)) === 'Join now') {
+			await clickText(page, 'Join now');
+			await page.waitForXPath("//*[contains(text(),'call_end')]");
+		}
+
 		await page.waitForTimeout(1500);
 		// await page.screenshot({ path: 'after-join.png' });
 
@@ -88,23 +101,27 @@ export async function joinMeet(meetURL: string): Promise<void> {
 		// await page.screenshot({ path: 'end.png' });
 
 		console.log('streaming captions');
+
+		// HACK replace with proper command infrastructure
+		let sayHelloInProgress = false;
 		while (true) {
-			await page.waitForTimeout(300);
+			await page.waitForTimeout(500);
 
 			const elems = await page.$$('span.CNusmb');
-			for (const el of elems) {
-				try {
-					const text = await el.evaluate((node: any) => node.innerText);
-					// console.log(text);
-					if (/say[^a-z]*hello[^a-z]*jarvis/i.test(text)) {
-						await page.keyboard.type('What can I do for you, Sir?', {
-							delay: 10,
-						});
-						await page.keyboard.press('Enter');
-					}
-				} catch (err) {
-					console.log('err', err);
-				}
+			const texts = await Promise.all(
+				elems.map((el) => el.evaluate((node: any) => node.innerText)),
+			);
+			if (
+				texts.find((t) => /say[^a-z]*hello[^a-z]*jarvis/i.test(t)) &&
+				!sayHelloInProgress
+			) {
+				sayHelloInProgress = true;
+				await page.keyboard.type('What can I do for you, Sir?', {
+					delay: 10,
+				});
+				await page.keyboard.press('Enter');
+			} else {
+				sayHelloInProgress = false;
 			}
 
 			// names of participants in list
