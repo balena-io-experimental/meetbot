@@ -1,23 +1,35 @@
-# Skeleton Project
+# Voicebot 
 
-This is a skeleton template for a TypeScript library project, containing all the default files and settings required for a balena project.
-As a result package-lock files are disabled so that upstream dependency issues are surfaces on our CI.
-In case that you are implementing a standalone project, you can enable them by deleting the `.npmrc`.
+Voicebot will listen to google meet urls to join to and perform various tasks.
 
-Modify the `package.json`, and README.md file as required, `npm install`, then implement code in the `lib` directory. 
+By default since the bot isn't authenticated it will prompt people in the meet to allow the bot to join.
 
-Compiled code will be output into the `build` directory (transpiled JS, declaration files and source maps).
+## TO DO 
 
-`npm test` will run the tests on both node and a browser.
-In case that you are implementing a node only library, you can just just drop karma.conf.js and all karma related references in the package.json.
+ - [x] Listen for meeting URLs
+ - [ ] Join meeting URLs
+ - [ ] Capture transcribed voice
+ - [ ] Figure out sane authentication flow
+ - [ ] Send transcribed voice to storage location (Google docs)
+ - [ ] Perform a voice command
 
-## Integrating with balenaCI
+## Development
 
-After cloning & scaffolding the repository
-* Reset the package.json version to the desired one for the initial release, eg `0.1.0`.
-* Delete the CHANGELOG.md & .versionbot folder.
-* Set the appropriate .github/CODEOWNERS.
-* Push the scaffolded project to `master`
-* Create a new branch and open a PR for it.
-* After balenaCI picks up the PR, go to the repository's settings page and add a
-  `master` branch protection rule and mark the balenaCI checks as required.
+Just start the service (HTTP server) and post a meet url
+
+```
+npm start
+
+curl --header "Content-Type: application/json" \
+  --request POST \
+  --data '{"url":"https://meet.google.com/wtq-bhai-amg"}' \
+  http://localhost:8080/join
+```
+
+## Authentication
+
+Orgs require 2FA so automating that isn't easy...there's no API for this as we're leveraging Puppeteer to navigate google meets like a normal user. 
+
+One solution is that we configure the bot to login with email/password (no 2fa) but whatever triggers the POST to this service to get a bot to join can also send a meet invite via an API** which DOES give authorization just for that meet. 
+
+**I don't think there's a public API to do this but from a meet you can invite people via email.
