@@ -1,11 +1,5 @@
-export interface ImplementMe {
-	myFunc(): Promise<string>;
-}
+import * as server from './server';
 
-const moo = 1;
+console.log('Initialization voicebot service...');
 
-export class ImplementClass implements ImplementMe {
-	public async myFunc() {
-		return `I need implementing! ${moo}`;
-	}
-}
+server.start();

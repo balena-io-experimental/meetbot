@@ -24,8 +24,8 @@
   "scripts": {
     "clean": "rimraf build",
     "build": "npm run clean && tsc",
-    "lint": "balena-lint --typescript lib tests",
-    "lint-fix": "balena-lint --typescript --fix lib tests",
+    "lint": "balena-lint --typescript src tests",
+    "lint-fix": "balena-lint --typescript --fix src tests",
     "test:node": "mocha -r ts-node/register --reporter spec tests/**/*.spec.ts",
     "test:browser": "karma start",
     "test": "npm run build && npm run lint && npm run test:node && npm run test:browser",
@@ -37,6 +37,7 @@
     "@balena/lint": "^5.4.2",
     "@types/chai": "^4.2.18",
     "@types/chai-as-promised": "^7.1.4",
+    "@types/express": "^4.17.13",
     "@types/mocha": "^8.2.2",
     "balena-config-karma": "^3.0.0",
     "chai": "^4.3.4",
@@ -50,6 +51,9 @@
     "typescript": "^4.2.4"
   },
   "dependencies": {
+    "@types/node": "^16.10.3",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
     "puppeteer": "^10.4.0"
   }
 }
