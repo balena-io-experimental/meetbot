@@ -2,7 +2,14 @@
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin = require('puppeteer-extra-plugin-stealth');
 
+import EventEmitter = require('events');
+(global as any).eventEmitter = new EventEmitter();
+
 import * as features from './features';
+
+for (const feature of features.all) {
+	feature.run('');
+}
 
 puppeteer.use(StealthPlugin());
 
@@ -10,16 +17,11 @@ type Options = {
 	onEnd: () => void;
 };
 
-type CaptionHandler = (caption: string) => void;
-
 // TODOs
 // * replace every HACK
 // * replace all selector queries as they are bound to break
 
-export async function joinMeet(
-	meetURL: string,
-	captionCallback: CaptionHandler,
-): Promise<void> {
+export async function joinMeet(meetURL: string): Promise<void> {
 	const { browser, page } = await setup();
 	try {
 		// await page.goto('https://accounts.google.com/');
@@ -82,6 +84,7 @@ export async function joinMeet(
 		// await page.screenshot({ path: 'after-join.png' });
 
 		console.log('turn on captions');
+		(global as any).eventEmitter.emit('joined', { url: meetURL });
 		await clickText(page, 'more_vert');
 		await page.waitForTimeout(1000);
 		await clickText(page, 'Captions');
@@ -118,10 +121,10 @@ export async function joinMeet(
 			const texts = await Promise.all(
 				elems.map((el) => el.evaluate((node: any) => node.innerText)),
 			);
-
-			// TODO make this get captions better
-			captionCallback(texts[0]);
-
+			(global as any).eventEmitter.emit('captions', {
+				url: meetURL,
+				text: texts[0],
+			});
 			if (
 				texts.find((t) => /say[^a-z]*hello[^a-z]*jarvis/i.test(t)) &&
 				!sayHelloInProgress
@@ -137,8 +140,14 @@ export async function joinMeet(
 
 			// names of participants in list
 			const participants = await page.$$('span.ZjFb7c');
+			(global as any).eventEmitter.emit('participants', {
+				url: meetURL,
+				participants: participants.length,
+			});
+
 			if (participants.length === 1) {
 				console.log("nobody else is here - I'm leaving...");
+				(global as any).eventEmitter.emit('left', { url: meetURL });
 				break;
 			}
 		}
@@ -151,14 +160,7 @@ export async function joinMeet(
 }
 
 export async function start(url: string, opts: Options) {
-	await joinMeet(url, (caption: string) => {
-		/* tslint:disable */
-		for (let i = 0; i < features.all.length; i++) {
-			// Run each feature with the given caption
-			features.all[i].run(caption);
-		}
-		/* tslint:enable */
-	});
+	await joinMeet(url);
 	// TODO make onEnd run when the meet is closed
 	setTimeout(opts.onEnd, 3000000);
 }
