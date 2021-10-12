@@ -1,5 +1,4 @@
 import * as express from 'express';
-import * as bodyParser from 'body-parser';
 import { URL } from 'url';
 
 import * as voicebotManager from './voicebot-manager';
@@ -7,7 +6,7 @@ import * as voicebotManager from './voicebot-manager';
 const HTTP_PORT = process.env.HTTP_PORT || 8080;
 const server = express();
 
-server.use(bodyParser.json());
+server.use(express.json());
 
 server.post('/join', (req, res) => {
 	let meetMetadata;
