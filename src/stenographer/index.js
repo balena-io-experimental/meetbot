@@ -261,7 +261,7 @@ const tryTo =
 // -------------------------------------------------------------------------
 const turnCaptionsOn = () => {
   const captionsButtonOn = xpath(
-    `//div[text()='Turn on captions']/ancestor::div[@role='button']`,
+    `//div[text()='Turn on captions (c)']/preceding-sibling::button`,
     document
   );
   if (captionsButtonOn) {
@@ -275,7 +275,7 @@ const turnCaptionsOn = () => {
 // -------------------------------------------------------------------------
 const turnCaptionsOff = () => {
   const captionsButtonOff = xpath(
-    `//div[text()='Turn off captions (c)']/ancestor::div[@role='button']`,
+    `//div[text()='Turn off captions (c)']/preceding-sibling::button`,
     document
   );
   if (captionsButtonOff) {
@@ -824,6 +824,5 @@ const getTranscriptNameParts = (transcriptId) => {
 ////////////////////////////////////////////////////////////////////////////
 
 console.log(`[stenographer] init called`);
-startTranscribing();
 
-export { init }
+startTranscribing();
