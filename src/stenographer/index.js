@@ -256,9 +256,6 @@ const tryTo =
 // Caption Controls
 ////////////////////////////////////////////////////////////////////////////
 
-// -------------------------------------------------------------------------
-// Turn Google's captions on
-// -------------------------------------------------------------------------
 const turnCaptionsOn = () => {
   const captionsButtonOn = xpath(
     `//div[text()='Turn on captions (c)']/preceding-sibling::button`,
@@ -270,9 +267,6 @@ const turnCaptionsOn = () => {
   }
 };
 
-// -------------------------------------------------------------------------
-// Turn Google's captions off
-// -------------------------------------------------------------------------
 const turnCaptionsOff = () => {
   const captionsButtonOff = xpath(
     `//div[text()='Turn off captions (c)']/preceding-sibling::button`,
@@ -288,9 +282,6 @@ const turnCaptionsOff = () => {
 // Transcribing Controls
 ////////////////////////////////////////////////////////////////////////////
 
-// -------------------------------------------------------------------------
-// Start transcribing
-// -------------------------------------------------------------------------
 const startTranscribing = () => {
   if (state.closedCaptionsAttachInterval) {
     clearInterval(state.closedCaptionsAttachInterval);
@@ -309,7 +300,7 @@ const startTranscribing = () => {
 };
 
 ////////////////////////////////////////////////////////////////////////////
-// Transcript reading, writing, and deleting
+// Transcript reading and writing
 ////////////////////////////////////////////////////////////////////////////
 
 // -------------------------------------------------------------------------
@@ -469,7 +460,7 @@ const getCaptionData = (node) => {
     (span) => span.children.length === 0
   );
   const text = spans.map((span) => span.textContent).join(" ");
-
+  console.log(text)
   return {
     image: image.src,
     person: person.textContent,
@@ -511,34 +502,35 @@ const updateCurrentTranscriptSession = (node) => {
     });
     setSpeaker(cache[0]);
   } else {
-    const cache = cache[index];
 
-    if (cache.debounce) {
-      clearInterval(cache.debounce);
+    const _cache = cache[index];
+
+    if (_cache.debounce) {
+      clearInterval(_cache.debounce);
     }
 
-    cache.count += 1;
-    cache.endedAt = new Date();
+    _cache.count += 1;
+    _cache.endedAt = new Date();
 
-    cache.debounce = setInterval(
+    _cache.debounce = setInterval(
       tryTo(() => {
-        cache.text = getCaptionData(node).text;
+        _cache.text = getCaptionData(node).text;
         // debug('count', cache.count, 'polls', cache.pollCount);
-        setSpeaker(cache);
-        clearInterval(cache.debounce);
-        clearInterval(cache.poll);
-        delete cache.poll;
+        setSpeaker(_cache);
+        clearInterval(_cache.debounce);
+        clearInterval(_cache.poll);
+        delete _cache.poll;
       }, "trailing caption poll"),
       1000
     );
 
-    if (!("poll" in cache)) {
-      cache.poll = setInterval(
+    if (!("poll" in _cache)) {
+      _cache.poll = setInterval(
         tryTo(() => {
-          cache.pollCount += 1;
-          cache.text = getCaptionData(node).text;
+          _cache.pollCount += 1;
+          _cache.text = getCaptionData(node).text;
           // debug('count', cache.count, 'polls', cache.pollCount);
-          setSpeaker(cache);
+          setSpeaker(_cache);
         }, "caption polling"),
         1000
       );
@@ -737,7 +729,7 @@ const captionContainerChildObserver = new MutationObserver(
           }
 
           if (!node) {
-            debug("could not find root for", mutation.target);
+            // debug("could not find root for", mutation.target);
             continue;
           }
 
@@ -776,7 +768,7 @@ const captionContainerAttributeObserver = new MutationObserver(
 // disable and re-enable closed captioning.
 // -------------------------------------------------------------------------
 const closedCaptionsAttachLoop = () => {
-  // TODO avoid re-attaching tot he same container
+  // TODO avoid re-attaching to the same container
   state.captionsContainer = findCaptionsContainer();
 
   debug("attached to closed captions");
