@@ -5,8 +5,8 @@ function run(): void {
 	});
 	(global as any).eventEmitter.on(
 		'captions',
-		({ url, captions }: { url: string; captions: string }) => {
-			console.log(`i got ${captions} from ${url}`);
+		({ url, text }: { url: string; text: string }) => {
+			console.log(`i got ${text} from ${url}`);
 		},
 	);
 	(global as any).eventEmitter.on('left', ({ url }: { url: string }) => {
