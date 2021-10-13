@@ -1,18 +1,16 @@
 import { EventEmitter } from 'events';
 import { Browser, Page } from 'puppeteer';
 
-import * as features from './features';
 import { newPage } from '../browser';
+import { Feature } from './features';
 
 class MeetBot extends EventEmitter {
-	private browser: Browser;
 	public page: Page | null = null;
 	public url: string | null = null;
 
-	constructor(browser: Browser) {
+	constructor(private browser: Browser, features: Feature[]) {
 		super();
-		this.browser = browser;
-		for (const feature of features.all) {
+		for (const feature of features) {
 			feature.attach(this);
 		}
 	}

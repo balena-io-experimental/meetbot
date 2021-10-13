@@ -4,7 +4,7 @@ import MeetBot from '../../meetbot';
 
 const files = fs.readdirSync(__dirname);
 
-type Feature = {
+export type Feature = {
 	attach: (bot: MeetBot) => void;
 };
 
