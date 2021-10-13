@@ -159,8 +159,8 @@ const getOrSet = (key, defaultValue) => {
 // -------------------------------------------------------------------------
 // increment a key in local storage, set to to 0 if it doesn't exist
 // -------------------------------------------------------------------------
-const increment = (key, version) => {
-  const current = get(key, version);
+const increment = (key) => {
+  const current = get(key);
 
   if (current === undefined || current === null) {
     set(key, 0);
@@ -374,7 +374,20 @@ const getTranscript = (transcriptId) => {
 // -------------------------------------------------------------------------
 // Update the localStorage entry for this transcript + session + speaker
 // -------------------------------------------------------------------------
-const setSpeaker = (cache) => {
+const upsertRecord = (cache) => {
+
+  let entry = {
+    image: cache.image,
+    person: cache.person,
+    text: cache.text,
+    startedAt: cache.startedAt,
+    endedAt: cache.endedAt,
+  }
+
+  if (handleCaption !== undefined) {
+    handleCaption(entry)
+  }
+
   set(
     makeTranscriptKey(
       cache.transcriptId,
@@ -415,7 +428,7 @@ const setCurrentTranscriptDetails = () => {
 
   const now = new Date();
   const dateString = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-  
+
   const pathString = document.location.pathname.match(/\/(.+)/)[1];
   const newTranscriptId = `${pathString}-${dateString}`;
   const isTranscriptIdChanged = newTranscriptId !== state.currentTranscriptId;
@@ -432,8 +445,8 @@ const setCurrentTranscriptDetails = () => {
 
     state.currentSessionIndex = increment(`meet_${state.currentTranscriptId}`);
 
-    debug({ 
-      currentTranscriptId: state.currentTranscriptId, 
+    debug({
+      currentTranscriptId: state.currentTranscriptId,
       currentSessionIndex: state.currentSessionIndex
     });
 
@@ -462,8 +475,8 @@ const getCaptionData = (node) => {
   const text = spans.map((span) => span.textContent).join(" ");
   console.log(text)
   return {
-    image: image.src,
-    person: person.textContent,
+    image: image ? image.src : '',
+    person: person ? person.textContent : '',
     text,
   };
 };
@@ -483,12 +496,16 @@ const getCaptionData = (node) => {
 // -------------------------------------------------------------------------
 const updateCurrentTranscriptSession = (node) => {
 
+	console.log("node being")
   const index = cache.findIndex((el) => el.node === node);
 
+  // If node is not being tracked
   if (index === -1) {
+
     const currentSpeakerIndex = increment(
       makeTranscriptKey(state.currentTranscriptId, state.currentSessionIndex)
     );
+
     cache.unshift({
       ...getCaptionData(node),
       startedAt: new Date(),
@@ -500,7 +517,9 @@ const updateCurrentTranscriptSession = (node) => {
       sessionIndex: state.currentSessionIndex,
       speakerIndex: currentSpeakerIndex,
     });
-    setSpeaker(cache[0]);
+
+    upsertRecord(cache[0]);
+
   } else {
 
     const _cache = cache[index];
@@ -516,7 +535,7 @@ const updateCurrentTranscriptSession = (node) => {
       tryTo(() => {
         _cache.text = getCaptionData(node).text;
         // debug('count', cache.count, 'polls', cache.pollCount);
-        setSpeaker(_cache);
+        upsertRecord(_cache);
         clearInterval(_cache.debounce);
         clearInterval(_cache.poll);
         delete _cache.poll;
@@ -530,7 +549,7 @@ const updateCurrentTranscriptSession = (node) => {
           _cache.pollCount += 1;
           _cache.text = getCaptionData(node).text;
           // debug('count', cache.count, 'polls', cache.pollCount);
-          setSpeaker(_cache);
+          upsertRecord(_cache);
         }, "caption polling"),
         1000
       );
@@ -655,35 +674,40 @@ const findCaptionsContainer = () => {
       // NOTE: could explore factors that lead one of these situations to be
       //       true and then only accept candidates matching the expected case
 
-      if (
-        (isCentered && isThreeFifthsWidth) ||
-        (isLeftAligned && isNotRightAligned && isWiderThanHalf)
-      ) {
+			// NOTE: Is this a horrible hack? Yes.
+      // if (
+      //   (isCentered && isThreeFifthsWidth) ||
+      //   (isLeftAligned && isNotRightAligned && isWiderThanHalf)
+      // ) {
         candidates.push(candidate);
-      }
+      // }
     }
   }
 
-  if (candidates.length === 1) {
-    captionContainerChildObserver.observe(candidates[0], {
+	// NOTE: Is this a horrible hack? Yes.
+	candidates.forEach((candidate) => {
+  // if (candidates.length === 1) {
+    captionContainerChildObserver.observe(candidate, {
       childList: true,
       subtree: true,
     });
 
-    captionContainerAttributeObserver.observe(candidates[0], {
+    captionContainerAttributeObserver.observe(candidate, {
       attributes: true,
       subtree: false,
       attributeOldValue: true,
     });
 
-    Array.from(candidates[0].children).forEach(
+    Array.from(candidate.children).forEach(
       tryTo((child) => {
         updateCurrentTranscriptSession(child);
       }, "handling child node")
     );
 
     return candidates[0];
-  }
+  // }
+})
+
 };
 
 // -------------------------------------------------------------------------
