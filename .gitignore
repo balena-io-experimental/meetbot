@@ -1,3 +1,9 @@
+## Google Oauth creds
+
+credentials.json
+token.json
+
+
 # Logs
 logs
 *.log
