@@ -37,6 +37,33 @@ server.post('/join', async (req, res) => {
 	return res.status(202).send('A meetbot will be right there');
 });
 
+server.post('/leave', async (req, res) => {
+	let meetMetadata;
+	// Validate body
+	if (!req.body.url) {
+		return res.status(400).send('Missing `url` value in payload body.');
+	}
+	try {
+		meetMetadata = new URL(req.body.url);
+	} catch (e) {
+		return res.status(400).send('Invalid URL provided: ${url}');
+	}
+	// Try to kill meetbot for location
+	try {
+		await meetbotManager.killBot(meetMetadata.href);
+	} catch (e: any) {
+		switch (e.message) {
+			case 'Could not find bot at specified location!':
+				return res.status(400).send('No meetbot found at that location');
+			default:
+				console.error(e);
+				return res.status(500).send('Something unexpected happened');
+		}
+	}
+	// Meetbot will be leaving the meet soon
+	return res.status(202).send('Asking meetbot to leave');
+});
+
 export async function start() {
 	// Initiate manager to be able to spawn bots for requests
 	await meetbotManager.init();
