@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { Browser, Page } from 'puppeteer';
+import totp = require('totp-generator');
 
 import { newPage } from '../browser';
 import { Feature } from './features';
@@ -10,6 +11,10 @@ export type JobQueueFunc = (h: JobHandler) => void;
 export interface Bot extends EventEmitter {
 	addJob(handler: JobHandler): void;
 }
+
+const login = process.env.GOOGLE_LOGIN;
+const password = process.env.GOOGLE_PASSWORD;
+const totpSecret = process.env.GOOGLE_TOTP_SECRET;
 
 class MeetBot extends EventEmitter implements Bot {
 	public page: Page | null = null;
@@ -41,33 +46,56 @@ class MeetBot extends EventEmitter implements Bot {
 		}
 		this.url = meetURL;
 		try {
-			// await page.goto('https://accounts.google.com/');
-
-			// console.log('typing out email');
-			// await page.waitForSelector('input[type="email"]');
-			// await page.waitForSelector('#identifierNext');
-			// await page.click('input[type="email"]');
-			// await page.keyboard.type(login, { delay: 300 });
-			// let navigationPromise = page.waitForNavigation();
-			// await page.click('#identifierNext');
-			// await navigationPromise;
-			// await page.waitForTimeout(600); // animations...
-
-			// console.log('typing out password');
-			// await page.waitForSelector('input[type="password"]');
-			// await page.waitForSelector('#passwordNext');
-			// await page.click('input[type="password"]');
-			// await page.keyboard.type(password, { delay: 200 });
-			// navigationPromise = page.waitForNavigation();
-			// await page.click('#passwordNext');
-			// await navigationPromise;
-			// await page.waitForTimeout(600); // animations...
-
-			// await page.screenshot({ path: 'after-login.png' });
-
-			console.log('going to Meet after signing in');
-			await this.page.goto(meetURL);
 			this.emit('active');
+
+			if (login && password && totpSecret) {
+				await this.page.goto('https://accounts.google.com/?hl=en');
+				await this.page.evaluate(() => {
+					// prevent chromium from using smartcards (aka YubiKeys) as that blocks the process
+					window.navigator.credentials.get = () =>
+						Promise.reject('no yubi-key for you');
+				});
+
+				console.log('typing out email');
+				await this.page.waitForSelector('input[type="email"]');
+				await this.page.waitForSelector('#identifierNext');
+				await this.page.click('input[type="email"]');
+				await this.page.keyboard.type(login, { delay: 10 });
+				let navigationPromise = this.page.waitForNavigation();
+				await this.page.click('#identifierNext');
+				await navigationPromise;
+				await this.page.waitForTimeout(600); // animations...
+
+				console.log('typing out password');
+				await this.page.waitForSelector('input[type="password"]');
+				await this.page.waitForSelector('#passwordNext');
+				await this.page.click('input[type="password"]');
+				await this.page.keyboard.type(password, { delay: 10 });
+				navigationPromise = this.page.waitForNavigation();
+				await this.page.click('#passwordNext');
+				await navigationPromise;
+
+				console.log('waiting for smart card');
+				// HACK this is soooo dirty...
+				await this.page.waitForTimeout(2_000);
+				navigationPromise = this.page.waitForNavigation();
+				await clickText(this.page, 'Try another way');
+				await navigationPromise;
+				await this.page.waitForTimeout(2_000);
+				navigationPromise = this.page.waitForNavigation();
+				await clickText(this.page, 'Google Authenticator');
+				await navigationPromise;
+				await this.page.waitForTimeout(2_000);
+				await this.page.keyboard.type(totp(totpSecret).toString(), {
+					delay: 100,
+				});
+				await this.page.keyboard.press('Enter');
+				await this.page.waitForTimeout(3_000);
+
+				await this.page.screenshot({ path: 'after-login.png' });
+			}
+			console.log('going to Meet after signing in');
+			await this.page.goto(meetURL + '?hl=en');
 			// await page.screenshot({ path: 'meet-loaded.png' });
 
 			await this.page.keyboard.type('Hubot', { delay: 10 });
