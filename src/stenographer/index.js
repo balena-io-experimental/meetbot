@@ -90,7 +90,7 @@ const cache = [];
 // make a localStorage key with the version prefixed
 // -------------------------------------------------------------------------
 const makeFullKey = (key) => {
-  return `__voicebot_${key}`;
+  return `__meetbot_${key}`;
 };
 
 // -------------------------------------------------------------------------

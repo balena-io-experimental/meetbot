@@ -1,4 +1,4 @@
-import * as voicebot from './voicebot';
+import * as meetbot from './meetbot';
 
 const MAX_BOTS = process.env.MAX_BOTS || 100;
 
@@ -13,7 +13,7 @@ export function spawn(url: string) {
 
 	ACTIVE_BOTS.set(url, true);
 
-	voicebot.start(url, {
+	meetbot.start(url, {
 		onEnd: () => {
 			console.log(`Removing ${url} from active bot queue`);
 			ACTIVE_BOTS.delete(url);

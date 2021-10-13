@@ -1,7 +1,7 @@
 {
-  "name": "voicebot",
+  "name": "meetbot",
   "version": "0.0.1",
-  "description": "A voicebot for Google Meets",
+  "description": "A bot for Google Meets",
   "homepage": "https://github.com/balena-io/balena-typescript-skeleton#readme",
   "main": "build/index.js",
   "types": "build/index.d.ts",

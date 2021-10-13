@@ -1,5 +1,5 @@
 import { expect } from './chai';
-import { run } from '../src/voicebot/features/storage';
+import { run } from '../src/meetbot/features/storage';
 import * as fs from 'fs';
 
 const mockEvents = [
