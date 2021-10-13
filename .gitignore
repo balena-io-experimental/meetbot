@@ -108,3 +108,11 @@ dist
 
 # debugging screenshots
 /*.png
+
+
+
+.vscode/
+.ignore
+
+token.json
+credentials.json
