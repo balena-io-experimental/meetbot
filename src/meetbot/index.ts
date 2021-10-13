@@ -76,7 +76,7 @@ class MeetBot extends EventEmitter implements Bot {
 				await this.page.click('#passwordNext');
 				await navigationPromise;
 
-				console.log('waiting for smart card');
+				console.log('doing 2FA login');
 				// HACK this is soooo dirty...
 				await this.page.waitForTimeout(2_000);
 				navigationPromise = this.page.waitForNavigation();
@@ -146,14 +146,6 @@ class MeetBot extends EventEmitter implements Bot {
 			await clickText(this.page, 'people_outline');
 			await this.page.waitForTimeout(1000);
 
-			console.log('open chat section and send a message to all');
-			await clickText(this.page, 'chat');
-			await this.page.waitForTimeout(1500);
-			// await page.screenshot({ path: 'after-chat-open.png' });
-			await this.page.keyboard.type('Hello, good day everyone!', { delay: 10 });
-			await this.page.keyboard.press('Enter');
-			// await page.screenshot({ path: 'after-chat.png' });
-
 			console.log('captions are on');
 			await this.page.waitForTimeout(1000);
 			// await page.screenshot({ path: 'end.png' });
@@ -167,10 +159,12 @@ class MeetBot extends EventEmitter implements Bot {
 				const texts = await Promise.all(
 					elems.map((el) => el.evaluate((node: any) => node.innerText)),
 				);
-				this.emit('captions', {
-					url: meetURL,
-					texts,
-				});
+				if (texts.length) {
+					this.emit('captions', {
+						url: meetURL,
+						texts,
+					});
+				}
 
 				// names of participants in list
 				const participants = await this.page.$$('span.ZjFb7c');
