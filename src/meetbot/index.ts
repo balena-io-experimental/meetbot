@@ -1,10 +1,12 @@
 import { EventEmitter } from 'events';
 import { Browser, Page } from 'puppeteer';
-import totp = require('totp-generator');
 
 import { newPage } from '../browser';
 import { Feature } from './features';
 import { clickText } from './pptr-helpers';
+import totp = require('totp-generator');
+
+import { promises as fs } from 'fs';
 
 export type JobHandler = (page: Page) => Promise<void>;
 export type JobQueueFunc = (h: JobHandler) => void;
@@ -115,6 +117,8 @@ class MeetBot extends EventEmitter implements Bot {
 			await this.page.keyboard.up('ControlLeft');
 			await this.page.waitForTimeout(100);
 
+			this.page.on('console', (msg) => console.log('PAGE LOG:', msg.text()));
+
 			await clickText(this.page, 'Ask to join');
 
 			// either the call is recorded and we need to confirm or we eventually get in
@@ -145,6 +149,31 @@ class MeetBot extends EventEmitter implements Bot {
 			console.log('open people list to activate feature');
 			await clickText(this.page, 'people_outline');
 			await this.page.waitForTimeout(1000);
+
+			console.log('open chat section and send a message to all');
+			await clickText(this.page, 'chat');
+			await this.page.waitForTimeout(1500);
+			// await page.screenshot({ path: 'after-chat-open.png' });
+			await this.page.keyboard.type('Hello, good day everyone!', { delay: 10 });
+			await this.page.keyboard.press('Enter');
+			// await page.screenshot({ path: 'after-chat.png' });
+
+			// ------------- Inject stenographer script into the page, and expose a function
+			// that can be executed as a callback whenever a caption is available.
+
+			const handleCaption = (caption: string) => {
+				console.log('[caption passed to puppeteer script] => ' + caption);
+			};
+
+			await this.page.exposeFunction('handleCaption', handleCaption);
+
+			const script = await (
+				await fs.readFile('src/stenographer/index.js')
+			).toString();
+
+			await this.page.evaluate(script);
+
+			// -------------
 
 			console.log('captions are on');
 			await this.page.waitForTimeout(1000);
