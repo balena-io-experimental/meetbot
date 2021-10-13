@@ -19,9 +19,12 @@ By default since the bot isn't authenticated it will prompt people in the meet t
 
 Just start the service (HTTP server) and post a meet url
 
-```
+```bash
+export GOOGLE_LOGIN="hubot@balena.io"
+export GOOGLE_PASSWORD="THE PASSWORD from passpack"
+export GOOGLE_TOTP_SECRET="THE TOTP SECRET in a separate passpack entry"
 npm start
-
+# in another tab
 curl --header "Content-Type: application/json" \
   --request POST \
   --data '{"url":"https://meet.google.com/wtq-bhai-amg"}' \
