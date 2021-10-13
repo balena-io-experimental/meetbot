@@ -10,7 +10,7 @@ type transcriptionEvent = {
 };
 
 export function attach(bot: MeetBot) {
-	console.log('Running flowdock feature..');
+	console.log('Running storage feature..');
 	const filename = `meet-${bot.url}.log`;
 
 	bot.on('data', (data: transcriptionEvent) => {
