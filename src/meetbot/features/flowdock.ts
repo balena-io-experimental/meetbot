@@ -1,6 +1,8 @@
-function run(data: string) {
-	console.log('Running flowdock feature..');
-	console.log(`Got ${data}`);
-}
+import MeetBot from '../../meetbot';
 
-export { run };
+export function attach(bot: MeetBot) {
+	console.log('Running flowdock feature..');
+	bot.on('data', (data: string) => {
+		console.log(`Got ${data}`);
+	});
+}
