@@ -2,6 +2,7 @@ import { Browser } from 'puppeteer';
 
 import MeetBot from './meetbot';
 import { newBrowser } from './browser';
+import { all as allFeatures } from './meetbot/features';
 
 const MAX_BOTS = process.env.MAX_BOTS || 5;
 const ACTIVE_BOTS = new Map();
@@ -24,7 +25,7 @@ export async function spawnBot(url: string) {
 	}
 
 	// Create a new bot instance with the already created browser instance
-	const bot = new MeetBot(browser);
+	const bot = new MeetBot(browser, allFeatures);
 	// Initialize bot (opens a new page)
 	await bot.init();
 
