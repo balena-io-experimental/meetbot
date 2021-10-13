@@ -25,11 +25,26 @@ class MeetBot extends EventEmitter implements Bot {
 	private pendingJobs: JobHandler[] = [];
 	private leaveRequested: boolean = false;
 
+	private captions: any[] = [];
+
 	constructor(private browser: Browser, features: Feature[]) {
 		super();
 		for (const feature of features) {
 			feature.attach(this);
 		}
+
+		setInterval(() => {
+			for (let index = 0; index < this.captions.length; index++) {
+				if (
+					new Date().getTime() -
+						new Date(this.captions[index].caption.endedAt).getTime() >
+					5 * 1000
+				) {
+					this.emit('caption', this.captions[index]);
+					this.captions.splice(index, 1);
+				}
+			}
+		}, 1000);
 	}
 
 	async init() {
@@ -161,12 +176,25 @@ class MeetBot extends EventEmitter implements Bot {
 			// ------------- Inject stenographer script into the page, and expose a function
 			// that can be executed as a callback whenever a caption is available.
 
-			const handleCaption = (caption: string) => {
+			const handleCaption = (caption: any) => {
 				// console.log('[caption passed to puppeteer script] => ' + caption);
 				this.emit('raw_caption', {
 					url: meetURL,
 					caption,
 				});
+
+				const existingCaption = this.captions.find(
+					(c) => c.caption.id === caption.id,
+				);
+				if (existingCaption) {
+					existingCaption.caption.text = caption.caption.text;
+					existingCaption.caption.endedAt = caption.caption.endedAt;
+				} else {
+					this.captions.push({
+						url: meetURL,
+						caption,
+					});
+				}
 			};
 
 			await this.page.exposeFunction('handleCaption', handleCaption);
