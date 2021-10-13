@@ -382,6 +382,7 @@ const upsertRecord = (cache) => {
     text: cache.text,
     startedAt: cache.startedAt,
     endedAt: cache.endedAt,
+		id: cache.id
   }
 
   if (handleCaption !== undefined) {
@@ -517,6 +518,7 @@ const updateCurrentTranscriptSession = (node) => {
       transcriptId: state.currentTranscriptId,
       sessionIndex: state.currentSessionIndex,
       speakerIndex: currentSpeakerIndex,
+			id: Math.random().toString(16).slice(2)
     });
 
     upsertRecord(cache[0]);
