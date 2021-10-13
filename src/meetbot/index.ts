@@ -4,7 +4,11 @@ import { Browser, Page } from 'puppeteer';
 import { newPage } from '../browser';
 import { Feature } from './features';
 
-class MeetBot extends EventEmitter {
+export interface Bot extends EventEmitter {
+	page: Page | null;
+}
+
+class MeetBot extends EventEmitter implements Bot {
 	public page: Page | null = null;
 	public url: string | null = null;
 
