@@ -4,13 +4,17 @@ import { Browser, Page } from 'puppeteer';
 import { newPage } from '../browser';
 import { Feature } from './features';
 
+export type JobHandler = (page: Page) => Promise<void>;
+export type JobQueueFunc = (h: JobHandler) => void;
 export interface Bot extends EventEmitter {
-	page: Page | null;
+	addJob(handler: JobHandler): void;
 }
 
 class MeetBot extends EventEmitter implements Bot {
 	public page: Page | null = null;
 	public url: string | null = null;
+
+	private pendingJobs: JobHandler[] = [];
 
 	constructor(private browser: Browser, features: Feature[]) {
 		super();
@@ -21,6 +25,10 @@ class MeetBot extends EventEmitter implements Bot {
 
 	async init() {
 		this.page = await newPage(this.browser);
+	}
+
+	public addJob(handler: JobHandler) {
+		this.pendingJobs.push(handler);
 	}
 
 	// TODOs
@@ -159,6 +167,22 @@ class MeetBot extends EventEmitter implements Bot {
 					console.log("nobody else is here - I'm leaving...");
 					this.emit('left', { url: meetURL });
 					break;
+				}
+
+				// This job queue is needed because of the async nature of interacting with the
+				// page. Each feature needs full control over the page until it's done.
+				// NOTE: after a job the page might be in a different (UI) state than before
+				// TBD how to resolve this.
+				for (
+					let job = this.pendingJobs.pop();
+					job;
+					job = this.pendingJobs.pop()
+				) {
+					try {
+						await job(this.page);
+					} catch (err: any) {
+						console.log('ERROR IN FEATURE', err);
+					}
 				}
 			}
 
