@@ -56,7 +56,7 @@ class MeetBot extends EventEmitter {
 
 			console.log('going to Meet after signing in');
 			await this.page.goto(meetURL);
-
+			this.emit('active');
 			// await page.screenshot({ path: 'meet-loaded.png' });
 
 			await this.page.keyboard.type('Hubot', { delay: 10 });
@@ -123,7 +123,6 @@ class MeetBot extends EventEmitter {
 			// HACK replace with proper command infrastructure
 			let sayHelloInProgress = false;
 			while (true) {
-				this.emit('active');
 				await this.page.waitForTimeout(500);
 
 				const elems = await this.page.$$('span.CNusmb');
