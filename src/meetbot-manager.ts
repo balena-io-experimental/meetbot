@@ -30,7 +30,7 @@ export async function spawnBot(url: string) {
 	await bot.init();
 
 	bot.on('active', () => {
-		ACTIVE_BOTS.set(url, true);
+		ACTIVE_BOTS.set(url, bot);
 		console.log(`Current bot queue size: ${ACTIVE_BOTS.size}`);
 	});
 
@@ -40,5 +40,15 @@ export async function spawnBot(url: string) {
 	});
 
 	// Tell bot to start running
-	bot.start(url);
+	bot.joinMeet(url);
+}
+
+export async function killBot(url: string) {
+	if (ACTIVE_BOTS.has(url)) {
+		console.log(`Killing bot for ${url}`);
+		const bot = ACTIVE_BOTS.get(url);
+		bot.leaveMeet(url);
+	} else {
+		throw new Error(`Could not find bot at specified location!`);
+	}
 }
