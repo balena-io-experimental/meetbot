@@ -1,5 +1,5 @@
 import * as server from './server';
 
-console.log('Initialization voicebot service...');
+console.log('Initialization meetbot service...');
 
 server.start();

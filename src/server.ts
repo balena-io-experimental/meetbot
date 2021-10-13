@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { URL } from 'url';
 
-import * as voicebotManager from './voicebot-manager';
+import * as meetbotManager from './meetbot-manager';
 
 const HTTP_PORT = process.env.HTTP_PORT || 8080;
 const server = express();
@@ -19,13 +19,13 @@ server.post('/join', (req, res) => {
 	} catch (e) {
 		return res.status(400).send('Invalid URL provided: ${url}');
 	}
-	// Try to spawn a voicebot for location
+	// Try to spawn a meetbot for location
 	try {
-		voicebotManager.spawn(meetMetadata.href);
+		meetbotManager.spawn(meetMetadata.href);
 	} catch (e: any) {
 		switch (e.message) {
 			case 'Maximum bot queue reached!':
-				return res.status(503).send('Max number of active voicebots reached');
+				return res.status(503).send('Max number of active meetbots reached');
 			case 'A bot is already in that location!':
 				return res.status(400).send('A bot is already at that location');
 			default:
@@ -33,8 +33,8 @@ server.post('/join', (req, res) => {
 				return res.status(500).send('Something unexpected happened');
 		}
 	}
-	// Voicebot is joining the meet soon
-	return res.status(202).send('A voicebot will be right there');
+	// Meetbot is joining the meet soon
+	return res.status(202).send('A meetbot will be right there');
 });
 
 export function start() {

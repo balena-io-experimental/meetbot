@@ -1,6 +1,6 @@
-# Voicebot 
+# Meetbot 
 
-Voicebot will listen to google meet urls to join to and perform various tasks.
+Meetbot will listen to google meet urls to join to and perform various tasks.
 
 By default since the bot isn't authenticated it will prompt people in the meet to allow the bot to join.
 
