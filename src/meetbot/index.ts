@@ -21,6 +21,7 @@ class MeetBot extends EventEmitter implements Bot {
 	public url: string | null = null;
 
 	private pendingJobs: JobHandler[] = [];
+	private leaveRequested: boolean = false;
 
 	constructor(private browser: Browser, features: Feature[]) {
 		super();
@@ -159,7 +160,7 @@ class MeetBot extends EventEmitter implements Bot {
 
 			console.log('streaming captions');
 
-			while (true) {
+			while (!this.leaveRequested) {
 				await this.page.waitForTimeout(500);
 
 				const elems = await this.page.$$('span.CNusmb');
@@ -209,8 +210,11 @@ class MeetBot extends EventEmitter implements Bot {
 		}
 	}
 
-	async start(url: string) {
-		await this.joinMeet(url);
+	async leaveMeet() {
+		if (this.page !== null) {
+			// We can't close the page here because it would interrupt whatever pending jobs are running on the main loop
+			this.leaveRequested = true;
+		}
 	}
 }
 
