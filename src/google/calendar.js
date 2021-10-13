@@ -13,7 +13,7 @@ const TOKEN_PATH = 'token.json';
 fs.readFile('credentials.json', (err, content) => {
   if (err) return console.log('Error loading client secret file:', err);
   // Authorize a client with credentials, then call the Google Calendar API.
-  authorize(JSON.parse(content), listCalendarEvents);
+  authorize(JSON.parse(content), listEvents);
 });
 
 function authorize(credentials, callback) {
@@ -64,7 +64,7 @@ function authorize(credentials, callback) {
  * Fetches all calendar events from the admin calendar. 
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-function listCalendarEvents(auth) {
+function listEvents(auth) {
   const calendar = google.calendar({ version: 'v3', auth });
   calendar.events.list({
     calendarId: 'admin@balena.io',
