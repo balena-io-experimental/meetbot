@@ -3,6 +3,7 @@ import { Browser, Page } from 'puppeteer';
 
 import { newPage } from '../browser';
 import { Feature } from './features';
+import { clickText } from './pptr-helpers';
 
 export type JobHandler = (page: Page) => Promise<void>;
 export type JobQueueFunc = (h: JobHandler) => void;
@@ -130,8 +131,6 @@ class MeetBot extends EventEmitter implements Bot {
 
 			console.log('streaming captions');
 
-			// HACK replace with proper command infrastructure
-			let sayHelloInProgress = false;
 			while (true) {
 				await this.page.waitForTimeout(500);
 
@@ -141,20 +140,8 @@ class MeetBot extends EventEmitter implements Bot {
 				);
 				this.emit('captions', {
 					url: meetURL,
-					text: texts[0],
+					texts,
 				});
-				if (
-					texts.find((t) => /say[^a-z]*hello[^a-z]*jarvis/i.test(t)) &&
-					!sayHelloInProgress
-				) {
-					sayHelloInProgress = true;
-					await this.page.keyboard.type('What can I do for you, Sir?', {
-						delay: 10,
-					});
-					await this.page.keyboard.press('Enter');
-				} else {
-					sayHelloInProgress = false;
-				}
 
 				// names of participants in list
 				const participants = await this.page.$$('span.ZjFb7c');
@@ -198,16 +185,5 @@ class MeetBot extends EventEmitter implements Bot {
 		await this.joinMeet(url);
 	}
 }
-
-const clickText = async (page: any, text: string) => {
-	const elems = await page.$x(`//*[contains(text(),'${text}')]`);
-	for (const el of elems) {
-		try {
-			await el.click();
-		} catch {
-			// sometimes we find stuff with the same text which is not clickable
-		}
-	}
-};
 
 export default MeetBot;
