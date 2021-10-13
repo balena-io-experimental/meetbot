@@ -27,8 +27,6 @@ export async function spawnBot(url: string) {
 	const bot = new MeetBot(browser);
 	// Initialize bot (opens a new page)
 	await bot.init();
-	// Tell bot to start running
-	bot.start(url);
 
 	bot.on('active', () => {
 		ACTIVE_BOTS.set(url, true);
@@ -39,4 +37,7 @@ export async function spawnBot(url: string) {
 		console.log(`Removing ${url} from active bot queue`);
 		ACTIVE_BOTS.delete(url);
 	});
+
+	// Tell bot to start running
+	bot.start(url);
 }
