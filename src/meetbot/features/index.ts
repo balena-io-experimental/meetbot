@@ -1,11 +1,10 @@
 import fs = require('fs');
-
-import MeetBot from '../../meetbot';
+import { Bot } from '..';
 
 const files = fs.readdirSync(__dirname);
 
 export type Feature = {
-	attach: (bot: MeetBot) => void;
+	attach: (bot: Bot) => void;
 };
 
 export const all: Feature[] = [];

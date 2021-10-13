@@ -1,8 +1,8 @@
-import MeetBot from '../../meetbot';
+import { Bot } from '..';
 
-export function attach(bot: MeetBot) {
+export const attach = (bot: Bot) => {
 	console.log('Running comment feature..');
 	bot.on('data', (data: string) => {
 		console.log(`Got ${data}`);
 	});
-}
+};

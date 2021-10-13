@@ -1,6 +1,6 @@
-import MeetBot from '../../meetbot';
+import { Bot } from '..';
 
-export function attach(bot: MeetBot): void {
+export const attach = (bot: Bot) => {
 	console.log('Running eventdemo feature...');
 	bot.on('joined', ({ url }: { url: string }) => {
 		console.log('i joined a meeting!', url);
@@ -11,4 +11,4 @@ export function attach(bot: MeetBot): void {
 	bot.on('left', ({ url }: { url: string }) => {
 		console.log('i left a meeting!', url);
 	});
-}
+};
