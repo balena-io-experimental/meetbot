@@ -8,7 +8,7 @@ const server = express();
 
 server.use(express.json());
 
-server.post('/join', (req, res) => {
+server.post('/join', async (req, res) => {
 	let meetMetadata;
 	// Validate body
 	if (!req.body.url) {
@@ -21,7 +21,7 @@ server.post('/join', (req, res) => {
 	}
 	// Try to spawn a meetbot for location
 	try {
-		meetbotManager.spawn(meetMetadata.href);
+		await meetbotManager.spawnBot(meetMetadata.href);
 	} catch (e: any) {
 		switch (e.message) {
 			case 'Maximum bot queue reached!':
@@ -37,7 +37,10 @@ server.post('/join', (req, res) => {
 	return res.status(202).send('A meetbot will be right there');
 });
 
-export function start() {
+export async function start() {
+	// Initiate manager to be able to spawn bots for requests
+	await meetbotManager.init();
+	// Listen for requests to spawn bots
 	server.listen(HTTP_PORT, () => {
 		console.log(`Listening for requests on port ${HTTP_PORT}`);
 	});
