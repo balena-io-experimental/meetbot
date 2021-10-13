@@ -386,7 +386,9 @@ const upsertRecord = (cache) => {
 
   if (handleCaption !== undefined) {
     handleCaption(entry)
-  }
+  } else {
+		console.log('handleCaption is undefined')
+	}
 
   set(
     makeTranscriptKey(
@@ -473,7 +475,7 @@ const getCaptionData = (node) => {
     (span) => span.children.length === 0
   );
   const text = spans.map((span) => span.textContent).join(" ");
-  console.log(text)
+
   return {
     image: image ? image.src : '',
     person: person ? person.textContent : '',
@@ -496,7 +498,6 @@ const getCaptionData = (node) => {
 // -------------------------------------------------------------------------
 const updateCurrentTranscriptSession = (node) => {
 
-	console.log("node being")
   const index = cache.findIndex((el) => el.node === node);
 
   // If node is not being tracked

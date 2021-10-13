@@ -162,7 +162,11 @@ class MeetBot extends EventEmitter implements Bot {
 			// that can be executed as a callback whenever a caption is available.
 
 			const handleCaption = (caption: string) => {
-				console.log('[caption passed to puppeteer script] => ' + caption);
+				// console.log('[caption passed to puppeteer script] => ' + caption);
+				this.emit('raw_caption', {
+					url: meetURL,
+					caption,
+				});
 			};
 
 			await this.page.exposeFunction('handleCaption', handleCaption);
@@ -184,16 +188,16 @@ class MeetBot extends EventEmitter implements Bot {
 			while (!this.leaveRequested) {
 				await this.page.waitForTimeout(500);
 
-				const elems = await this.page.$$('span.CNusmb');
-				const texts = await Promise.all(
-					elems.map((el) => el.evaluate((node: any) => node.innerText)),
-				);
-				if (texts.length) {
-					this.emit('captions', {
-						url: meetURL,
-						texts,
-					});
-				}
+				// const elems = await this.page.$$('span.CNusmb');
+				// const texts = await Promise.all(
+				// 	elems.map((el) => el.evaluate((node: any) => node.innerText)),
+				// );
+				// if (texts.length) {
+				// 	this.emit('captions', {
+				// 		url: meetURL,
+				// 		texts,
+				// 	});
+				// }
 
 				// names of participants in list
 				const participants = await this.page.$$('span.ZjFb7c');
