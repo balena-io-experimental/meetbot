@@ -32,6 +32,7 @@ const totpSecret = process.env.GOOGLE_TOTP_SECRET;
 class MeetBot implements Bot {
 	public page: Page | null = null;
 	public url: string | null = null;
+	public joinedAt: string | null = null;
 
 	private pendingJobs: JobHandler[] = [];
 	private leaveRequested: boolean = false;
@@ -166,6 +167,8 @@ class MeetBot implements Bot {
 
 			await this.page.waitForTimeout(1500);
 			// await page.screenshot({ path: 'after-join.png' });
+
+			this.joinedAt = new Date().toUTCString();
 
 			console.log('turn on captions');
 			this.emit('joined', { meetURL });

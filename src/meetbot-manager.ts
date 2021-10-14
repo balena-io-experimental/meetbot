@@ -5,7 +5,13 @@ import { newBrowser } from './browser';
 import { all as allFeatures } from './meetbot/features';
 
 const MAX_BOTS = process.env.MAX_BOTS || 5;
-const ACTIVE_BOTS = new Map();
+const ACTIVE_BOTS = new Map<string, MeetBot>();
+
+type MeetBotListItem = {
+	url : string | null;
+	transcript?: string | null;
+	joinedAt: string | null;
+}
 
 let browser: Browser | null = null;
 
@@ -15,7 +21,22 @@ export async function init(): Promise<void> {
 	}
 }
 
+export async function listBots() {
+
+	const results : MeetBotListItem[] = []
+
+	ACTIVE_BOTS.forEach((value: MeetBot, _key: string) => {
+		results.push({
+			url: value.url,
+			joinedAt: value.joinedAt,
+		})
+	});
+
+	return results
+}
+
 export async function spawnBot(url: string) {
+
 	if (ACTIVE_BOTS.size >= MAX_BOTS) {
 		throw new Error(`Maximum bot queue reached!`);
 	} else if (ACTIVE_BOTS.has(url)) {
@@ -47,7 +68,9 @@ export async function killBot(url: string) {
 	if (ACTIVE_BOTS.has(url)) {
 		console.log(`Killing bot for ${url}`);
 		const bot = ACTIVE_BOTS.get(url);
-		bot.leaveMeet(url);
+		if (bot){
+			bot.leaveMeet();
+		}
 	} else {
 		throw new Error(`Could not find bot at specified location!`);
 	}

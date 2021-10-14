@@ -37,6 +37,11 @@ server.post('/join', async (req, res) => {
 	return res.status(202).send('A meetbot will be right there');
 });
 
+server.get('/meets', async (_req, res) => {
+	const bots = await meetbotManager.listBots()
+	return res.status(200).send(bots);
+})
+
 server.post('/leave', async (req, res) => {
 	let meetMetadata;
 	// Validate body
