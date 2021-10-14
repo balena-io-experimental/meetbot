@@ -34,6 +34,7 @@ class MeetBot implements Bot {
 	public page: Page | null = null;
 	public url: string | null = null;
 	public joinedAt: string | null = null;
+	public transcriptUrl: string | null = null;
 
 	private pendingJobs: JobHandler[] = [];
 	private leaveRequested: boolean = false;

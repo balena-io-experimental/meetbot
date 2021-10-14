@@ -9,7 +9,7 @@ const ACTIVE_BOTS = new Map<string, MeetBot>();
 
 type MeetBotListItem = {
 	url : string | null;
-	transcript?: string | null;
+	transcriptUrl: string | null;
 	joinedAt: string | null;
 }
 
@@ -28,6 +28,7 @@ export async function listBots() {
 	ACTIVE_BOTS.forEach((value: MeetBot, _key: string) => {
 		results.push({
 			url: value.url,
+			transcriptUrl: value.transcriptUrl,
 			joinedAt: value.joinedAt,
 		})
 	});
@@ -53,6 +54,11 @@ export async function spawnBot(url: string) {
 	bot.on('active', () => {
 		ACTIVE_BOTS.set(url, bot);
 		console.log(`Current bot queue size: ${ACTIVE_BOTS.size}`);
+	});
+
+	bot.on('transcript_doc_ready', (data) => {
+		console.log("setting transcript url to" + data.transcriptUrl)
+		bot.transcriptUrl = data.transcriptUrl
 	});
 
 	bot.on('end', () => {

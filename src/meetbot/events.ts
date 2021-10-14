@@ -20,6 +20,10 @@ interface SteganographerEvent {
 	endedAt: string;
 	id: string;
 }
+interface StreamEvent extends BotEvent {
+	transcriptUrl: string | null;
+}
+
 type LeaveEvent = BotEvent;
 type JoinEvent = BotEvent;
 type ActiveEvent = BotEvent;
@@ -30,6 +34,7 @@ interface BotEvents {
 	left: LeaveEvent;
 	joined: JoinEvent;
 	active: ActiveEvent;
+	transcript_doc_ready: StreamEvent;
 	end: EndEvent;
 	participants: ParticipantsEvent;
 	raw_caption: CaptionEvent;

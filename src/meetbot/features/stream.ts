@@ -91,7 +91,6 @@ export async function createNewTranscriptDoc(auth: Auth.OAuth2Client, title = `T
 
 	console.log(`Transcript is available at \nhttps://docs.google.com/document/d/${documentId}/edit`);
 
-
 	const text = `Transcript\n`
 	const emptyLine = '\n'
 	const textStartIndex = Math.max(1, cursor)
@@ -248,6 +247,10 @@ export const attach = async (bot: Bot) => {
 		auth = await authorize(JSON.parse(content) as Credentials)
 		documentId = await createNewTranscriptDoc(auth, `Transcript ${id} (${moment().format('YYYY-MM-DD at HH:MM G[M]TZ')})`)
 
+		bot.emit('transcript_doc_ready', {
+			transcriptUrl: `https://docs.google.com/document/d/${documentId}/edit`,
+			meetURL: joined.meetURL
+		})
 	})
 
 	bot.on('caption', async (data: CaptionEvent) => {
@@ -263,7 +266,6 @@ export const attach = async (bot: Bot) => {
 			|| !data.caption.person
 			|| (data.caption.person.trim().toLowerCase() === "Meeting host".toLowerCase())
 		) return
-
 
 		bot.addJob(async () => {
 			await appendToTranscriptDoc(auth, documentId, data.caption)
