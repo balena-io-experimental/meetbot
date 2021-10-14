@@ -5,8 +5,8 @@ import { clickText } from '../pptr-helpers';
 export const attach = (bot: Bot) => {
 	console.log('Running eventdemo feature...');
 
-	bot.on('joined', ({ url }: { url: string }) => {
-		console.log('i joined a meeting!', url);
+	bot.on('joined', ({ meetURL }) => {
+		console.log('i joined a meeting!', meetURL);
 		bot.addJob(postToChatJob('Hello Team-Balena!'));
 	});
 
@@ -29,14 +29,14 @@ export const attach = (bot: Bot) => {
 	};
 
 	let sayHelloInProgress = false;
-	bot.on('captions', ({ url, texts }: { url: string; texts: string[] }) => {
-		if (!texts || !texts.length) {
+	bot.on('raw_caption', ({ caption }) => {
+		if (!caption) {
 			return;
 		}
-		console.log(`i got ${texts.join(' ')} from ${url}`);
+		// console.log(`i got ${caption} from ${meetURL}`);
 
 		if (
-			texts.find((t) => /say[^a-z]*hello[^a-z]*jarvis/i.test(t)) &&
+			/say[^a-z]*hello[^a-z]*jarvis/i.test(caption.text) &&
 			!sayHelloInProgress
 		) {
 			console.log('saying hello to my masters');
@@ -47,7 +47,14 @@ export const attach = (bot: Bot) => {
 		}
 	});
 
-	bot.on('left', ({ url }: { url: string }) => {
-		console.log('i left a meeting!', url);
+	bot.on('chat', (event) => {
+		console.log('CHAT', event);
+		if (/do[^a-z]*something[^a-z]*jarvis/i.test(event.text)) {
+			bot.addJob(postToChatJob("I'm ready for your text commands"));
+		}
+	});
+
+	bot.on('left', ({ meetURL }) => {
+		console.log('i left a meeting!', meetURL);
 	});
 };

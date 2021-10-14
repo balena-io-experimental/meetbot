@@ -10,8 +10,12 @@ import { promises as fs } from 'fs';
 
 export type JobHandler = (page: Page) => Promise<void>;
 export type JobQueueFunc = (h: JobHandler) => void;
-export interface Bot extends EventEmitter {
+export interface Bot {
 	addJob(handler: JobHandler): void;
+	on<K extends keyof BotEvents, T extends BotEvents[K]>(
+		eventName: K,
+		listener: (arg: T) => void,
+	): this;
 }
 
 const login = process.env.GOOGLE_LOGIN;
@@ -40,22 +44,23 @@ class Messenger {
 
 const msgs = new Messenger();
 
-class MeetBot extends EventEmitter implements Bot {
+class MeetBot implements Bot {
 	public page: Page | null = null;
 	public url: string | null = null;
 
 	private pendingJobs: JobHandler[] = [];
 	private leaveRequested: boolean = false;
-
-	private captions: any[] = [];
+	private captions: RawCaptionEvent[] = [];
+	private captionTimer: NodeJS.Timer;
+	private events = new EventEmitter();
 
 	constructor(private browser: Browser, features: Feature[]) {
-		super();
 		for (const feature of features) {
 			feature.attach(this);
 		}
 
-		setInterval(() => {
+		// TODO please comment this. Why?
+		this.captionTimer = setInterval(() => {
 			for (let index = 0; index < this.captions.length; index++) {
 				if (
 					new Date().getTime() -
@@ -86,7 +91,7 @@ class MeetBot extends EventEmitter implements Bot {
 		}
 		this.url = meetURL;
 		try {
-			this.emit('active');
+			this.emit('active', { meetURL });
 
 			if (login && password && totpSecret) {
 				await this.page.goto('https://accounts.google.com/?hl=en');
@@ -173,7 +178,7 @@ class MeetBot extends EventEmitter implements Bot {
 			// await page.screenshot({ path: 'after-join.png' });
 
 			console.log('turn on captions');
-			this.emit('joined', { url: meetURL });
+			this.emit('joined', { meetURL });
 			await clickText(this.page, 'more_vert');
 			await this.page.waitForTimeout(1000);
 			await clickText(this.page, 'Captions');
@@ -187,21 +192,13 @@ class MeetBot extends EventEmitter implements Bot {
 			await clickText(this.page, 'people_outline');
 			await this.page.waitForTimeout(1000);
 
-			console.log('open chat section and send a message to all');
-			await clickText(this.page, 'chat');
-			await this.page.waitForTimeout(1500);
-			// await page.screenshot({ path: 'after-chat-open.png' });
-			await this.page.keyboard.type('Hello, good day everyone!', { delay: 10 });
-			await this.page.keyboard.press('Enter');
-			// await page.screenshot({ path: 'after-chat.png' });
-
 			// ------------- Inject stenographer script into the page, and expose a function
 			// that can be executed as a callback whenever a caption is available.
 
-			const handleCaption = (caption: any) => {
+			const handleCaption = (caption: SteganographerEvent) => {
 				// console.log('[caption passed to puppeteer script] => ' + caption);
 				this.emit('raw_caption', {
-					url: meetURL,
+					meetURL,
 					caption,
 				});
 
@@ -209,11 +206,11 @@ class MeetBot extends EventEmitter implements Bot {
 					(c) => c.caption.id === caption.id,
 				);
 				if (existingCaption) {
-					existingCaption.caption.text = caption.caption.text;
-					existingCaption.caption.endedAt = caption.caption.endedAt;
+					existingCaption.caption.text = caption.text;
+					existingCaption.caption.endedAt = caption.endedAt;
 				} else {
 					this.captions.push({
-						url: meetURL,
+						meetURL,
 						caption,
 					});
 				}
@@ -258,7 +255,7 @@ class MeetBot extends EventEmitter implements Bot {
 						};
 						const newMessages = msgs.updateGroup(messageGroup);
 						for (const text of newMessages) {
-							this.emit('chat', { meet: meetURL, timestamp, sender, text });
+							this.emit('chat', { meetURL, timestamp, sender, text });
 						}
 					}),
 				);
@@ -266,13 +263,13 @@ class MeetBot extends EventEmitter implements Bot {
 				// names of participants in list
 				const participants = await this.page.$$('span.ZjFb7c');
 				this.emit('participants', {
-					url: meetURL,
+					meetURL,
 					participants: participants.length,
 				});
 
 				if (participants.length === 1) {
 					console.log("nobody else is here - I'm leaving...");
-					this.emit('left', { url: meetURL });
+					this.emit('left', { meetURL });
 					break;
 				}
 
@@ -294,11 +291,28 @@ class MeetBot extends EventEmitter implements Bot {
 			}
 
 			await this.page.close();
-			this.emit('end');
+			this.emit('end', { meetURL });
 		} catch (err) {
 			await this.page.screenshot({ path: 'exception.png' });
 			throw err;
+		} finally {
+			clearInterval(this.captionTimer);
 		}
+	}
+
+	on<K extends keyof BotEvents, T extends BotEvents[K]>(
+		eventName: K,
+		listener: (arg: T) => void,
+	): this {
+		this.events.on(eventName, listener);
+		return this;
+	}
+
+	private emit<K extends keyof BotEvents, T extends BotEvents[K]>(
+		eventName: K,
+		event: T,
+	): boolean {
+		return this.events.emit(eventName, event);
 	}
 
 	async leaveMeet() {
