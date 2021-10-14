@@ -10,13 +10,13 @@ const makeMeetListItem = (meet) => {
     const fgColors = {
         'Waiting': 'text-yellow-400',
         'Finished': 'text-red-800',
-        'Ongoning': 'text-green-800',
+        'Ongoing': 'text-green-800',
     }
 
     const bgColors = {
         'Waiting': 'bg-yellow-100',
         'Finished': 'bg-red-100',
-        'Ongoning': 'bg-green-100',
+        'Ongoing': 'bg-green-100',
     }
 
 	return `
@@ -59,21 +59,21 @@ const makeMeetListItem = (meet) => {
 window.onload = function () {
 	mockData = [
 		{
-			url: "https://meet.google.com/jtm-nzwu-amj",
+			url: "https://meet.google.com/ujl-zyha-pok",
 			transcriptUrl:
 				"https://docs.google.com/document/d/1K37L21w16d_0YQONESezFWfVHXEUy-eE8OYOlbps0mw/edit#",
 			joinedAt: undefined,
 			leftAt: "12213",
 		},
 		{
-			url: "https://meet.google.com/jtm-nzwu-amj",
+			url: "https://meet.google.com/kjl-snhl-qui",
 			transcriptUrl:
 				"https://docs.google.com/document/d/1K37L21w16d_0YQONESezFWfVHXEUy-eE8OYOlbps0mw/edit#",
 			joinedAt: undefined,
 			leftAt: "12213",
 		},
 		{
-			url: "https://meet.google.com/jtm-nzwu-amj",
+			url: "https://meet.google.com/kal-oipo-nah",
 			transcriptUrl:
 				"https://docs.google.com/document/d/1K37L21w16d_0YQONESezFWfVHXEUy-eE8OYOlbps0mw/edit#",
 			joinedAt: undefined,
