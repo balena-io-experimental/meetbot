@@ -297,6 +297,7 @@ class MeetBot implements Bot {
 			throw err;
 		} finally {
 			clearInterval(this.captionTimer);
+			// TODO detach features?
 		}
 	}
 
