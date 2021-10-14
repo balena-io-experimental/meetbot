@@ -28,28 +28,25 @@ export const attach = (bot: Bot) => {
 		};
 	};
 
-	let sayHelloInProgress = false;
+	let sayHelloInProgress = 0;
 	bot.on('raw_caption', ({ caption }) => {
 		if (!caption) {
 			return;
 		}
-		// console.log(`i got ${caption} from ${meetURL}`);
-
+		const helloCmd = /say[^a-z]*hello[^a-z]*jarvis|robot[^a-z]*help[^a-z]*me/i;
 		if (
-			/say[^a-z]*hello[^a-z]*jarvis/i.test(caption.text) &&
-			!sayHelloInProgress
+			helloCmd.test(caption.text) &&
+			new Date().getTime() - sayHelloInProgress > 10_000
 		) {
 			console.log('saying hello to my masters');
-			sayHelloInProgress = true;
+			sayHelloInProgress = new Date().getTime();
 			bot.addJob(postToChatJob('What can I do for you, Sir?'));
-		} else {
-			sayHelloInProgress = false;
 		}
 	});
 
 	bot.on('chat', (event) => {
 		console.log('CHAT', event);
-		if (/do[^a-z]*something[^a-z]*jarvis/i.test(event.text)) {
+		if (/(do|say)[^a-z]*something[^a-z]*(jarvis|hubot)/i.test(event.text)) {
 			bot.addJob(postToChatJob("I'm ready for your text commands"));
 		}
 	});
