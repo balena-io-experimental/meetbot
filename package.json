@@ -55,6 +55,7 @@
     "@types/node": "^16.10.3",
     "express": "^4.17.1",
     "googleapis": "^39.2.0",
+    "node-nlp": "3.10.2",
     "puppeteer": "^10.4.0",
     "puppeteer-extra": "^3.2.3",
     "puppeteer-extra-plugin-stealth": "^2.8.2",
