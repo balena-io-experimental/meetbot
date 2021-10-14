@@ -247,11 +247,9 @@ class MeetBot implements Bot {
 				// page. Each feature needs full control over the page until it's done.
 				// NOTE: after a job the page might be in a different (UI) state than before
 				// TBD how to resolve this.
-				for (
-					let job = this.pendingJobs.pop();
-					job;
-					job = this.pendingJobs.pop()
-				) {
+				const curPendingJobs = [...this.pendingJobs];
+				this.pendingJobs = [];
+				for (let job = curPendingJobs.pop(); job; job = curPendingJobs.pop()) {
 					try {
 						await job(this.page);
 					} catch (err: any) {
