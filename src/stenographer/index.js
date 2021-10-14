@@ -1,4 +1,5 @@
-console.log("[stenographer] loaded");
+const DEBUG = false;
+console.log("[stenographer] loaded - Debug: " + DEBUG);
 
 // List of ids for all recorded hangouts
 const KEY_TRANSCRIPT_IDS = "meetbot-recordings";
@@ -30,7 +31,7 @@ let settings = {
   transcriptFormatSpeakerJoin: "\n\n",
   hideCaptionsWhileRecording: false,
   readonly: false,
-  debug: true,
+  debug: DEBUG,
 }
 
 // -------------------------------------------------------------------------
