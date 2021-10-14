@@ -20,7 +20,6 @@ export async function newBrowser(): Promise<Browser> {
 			LANG: 'en',
 		},
 		defaultViewport: { height: 912, width: 1480 },
-		ignoreDefaultArgs: ['--mute-audio'],
 	});
 
 	browser
