@@ -16,3 +16,21 @@ export const clickText = async (page: Page, text: string, retries = 3) => {
 		await clickText(page, text, retries - 1);
 	}
 };
+
+export const postToChatJob = (text: string) => {
+	return async (page: Page) => {
+		console.log('open chat section and send a message to all');
+		await clickText(page, 'chat');
+		await page.waitForTimeout(1500);
+		// await page.screenshot({ path: 'after-chat-open.png' });
+
+		await page.keyboard.type(text, { delay: 10 });
+		await page.keyboard.press('Enter');
+		// await page.screenshot({ path: 'after-chat.png' });
+
+		console.log('close chat section again');
+		await clickText(page, 'chat');
+		await page.waitForTimeout(1500);
+		// await page.screenshot({ path: 'after-chat-open.png' });
+	};
+};

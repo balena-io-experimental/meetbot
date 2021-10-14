@@ -3,7 +3,8 @@ import { promises as fs } from 'fs';
 import * as _fs from 'fs';
 import * as readline from 'readline';
 import { Auth, docs_v1, google } from 'googleapis';
-import * as moment from 'moment'
+import * as moment from 'moment';
+import { postToChatJob } from '../pptr-helpers';
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/documents'];
@@ -18,7 +19,7 @@ interface Credentials {
 		client_secret: string;
 		client_id: string;
 		redirect_uris: string;
-	}
+	};
 }
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -28,16 +29,18 @@ interface Credentials {
  *
  */
 function authorize(credentials: Credentials): Promise<Auth.OAuth2Client> {
-	return new Promise<Auth.OAuth2Client>(callback => {
-
+	return new Promise<Auth.OAuth2Client>((callback) => {
 		/**
 		 * Get and store new token after prompting for user authorization, and then
 		 * execute the given callback with the authorized OAuth2 client.
 		 * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
 		 * @param {getEventsCallback} callback The callback for the authorized client.
 		 */
-		function getNewToken(oAuth2Client: Auth.OAuth2Client, callback: (value: Auth.OAuth2Client | PromiseLike<Auth.OAuth2Client>) => void) {
-			const authUrl = oAuth2Client.generateAuthUrl({
+		function getNewToken(
+			authClient: Auth.OAuth2Client,
+			cb: (value: Auth.OAuth2Client | PromiseLike<Auth.OAuth2Client>) => void,
+		) {
+			const authUrl = authClient.generateAuthUrl({
 				access_type: 'offline',
 				scope: SCOPES,
 			});
@@ -48,56 +51,70 @@ function authorize(credentials: Credentials): Promise<Auth.OAuth2Client> {
 			});
 			rl.question('Enter the code from that page here: ', (code) => {
 				rl.close();
-				oAuth2Client.getToken(code, (err, token) => {
-					if (err || !token) return console.error('Error retrieving access token', err, token);
-					oAuth2Client.setCredentials(token);
+				authClient.getToken(code, (err, token) => {
+					if (err || !token) {
+						return console.error('Error retrieving access token', err, token);
+					}
+					authClient.setCredentials(token);
 					// Store the token to disk for later program executions
-					_fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-						if (err) console.error(err);
+					_fs.writeFile(TOKEN_PATH, JSON.stringify(token), (e) => {
+						if (e) {
+							console.error(e);
+						}
 						console.log('Token stored to', TOKEN_PATH);
 					});
-					callback(oAuth2Client);
+					cb(authClient);
 				});
 			});
 		}
 
-
 		const { client_secret, client_id, redirect_uris } = credentials.installed;
 
-		const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+		const oAuth2Client = new google.auth.OAuth2(
+			client_id,
+			client_secret,
+			redirect_uris[0],
+		);
 
 		// Check if we have previously stored a token.
 		_fs.readFile(TOKEN_PATH, (err, token: any) => {
-			if (err) return getNewToken(oAuth2Client, callback);
+			if (err) {
+				return getNewToken(oAuth2Client, callback);
+			}
 			oAuth2Client.setCredentials(JSON.parse(token));
 			callback(oAuth2Client);
 		});
-
-	})
+	});
 }
 
-
-let cursor = 1
-export async function createNewTranscriptDoc(auth: Auth.OAuth2Client, title = `Transcript for Meeting ${new Date().toISOString()}`): Promise<string> {
+let cursor = 1;
+export async function createNewTranscriptDoc(
+	auth: Auth.OAuth2Client,
+	title = `Transcript for Meeting ${new Date().toISOString()}`,
+): Promise<string> {
 	const client = google.docs({ version: 'v1', auth });
 
 	const createResponse = await client.documents.create({
 		requestBody: { title },
 	});
 
-	const documentId = (createResponse?.data?.documentId as string).trim()
+	const documentId = (createResponse?.data?.documentId as string).trim();
 
-	if (!documentId) throw Error("Could not create new Transcript Document")
+	if (!documentId) {
+		throw Error('Could not create new Transcript Document');
+	}
 
-	console.log(`Transcript is available at \nhttps://docs.google.com/document/d/${documentId}/edit`);
+	console.log(
+		`Transcript is available at \nhttps://docs.google.com/document/d/${documentId}/edit`,
+	);
 
-	const text = `Transcript\n`
-	const emptyLine = '\n'
-	const textStartIndex = Math.max(1, cursor)
+	const text = `Transcript\n`;
+	const emptyLine = '\n';
+	const textStartIndex = Math.max(1, cursor);
 
-	const textEndIndex = textStartIndex + text.length - 1 //
+	const textEndIndex = textStartIndex + text.length - 1; //
 	// console.log("textStartIndex", textStartIndex, "textEndIndex", textEndIndex)
-	cursor = textEndIndex + textStartIndex + 1
+	cursor = textEndIndex + textStartIndex + 1;
 	// console.log("cursor", cursor)
 	await client.documents.batchUpdate({
 		documentId,
@@ -106,169 +123,188 @@ export async function createNewTranscriptDoc(auth: Auth.OAuth2Client, title = `T
 				{
 					insertText: {
 						endOfSegmentLocation: {},
-						text
-					}
+						text,
+					},
 				},
 				{
 					updateTextStyle: {
 						textStyle: {
 							bold: true,
-							weightedFontFamily: { fontFamily: "Cambria" },
-							fontSize: { magnitude: 18, unit: "PT" }
+							weightedFontFamily: { fontFamily: 'Cambria' },
+							fontSize: { magnitude: 18, unit: 'PT' },
 						},
-						fields: "bold,weightedFontFamily,fontSize",
+						fields: 'bold,weightedFontFamily,fontSize',
 						range: {
 							startIndex: textStartIndex,
 							endIndex: textEndIndex,
-						}
-					}
+						},
+					},
 				},
 				{
 					insertText: {
 						endOfSegmentLocation: {},
-						text: emptyLine
-					}
+						text: emptyLine,
+					},
 				},
-			]
-		}
-	})
-	return documentId
+			],
+		},
+	});
+	return documentId;
 }
 
+function makeDocOps({
+	startedAt,
+	person,
+	image,
+	text,
+}: SteganographerEvent): docs_v1.Schema$Request[] {
+	const heading = `${moment(startedAt).format('h:mm:ss a UTC')} - ${person}:\n`;
+	const IMG_LENGTH = 1;
+	const message = `${text}\n\n`;
 
-function makeDocOps({ startedAt, person, image, text }: SteganographerEvent): docs_v1.Schema$Request[] {
-	const heading = `${moment(startedAt).format('h:mm:ss a UTC')} - ${person}:\n`
-	const IMG_LENGTH = 1
-	const message = `${text}\n\n`
+	const headerStartIndex = Math.max(1, cursor);
+	const headerEndIndex = headerStartIndex + heading.length - 1;
+	cursor = headerEndIndex + IMG_LENGTH + 1;
 
-	const headerStartIndex = Math.max(1, cursor)
-	const headerEndIndex = headerStartIndex + heading.length - 1
-	cursor = headerEndIndex + IMG_LENGTH + 1
-
-	const messageStartIndex = Math.max(1, cursor)
-	const messageEndIndex = messageStartIndex + message.length
-	cursor = messageEndIndex
+	const messageStartIndex = Math.max(1, cursor);
+	const messageEndIndex = messageStartIndex + message.length;
+	cursor = messageEndIndex;
 
 	return [
 		{
 			insertText: {
 				endOfSegmentLocation: {},
-				text: heading
-			}
+				text: heading,
+			},
 		},
 		{
 			updateTextStyle: {
 				textStyle: {
 					bold: true,
-					weightedFontFamily: { fontFamily: "Cambria" },
+					weightedFontFamily: { fontFamily: 'Cambria' },
 					foregroundColor: {
 						color: {
 							rgbColor: {
 								red: 111 / 255,
 								blue: 111 / 255,
 								green: 111 / 255,
-							}
-						}
-					}
+							},
+						},
+					},
 				},
-				fields: "bold,weightedFontFamily,foregroundColor",
+				fields: 'bold,weightedFontFamily,foregroundColor',
 				range: {
 					startIndex: headerStartIndex,
 					endIndex: headerEndIndex,
-				}
-			}
+				},
+			},
 		},
 		{
 			insertInlineImage: {
 				endOfSegmentLocation: {},
 				uri: image,
 				objectSize: {
-					height: { magnitude: 11, unit: "PT" },
-					width: { magnitude: 11, unit: "PT" },
-				}
-			}
+					height: { magnitude: 11, unit: 'PT' },
+					width: { magnitude: 11, unit: 'PT' },
+				},
+			},
 		},
 		{
 			insertText: {
 				endOfSegmentLocation: {},
-				text: message
-			}
+				text: message,
+			},
 		},
 		{
 			updateTextStyle: {
 				textStyle: {
-					weightedFontFamily: { fontFamily: "Cambria" },
+					weightedFontFamily: { fontFamily: 'Cambria' },
 				},
-				fields: "*",
+				fields: '*',
 				range: {
 					startIndex: messageStartIndex,
 					endIndex: messageEndIndex,
-				}
-			}
+				},
+			},
 		},
-	]
+	];
 }
 
-
-
-export async function appendToTranscriptDoc(auth: Auth.OAuth2Client, documentId: string, caption: SteganographerEvent) {
+export async function appendToTranscriptDoc(
+	auth: Auth.OAuth2Client,
+	documentId: string,
+	caption: SteganographerEvent,
+) {
 	const client = google.docs({ version: 'v1', auth });
 
 	return client.documents.batchUpdate({
 		documentId,
 		requestBody: {
-			requests: [...makeDocOps(caption)]
-		}
-	})
+			requests: [...makeDocOps(caption)],
+		},
+	});
 }
 
 ////////////////////////////////////////
 
-
 export const attach = async (bot: Bot) => {
 	// Load client secrets from a local file.
-	let content = ""
+	let content = '';
 	try {
-		content = (await fs.readFile('credentials.json')).toString()
+		content = (await fs.readFile('credentials.json')).toString();
 	} catch (err) {
 		console.warn(
 			'deactivating streaming integration because of missing credentials.json file',
 		);
-		return
+		return;
 	}
 
 	console.log('Running streaming feature..');
 
 	let documentId: string;
-	let auth: Auth.OAuth2Client
+	let auth: Auth.OAuth2Client;
+	let documentUrl: string;
 	bot.on('joined', async (joined) => {
 		const id = joined.meetURL.split('/').pop();
 
-		auth = await authorize(JSON.parse(content) as Credentials)
-		documentId = await createNewTranscriptDoc(auth, `Transcript ${id} (${moment().format('YYYY-MM-DD at HH:MM G[M]TZ')})`)
+		auth = await authorize(JSON.parse(content) as Credentials);
+		documentId = await createNewTranscriptDoc(
+			auth,
+			`Transcript ${id} (${moment().format('YYYY-MM-DD at HH:MM G[M]TZ')})`,
+		);
+		documentUrl = `https://docs.google.com/document/d/${documentId}/edit`;
 
 		bot.emit('transcript_doc_ready', {
-			transcriptUrl: `https://docs.google.com/document/d/${documentId}/edit`,
-			meetURL: joined.meetURL
-		})
-	})
+			transcriptUrl: documentUrl,
+			meetURL: joined.meetURL,
+		});
+		bot.addJob(
+			postToChatJob(
+				`Hey team, you can find the transcript for this call here: ${documentUrl}`,
+			),
+		);
+	});
 
 	bot.on('caption', async (data: CaptionEvent) => {
 		if (!documentId || !auth) {
-			console.error(`Either Document ID \`${documentId}\` or OAuth2 Client \`${auth}\` not provided`)
-			return
+			console.error(
+				`Either Document ID \`${documentId}\` or OAuth2 Client \`${auth}\` not provided`,
+			);
+			return;
 		}
 
 		if (
-			!data.caption
-			|| !data.caption.text.trim()
-			|| !data.caption.startedAt
-			|| !data.caption.person
-			|| (data.caption.person.trim().toLowerCase() === "Meeting host".toLowerCase())
-		) return
+			!data.caption ||
+			!data.caption.text.trim() ||
+			!data.caption.startedAt ||
+			!data.caption.person ||
+			data.caption.person.trim().toLowerCase() === 'Meeting host'.toLowerCase()
+		) {
+			return;
+		}
 
 		bot.addJob(async () => {
-			await appendToTranscriptDoc(auth, documentId, data.caption)
-		})
-	})
-}
+			await appendToTranscriptDoc(auth, documentId, data.caption);
+		});
+	});
+};

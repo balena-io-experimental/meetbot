@@ -1,6 +1,5 @@
-import { Page } from 'puppeteer';
 import { Bot } from '..';
-import { clickText } from '../pptr-helpers';
+import { postToChatJob } from '../pptr-helpers';
 
 export const attach = (bot: Bot) => {
 	console.log('Running eventdemo feature...');
@@ -9,24 +8,6 @@ export const attach = (bot: Bot) => {
 		console.log('i joined a meeting!', meetURL);
 		bot.addJob(postToChatJob('Hello Team-Balena!'));
 	});
-
-	const postToChatJob = (text: string) => {
-		return async (page: Page) => {
-			console.log('open chat section and send a message to all');
-			await clickText(page, 'chat');
-			await page.waitForTimeout(1500);
-			// await page.screenshot({ path: 'after-chat-open.png' });
-
-			await page.keyboard.type(text, { delay: 10 });
-			await page.keyboard.press('Enter');
-			// await page.screenshot({ path: 'after-chat.png' });
-
-			console.log('close chat section again');
-			await clickText(page, 'chat');
-			await page.waitForTimeout(1500);
-			// await page.screenshot({ path: 'after-chat-open.png' });
-		};
-	};
 
 	let sayHelloInProgress = 0;
 	bot.on('raw_caption', ({ caption }) => {
