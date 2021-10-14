@@ -12,7 +12,7 @@ By default since the bot isn't authenticated it will prompt people in the meet t
  - [x] Capture transcribed voice (Only capture the <span> tags, no processing)
    - [ ] figure out how to properly merge updated CCs
  - [ ] Figure out sane authentication flow
- - [ ] Send transcribed voice to storage location (Google docs)
+ - [x] Send transcribed voice to storage location (Google docs)
  - [x] Perform a voice command
 
 ## Development
