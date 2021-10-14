@@ -6,7 +6,9 @@ export const attach = (bot: Bot) => {
 
 	bot.on('joined', ({ meetURL }) => {
 		console.log('i joined a meeting!', meetURL);
-		bot.addJob(postToChatJob('Hello Team-Balena!'));
+		bot.addJob(
+			postToChatJob('Hello balenistas, its your favorite bot, hubot!!'),
+		);
 	});
 
 	let sayHelloInProgress = 0;
@@ -17,11 +19,11 @@ export const attach = (bot: Bot) => {
 		const helloCmd = /can[^a-z]*you[^a-z]*hear[^a-z]*me/i;
 		if (
 			helloCmd.test(caption.text) &&
-			new Date().getTime() - sayHelloInProgress > 10_000
+			new Date().getTime() - sayHelloInProgress > 30_000
 		) {
 			console.log('Dropping some shade to my masters');
 			sayHelloInProgress = new Date().getTime();
-			bot.addJob(postToChatJob('Can you hear me? \n Linux User Detected'));
+			bot.addJob(postToChatJob('"Can you hear me??"\nLinux User Detected 🤣'));
 		}
 	});
 
