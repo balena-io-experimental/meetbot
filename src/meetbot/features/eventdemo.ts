@@ -40,7 +40,7 @@ export const attach = (bot: Bot) => {
 		) {
 			console.log('Dropping some shade to my masters');
 			sayHelloInProgress = new Date().getTime();
-			bot.addJob(postToChatJob('Linux User Detected.'));
+			bot.addJob(postToChatJob('Can you hear me? \n Linux User Detected'));
 		}
 	});
 
