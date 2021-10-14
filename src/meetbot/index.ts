@@ -249,7 +249,11 @@ class MeetBot implements Bot {
 				// TBD how to resolve this.
 				const curPendingJobs = [...this.pendingJobs];
 				this.pendingJobs = [];
-				for (let job = curPendingJobs.pop(); job; job = curPendingJobs.pop()) {
+				for (
+					let job = curPendingJobs.shift();
+					job;
+					job = curPendingJobs.shift()
+				) {
 					try {
 						await job(this.page);
 					} catch (err: any) {
