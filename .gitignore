@@ -116,3 +116,6 @@ dist
 
 token.json
 credentials.json
+
+# Decrypted secret files
+.balena/secrets/npmrc.txt

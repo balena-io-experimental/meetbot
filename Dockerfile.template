@@ -7,7 +7,10 @@ RUN install_packages chromium
 COPY token.json .
 COPY credentials.json .
 COPY package*.json ./
-RUN npm install
+
+RUN --mount=type=secret,id=npmrc set -eux \
+	&& ln -s /run/secrets/npmrc ~/.npmrc \
+	&& npm install && rm ~/.npmrc
 
 #dev-cmd-live=npm run watch
 
@@ -27,6 +30,9 @@ COPY token.json .
 COPY credentials.json .
 COPY package*.json ./
 COPY --from=builder /usr/src/build /usr/src/build
-RUN npm install --production
+
+RUN --mount=type=secret,id=npmrc set -eux \
+	&& ln -s /run/secrets/npmrc ~/.npmrc \
+	&& npm install --production && rm ~/.npmrc
 
 CMD [ "npm", "run", "start:prod" ]
