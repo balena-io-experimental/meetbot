@@ -65,12 +65,10 @@ export async function spawnBot(url: string) {
 }
 
 export async function killBot(url: string) {
-	if (ACTIVE_BOTS.has(url)) {
+	const bot = ACTIVE_BOTS.get(url);
+	if (bot) {
 		console.log(`Killing bot for ${url}`);
-		const bot = ACTIVE_BOTS.get(url);
-		if (bot){
-			bot.leaveMeet();
-		}
+		bot.leaveMeet();
 	} else {
 		throw new Error(`Could not find bot at specified location!`);
 	}
