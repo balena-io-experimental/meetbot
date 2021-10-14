@@ -4,6 +4,8 @@ WORKDIR /usr/src
 
 RUN install_packages chromium
 
+COPY token.json .
+COPY credentials.json .
 COPY package*.json ./
 RUN npm install
 
@@ -21,6 +23,8 @@ WORKDIR /usr/src
 
 RUN install_packages chromium
 
+COPY token.json .
+COPY credentials.json .
 COPY package*.json ./
 COPY --from=builder /usr/src/build /usr/src/build
 RUN npm install --production

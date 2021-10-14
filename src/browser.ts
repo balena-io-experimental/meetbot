@@ -1,9 +1,10 @@
 import { Browser, Page } from 'puppeteer';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin = require('puppeteer-extra-plugin-stealth');
-import * as os from 'os';
 
 puppeteer.use(StealthPlugin());
+
+const RUNNING_ALPINE = !!process.env.RUNNING_ALPINE;
 
 export async function newBrowser(): Promise<Browser> {
 	const puppeteerOptions = {
@@ -24,7 +25,8 @@ export async function newBrowser(): Promise<Browser> {
 		defaultViewport: { height: 912, width: 1480 },
 	};
 
-	if (os.platform() === 'linux') {
+	if (RUNNING_ALPINE) {
+		console.log('Running on Alpine, altering puppeteer chromium path...');
 		/* @ts-ignore */
 		puppeteerOptions.executablePath = '/usr/bin/chromium-browser';
 	}
