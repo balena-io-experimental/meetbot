@@ -7,6 +7,7 @@ import { clickText } from './pptr-helpers';
 import totp = require('totp-generator');
 
 import { promises as fs } from 'fs';
+import * as path from 'path';
 
 export type JobHandler = (page: Page) => Promise<void>;
 export type JobQueueFunc = (h: JobHandler) => void;
@@ -211,8 +212,8 @@ class MeetBot implements Bot {
 
 			await this.page.exposeFunction('handleCaption', handleCaption);
 
-			const script = await (
-				await fs.readFile('src/stenographer/index.js')
+			const script = (
+				await fs.readFile(path.join(__dirname, '../stenographer/index.js'))
 			).toString();
 
 			await this.page.evaluate(script);
