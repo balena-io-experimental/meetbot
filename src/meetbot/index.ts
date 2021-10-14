@@ -16,6 +16,9 @@ export interface Bot {
 		eventName: K,
 		listener: (arg: T) => void,
 	): this;
+	getContext(): {
+		calendarText: string;
+	};
 }
 
 const login = process.env.GOOGLE_LOGIN;
@@ -67,6 +70,16 @@ class MeetBot implements Bot {
 			settledCaptions.forEach((c) => this.emit('caption', c));
 			this.captions = this.captions.filter((c) => !settledCaptions.includes(c));
 		}, 1000);
+	}
+
+	// TODO this is currently dummy data
+	getContext(): { calendarText: string } {
+		return {
+			calendarText: `A fantastic calendar entry
+			https://jel.ly.fish/improvement-meetbot-511eb36
+
+			hubot-data: {"data":"will be parsed and available somewhere in context, too"}`,
+		};
 	}
 
 	async init() {
