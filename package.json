@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "clean": "rimraf build",
-    "build": "npm run clean && tsc && cp -r src/stenographer build/stenographer",
+    "build": "npm run clean && tsc && cp -r src/stenographer build/stenographer && cp -r public/ build/public",
     "lint": "balena-lint --typescript src tests",
     "lint-fix": "balena-lint --typescript --fix src tests",
     "test:node": "mocha -r ts-node/register --reporter spec tests/**/*.spec.ts",

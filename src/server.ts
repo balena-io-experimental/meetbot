@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { URL } from 'url';
+import * as path from 'path'
 
 import * as meetbotManager from './meetbot-manager';
 
@@ -7,6 +8,7 @@ const HTTP_PORT = process.env.HTTP_PORT || 8080;
 const server = express();
 
 server.use(express.json());
+server.use('/ui', express.static(path.join(__dirname, './public')))
 
 server.post('/join', async (req, res) => {
 	let meetMetadata;
