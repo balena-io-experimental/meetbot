@@ -50,7 +50,7 @@ class MeetBot implements Bot {
 
 	private pendingJobs: JobHandler[] = [];
 	private leaveRequested: boolean = false;
-	private captions: RawCaptionEvent[] = [];
+	private captions: CaptionEvent[] = [];
 	private captionTimer: NodeJS.Timer;
 	private events = new EventEmitter();
 
