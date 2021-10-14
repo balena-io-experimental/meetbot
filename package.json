@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "clean": "rimraf build",
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && tsc && cp -r src/stenographer build/stenographer",
     "lint": "balena-lint --typescript src tests",
     "lint-fix": "balena-lint --typescript --fix src tests",
     "test:node": "mocha -r ts-node/register --reporter spec tests/**/*.spec.ts",
@@ -31,7 +31,9 @@
     "test": "npm run build && npm run lint && npm run test:node && npm run test:browser",
     "test:fast": "npm run build && npm run test:node",
     "prepack": "npm run build",
-    "start": "npm run build && node build/index.js"
+    "start": "npm run build && node build/index.js",
+    "start:prod": "node build/index.js",
+    "watch": "nodemon --watch src --ext js,ts,json --exec node -r ts-node/register/transpile-only src/index.ts"
   },
   "devDependencies": {
     "@balena/lint": "^5.4.2",
@@ -40,6 +42,7 @@
     "@types/express": "^4.17.13",
     "@types/mocha": "^8.2.2",
     "@types/moment": "^2.13.0",
+    "@types/node": "^16.10.3",
     "@types/totp-generator": "0.0.2",
     "balena-config-karma": "^3.0.0",
     "chai": "^4.3.4",
@@ -48,13 +51,12 @@
     "karma": "^6.3.2",
     "lint-staged": "^11.0.0",
     "mocha": "^8.4.0",
+    "nodemon": "^2.0.13",
     "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4"
   },
   "dependencies": {
-    "@balena/jellyfish-client-sdk": "^6.0.1",
-    "@types/node": "^16.10.3",
     "express": "^4.17.1",
     "googleapis": "^88.2.0",
     "moment": "^2.29.1",

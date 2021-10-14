@@ -1,11 +1,12 @@
 import { Browser, Page } from 'puppeteer';
 import puppeteer from 'puppeteer-extra';
 import StealthPlugin = require('puppeteer-extra-plugin-stealth');
+import * as os from 'os';
 
 puppeteer.use(StealthPlugin());
 
 export async function newBrowser(): Promise<Browser> {
-	const browser = await puppeteer.launch({
+	const puppeteerOptions = {
 		headless: true,
 		args: [
 			// https://stackoverflow.com/questions/52464583/possible-to-get-puppeteer-audio-feed-and-or-input-audio-directly-to-puppeteer
@@ -15,12 +16,19 @@ export async function newBrowser(): Promise<Browser> {
 			'--use-file-for-fake-audio-capture=/home/mj/experiment/meet-the-bots/example.wav',
 			'--allow-file-access',
 			'--lang=en',
+			'--no-sandbox',
 		],
 		env: {
 			LANG: 'en',
 		},
 		defaultViewport: { height: 912, width: 1480 },
-	});
+	};
+
+	if (os.platform() === 'linux') {
+		/* @ts-ignore */
+		puppeteerOptions.executablePath = '/usr/bin/chromium-browser';
+	}
+	const browser = await puppeteer.launch(puppeteerOptions);
 
 	browser
 		.defaultBrowserContext()

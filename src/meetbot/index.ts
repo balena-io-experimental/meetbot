@@ -7,6 +7,7 @@ import { clickText } from './pptr-helpers';
 import totp = require('totp-generator');
 
 import { promises as fs } from 'fs';
+import * as path from 'path';
 
 export type JobHandler = (page: Page) => Promise<void>;
 export type JobQueueFunc = (h: JobHandler) => void;
@@ -32,6 +33,7 @@ const totpSecret = process.env.GOOGLE_TOTP_SECRET;
 class MeetBot implements Bot {
 	public page: Page | null = null;
 	public url: string | null = null;
+	public joinedAt: string | null = null;
 
 	private pendingJobs: JobHandler[] = [];
 	private leaveRequested: boolean = false;
@@ -167,6 +169,8 @@ class MeetBot implements Bot {
 			await this.page.waitForTimeout(1500);
 			// await page.screenshot({ path: 'after-join.png' });
 
+			this.joinedAt = new Date().toUTCString();
+
 			console.log('turn on captions');
 			this.emit('joined', { meetURL });
 			await clickText(this.page, 'more_vert');
@@ -208,8 +212,8 @@ class MeetBot implements Bot {
 
 			await this.page.exposeFunction('handleCaption', handleCaption);
 
-			const script = await (
-				await fs.readFile('src/stenographer/index.js')
+			const script = (
+				await fs.readFile(path.join(__dirname, '../stenographer/index.js'))
 			).toString();
 
 			await this.page.evaluate(script);
