@@ -33,14 +33,14 @@ export const attach = (bot: Bot) => {
 		if (!caption) {
 			return;
 		}
-		const helloCmd = /say[^a-z]*hello[^a-z]*jarvis|robot[^a-z]*help[^a-z]*me/i;
+		const helloCmd = /can[^a-z]*you[^a-z]*hear[^a-z]*me/i;
 		if (
 			helloCmd.test(caption.text) &&
 			new Date().getTime() - sayHelloInProgress > 10_000
 		) {
-			console.log('saying hello to my masters');
+			console.log('Dropping some shade to my masters');
 			sayHelloInProgress = new Date().getTime();
-			bot.addJob(postToChatJob('What can I do for you, Sir?'));
+			bot.addJob(postToChatJob('Linux User Detected.'));
 		}
 	});
 
