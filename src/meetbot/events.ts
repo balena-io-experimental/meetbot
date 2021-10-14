@@ -9,7 +9,7 @@ interface ChatEvent extends BotEvent {
 interface ParticipantsEvent extends BotEvent {
 	participants: number;
 }
-interface RawCaptionEvent extends BotEvent {
+interface CaptionEvent extends BotEvent {
 	caption: SteganographerEvent;
 }
 interface SteganographerEvent {
@@ -19,13 +19,6 @@ interface SteganographerEvent {
 	startedAt: string;
 	endedAt: string;
 	id: string;
-}
-interface CaptionEvent extends BotEvent {
-	caption: {
-		id: string;
-		text: string;
-		endedAt: string;
-	};
 }
 type LeaveEvent = BotEvent;
 type JoinEvent = BotEvent;
@@ -39,6 +32,6 @@ interface BotEvents {
 	active: ActiveEvent;
 	end: EndEvent;
 	participants: ParticipantsEvent;
-	raw_caption: RawCaptionEvent;
+	raw_caption: CaptionEvent;
 	caption: CaptionEvent;
 }
