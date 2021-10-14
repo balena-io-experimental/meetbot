@@ -58,19 +58,14 @@ class MeetBot implements Bot {
 		for (const feature of features) {
 			feature.attach(this);
 		}
-
-		// TODO please comment this. Why?
 		this.captionTimer = setInterval(() => {
-			for (let index = 0; index < this.captions.length; index++) {
-				if (
-					new Date().getTime() -
-						new Date(this.captions[index].caption.endedAt).getTime() >
-					5 * 1000
-				) {
-					this.emit('caption', this.captions[index]);
-					this.captions.splice(index, 1);
-				}
-			}
+			const settledCaptions = this.captions.filter((c) => {
+				const captionAgeMs =
+					new Date().getTime() - new Date(c.caption.endedAt).getTime();
+				return captionAgeMs > 5000;
+			});
+			settledCaptions.forEach((c) => this.emit('caption', c));
+			this.captions = this.captions.filter((c) => !settledCaptions.includes(c));
 		}, 1000);
 	}
 
