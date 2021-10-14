@@ -385,7 +385,7 @@ const upsertRecord = (cache) => {
 		id: cache.id
   }
 
-  if (handleCaption !== undefined) {
+  if (handleCaption !== undefined && entry.text.length > 0) {
     handleCaption(entry)
   } else {
 		console.log('handleCaption is undefined')
