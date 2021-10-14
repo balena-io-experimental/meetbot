@@ -12,6 +12,10 @@ export type JobHandler = (page: Page) => Promise<void>;
 export type JobQueueFunc = (h: JobHandler) => void;
 export interface Bot {
 	addJob(handler: JobHandler): void;
+	emit<K extends keyof BotEvents, T extends BotEvents[K]>(
+		eventName: K,
+		event: T,
+	): boolean;
 	on<K extends keyof BotEvents, T extends BotEvents[K]>(
 		eventName: K,
 		listener: (arg: T) => void,
@@ -24,28 +28,6 @@ export interface Bot {
 const login = process.env.GOOGLE_LOGIN;
 const password = process.env.GOOGLE_PASSWORD;
 const totpSecret = process.env.GOOGLE_TOTP_SECRET;
-
-interface MessageGroup {
-	timestamp: string;
-	sender: string;
-	messages: string[];
-}
-
-class Messenger {
-	private messages: any = new Map();
-
-	public updateGroup(newGroup: MessageGroup): string[] {
-		const groupId = newGroup.timestamp + newGroup.sender;
-		const existingGroup = this.messages.get(groupId);
-		this.messages.set(groupId, newGroup);
-		if (existingGroup) {
-			return newGroup.messages.slice(existingGroup.messages.length);
-		}
-		return newGroup.messages;
-	}
-}
-
-const msgs = new Messenger();
 
 class MeetBot implements Bot {
 	public page: Page | null = null;
@@ -243,31 +225,6 @@ class MeetBot implements Bot {
 			while (!this.leaveRequested) {
 				await this.page.waitForTimeout(500);
 
-				const chatMessages = await this.page.$$('div.GDhqjd');
-				await Promise.all(
-					chatMessages.map(async (el) => {
-						const textElements = await el.$$('.oIy2qc');
-						const texts = await Promise.all(
-							textElements.map((te) => te.evaluate((node) => node.textContent)),
-						);
-						const timestamp = await el.evaluate((node) =>
-							node.getAttribute('data-timestamp'),
-						);
-						const sender = await el.evaluate((node) =>
-							node.getAttribute('data-sender-name'),
-						);
-						const messageGroup = {
-							timestamp: timestamp as string,
-							sender: sender === 'You' ? 'Hubot' : (sender as string),
-							messages: texts as string[],
-						};
-						const newMessages = msgs.updateGroup(messageGroup);
-						for (const text of newMessages) {
-							this.emit('chat', { meetURL, timestamp, sender, text });
-						}
-					}),
-				);
-
 				// names of participants in list
 				const participants = await this.page.$$('span.ZjFb7c');
 				this.emit('participants', {
@@ -317,7 +274,7 @@ class MeetBot implements Bot {
 		return this;
 	}
 
-	private emit<K extends keyof BotEvents, T extends BotEvents[K]>(
+	emit<K extends keyof BotEvents, T extends BotEvents[K]>(
 		eventName: K,
 		event: T,
 	): boolean {
