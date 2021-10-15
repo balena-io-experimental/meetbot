@@ -86,52 +86,8 @@ class MeetBot implements Bot {
 		try {
 			this.emit('active', { meetURL });
 
-			if (login && password && totpSecret) {
-				await this.page.goto('https://accounts.google.com/?hl=en');
-				await this.page.evaluate(() => {
-					// prevent chromium from using smartcards (aka YubiKeys) as that blocks the process
-					window.navigator.credentials.get = () =>
-						Promise.reject('no yubi-key for you');
-				});
+			await this.login();
 
-				console.log('typing out email');
-				await this.page.waitForSelector('input[type="email"]');
-				await this.page.waitForSelector('#identifierNext');
-				await this.page.click('input[type="email"]');
-				await this.page.keyboard.type(login, { delay: 10 });
-				let navigationPromise = this.page.waitForNavigation();
-				await this.page.click('#identifierNext');
-				await navigationPromise;
-				await this.page.waitForTimeout(600); // animations...
-
-				console.log('typing out password');
-				await this.page.waitForSelector('input[type="password"]');
-				await this.page.waitForSelector('#passwordNext');
-				await this.page.click('input[type="password"]');
-				await this.page.keyboard.type(password, { delay: 10 });
-				navigationPromise = this.page.waitForNavigation();
-				await this.page.click('#passwordNext');
-				await navigationPromise;
-
-				console.log('doing 2FA login');
-				// HACK this is soooo dirty...
-				await this.page.waitForTimeout(2_000);
-				navigationPromise = this.page.waitForNavigation();
-				await clickText(this.page, 'Try another way');
-				await navigationPromise;
-				await this.page.waitForTimeout(2_000);
-				navigationPromise = this.page.waitForNavigation();
-				await clickText(this.page, 'Google Authenticator');
-				await navigationPromise;
-				await this.page.waitForTimeout(2_000);
-				await this.page.keyboard.type(totp(totpSecret).toString(), {
-					delay: 100,
-				});
-				await this.page.keyboard.press('Enter');
-				await this.page.waitForTimeout(3_000);
-
-				await this.page.screenshot({ path: 'after-login.png' });
-			}
 			console.log('going to Meet after signing in');
 			await this.page.goto(meetURL + '?hl=en');
 			// await page.screenshot({ path: 'meet-loaded.png' });
@@ -271,6 +227,66 @@ class MeetBot implements Bot {
 			this.emit('end', { meetURL });
 			// TODO detach features?
 		}
+	}
+
+	private async login() {
+		if (this.page === null) {
+			throw new Error('Meetbot cannot join a meet without an initialized page');
+		}
+		if (!login || !password || !totpSecret) {
+			console.log('running unauthenticated');
+			return false;
+		}
+
+		const resp = await this.page.goto('https://accounts.google.com/?hl=en');
+		if (resp.url().includes('myaccount.google.com')) {
+			console.log("we're already logged in");
+			return true;
+		}
+		await this.page.evaluate(() => {
+			// prevent chromium from using smartcards (aka YubiKeys) as that blocks the process
+			window.navigator.credentials.get = () =>
+				Promise.reject('no yubi-key for you');
+		});
+
+		console.log('typing out email');
+		await this.page.waitForSelector('input[type="email"]');
+		await this.page.waitForSelector('#identifierNext');
+		await this.page.click('input[type="email"]');
+		await this.page.keyboard.type(login, { delay: 10 });
+		let navigationPromise = this.page.waitForNavigation();
+		await this.page.click('#identifierNext');
+		await navigationPromise;
+		await this.page.waitForTimeout(600); // animations...
+
+		console.log('typing out password');
+		await this.page.waitForSelector('input[type="password"]');
+		await this.page.waitForSelector('#passwordNext');
+		await this.page.click('input[type="password"]');
+		await this.page.keyboard.type(password, { delay: 10 });
+		navigationPromise = this.page.waitForNavigation();
+		await this.page.click('#passwordNext');
+		await navigationPromise;
+
+		console.log('doing 2FA login');
+		// HACK this is soooo dirty...
+		await this.page.waitForTimeout(2000);
+		navigationPromise = this.page.waitForNavigation();
+		await clickText(this.page, 'Try another way');
+		await navigationPromise;
+		await this.page.waitForTimeout(2000);
+		navigationPromise = this.page.waitForNavigation();
+		await clickText(this.page, 'Google Authenticator');
+		await navigationPromise;
+		await this.page.waitForTimeout(2000);
+		await this.page.keyboard.type(totp(totpSecret).toString(), {
+			delay: 100,
+		});
+		await this.page.keyboard.press('Enter');
+		await this.page.waitForTimeout(3000);
+
+		await this.page.screenshot({ path: 'after-login.png' });
+		return true;
 	}
 
 	on<K extends keyof BotEvents, T extends BotEvents[K]>(
