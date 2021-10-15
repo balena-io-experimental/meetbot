@@ -12,7 +12,8 @@ export const attach = (bot: Bot) => {
 
 const startRecording = async (page: Page) => {
 	if (
-		'Rec' === (await page.$eval('.F9AaL', (element) => element.textContent))
+		'Rec' ===
+		(await (await page.$('.F9AaL'))?.evaluate((element) => element.textContent))
 	) {
 		console.log('Recording is on, not trying to to record.');
 		return;
