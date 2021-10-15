@@ -10,11 +10,6 @@ const SCOPES = ['https://www.googleapis.com/auth/documents'];
 // time.
 const TOKEN_PATH = 'token.json';
 
-interface DocEntry {
-	heading: string;
-	body: string;
-}
-
 export interface Credentials {
 	client_secret: string;
 	client_id: string;
@@ -82,22 +77,25 @@ export class GoogleDoc {
 		}
 
 		console.log(
-			`Document is available at \nhttps://docs.google.com/document/d/${this.documentId}`,
+			`${docName} is available at \nhttps://docs.google.com/document/d/${this.documentId}`,
 		);
-
-		const text = 'Chat Messages\n';
-		const emptyLine = '\n';
-		const textStartIndex = Math.max(1, this.cursor);
-
-		const textEndIndex = textStartIndex + text.length - 1;
-		this.cursor = textEndIndex + textStartIndex + 1;
-		this.messageQueue.push([
-			{
-				insertText: {
-					endOfSegmentLocation: {},
-					text,
-				},
+		this.runQueue();
+		return this.documentId;
+	}
+	private formatTextEntry(text: string) {
+		return {
+			insertText: {
+				endOfSegmentLocation: {},
+				text,
 			},
+		};
+	}
+	public addTitle(text: string) {
+		const startIndex = Math.max(1, this.cursor);
+		const endIndex = startIndex + text.length - 1;
+		this.cursor = endIndex + startIndex;
+		this.messageQueue.push([
+			this.formatTextEntry(text),
 			{
 				updateTextStyle: {
 					textStyle: {
@@ -106,58 +104,18 @@ export class GoogleDoc {
 						fontSize: { magnitude: 18, unit: 'PT' },
 					},
 					fields: 'bold,weightedFontFamily,fontSize',
-					range: {
-						startIndex: textStartIndex,
-						endIndex: textEndIndex,
-					},
-				},
-			},
-			{
-				insertText: {
-					endOfSegmentLocation: {},
-					text: emptyLine,
+					range: { startIndex, endIndex },
 				},
 			},
 		]);
-		this.runQueue();
-		return this.documentId;
 	}
 
-	public async addEntry({
-		timestamp,
-		author,
-		text,
-	}: {
-		timestamp: string;
-		author: string;
-		text: string;
-	}) {
-		const heading = `${new Date(+timestamp).toISOString()} - ${author}:\n`;
-		const body = `${text}\n\n`;
-		this.messageQueue.push(this.formatMessage({ heading, body }));
-	}
-
-	private formatMessage({ heading, body }: DocEntry): docs_v1.Schema$Request[] {
-		const headerStartIndex = Math.max(1, this.cursor);
-		const headerEndIndex = headerStartIndex + heading.length - 1;
-		this.cursor = headerEndIndex + 1;
-
-		const messageStartIndex = Math.max(1, this.cursor);
-		const messageEndIndex = messageStartIndex + body.length;
-		this.cursor = messageEndIndex;
-		return [
-			{
-				insertText: {
-					endOfSegmentLocation: {},
-					text: heading,
-				},
-			},
-			{
-				insertText: {
-					endOfSegmentLocation: {},
-					text: body,
-				},
-			},
+	public addHeading(text: string) {
+		const startIndex = Math.max(1, this.cursor);
+		const endIndex = startIndex + text.length - 1;
+		this.cursor = endIndex + 1;
+		this.messageQueue.push([
+			this.formatTextEntry(text),
 			{
 				updateTextStyle: {
 					textStyle: {
@@ -174,25 +132,42 @@ export class GoogleDoc {
 						},
 					},
 					fields: 'bold,weightedFontFamily,foregroundColor',
-					range: {
-						startIndex: headerStartIndex,
-						endIndex: headerEndIndex,
-					},
+					range: { startIndex, endIndex },
 				},
 			},
+		]);
+	}
+	public addText(text: string) {
+		const startIndex = Math.max(1, this.cursor);
+		const endIndex = startIndex + text.length - 1;
+		this.cursor = endIndex + 1;
+		this.messageQueue.push([
+			this.formatTextEntry(text),
 			{
 				updateTextStyle: {
 					textStyle: {
 						weightedFontFamily: { fontFamily: 'Cambria' },
 					},
 					fields: '*',
-					range: {
-						startIndex: messageStartIndex,
-						endIndex: messageEndIndex,
+					range: { startIndex, endIndex },
+				},
+			},
+		]);
+	}
+	public addImage(uri: string) {
+		this.cursor += 1;
+		this.messageQueue.push([
+			{
+				insertInlineImage: {
+					endOfSegmentLocation: {},
+					uri,
+					objectSize: {
+						height: { magnitude: 11, unit: 'PT' },
+						width: { magnitude: 11, unit: 'PT' },
 					},
 				},
 			},
-		];
+		]);
 	}
 
 	private runQueue() {

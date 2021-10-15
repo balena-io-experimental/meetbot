@@ -26,17 +26,17 @@ export const attach = (bot: Bot): void => {
 		const meetId = meetURL.split('/').pop();
 		const docName = `Meeting ${meetId} (${new Date().toISOString()}) Chat`;
 		docId = await doc.create(docName);
+		doc.addTitle('Chat Transcript\n\n');
 		bot.addJob(
 			postToChatJob(
-				`Chat history is is available at: https://docs.google.com/document/d/${docId}`,
+				`Chat history is available at: https://docs.google.com/document/d/${docId}`,
 			),
 		);
 	});
-	bot.on('chat', async ({ timestamp, sender, text }) => {
-		await doc.addEntry({
-			timestamp: timestamp as string,
-			author: sender as string,
-			text,
-		});
+	bot.on('chat', ({ timestamp, sender, text }) => {
+		doc.addHeading(
+			`${new Date(+String(timestamp)).toISOString()} - ${sender}:\n`,
+		);
+		doc.addText(`${text}\n\n`);
 	});
 };
