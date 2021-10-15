@@ -46,11 +46,13 @@ export const attach = (bot: Bot) => {
 					node.getAttribute('data-timestamp'),
 				);
 				const sender = await chatDiv.evaluate((node) =>
-					node.getAttribute('data-sender-name'),
+					node.getAttribute('data-sender-name') === 'You'
+						? 'Hubot'
+						: node.getAttribute('data-sender-name'),
 				);
 				const messageGroup = {
 					timestamp: timestamp as string,
-					sender: sender === 'You' ? 'Hubot' : (sender as string),
+					sender: sender as string,
 					messages: texts as string[],
 				};
 				const newMessages = chatHandler.updateGroup(messageGroup);

@@ -11,9 +11,8 @@ const SCOPES = ['https://www.googleapis.com/auth/documents'];
 const TOKEN_PATH = 'token.json';
 
 interface DocEntry {
-	timestamp: string;
-	author: string;
-	text: string;
+	heading: string;
+	body: string;
 }
 
 export interface Credentials {
@@ -126,41 +125,37 @@ export class GoogleDoc {
 
 	public async addEntry(
 		documentId: string,
-		{ timestamp, author, text }: DocEntry,
+		{
+			timestamp,
+			author,
+			text,
+		}: { timestamp: string; author: string; text: string },
 	) {
 		const client = google.docs({ version: 'v1', auth: this.auth });
-
-		return client.documents.batchUpdate({
+		const heading = `${new Date(+timestamp).toISOString()} - ${author}:\n`;
+		const body = `${text}\n\n`;
+		await client.documents.batchUpdate({
 			documentId,
 			requestBody: {
-				requests: [...this.formatEntry({ timestamp, author, text })],
+				requests: this.formatEntry({ heading, body }),
+			},
+		});
+		await client.documents.batchUpdate({
+			documentId,
+			requestBody: {
+				requests: this.formatStyle({ heading, body }),
 			},
 		});
 	}
-
-	private formatEntry({
-		timestamp,
-		author,
-		text,
-	}: DocEntry): docs_v1.Schema$Request[] {
-		const heading = `${new Date(+timestamp).toISOString()} - ${author}:\n`;
-		const message = `${text}\n\n`;
-
+	private formatStyle({ heading, body }: DocEntry): docs_v1.Schema$Request[] {
 		const headerStartIndex = Math.max(1, this.cursor);
 		const headerEndIndex = headerStartIndex + heading.length - 1;
 		this.cursor = headerEndIndex + 1;
 
 		const messageStartIndex = Math.max(1, this.cursor);
-		const messageEndIndex = messageStartIndex + message.length;
+		const messageEndIndex = messageStartIndex + body.length;
 		this.cursor = messageEndIndex;
-
 		return [
-			{
-				insertText: {
-					endOfSegmentLocation: {},
-					text: heading,
-				},
-			},
 			{
 				updateTextStyle: {
 					textStyle: {
@@ -184,12 +179,6 @@ export class GoogleDoc {
 				},
 			},
 			{
-				insertText: {
-					endOfSegmentLocation: {},
-					text: message,
-				},
-			},
-			{
 				updateTextStyle: {
 					textStyle: {
 						weightedFontFamily: { fontFamily: 'Cambria' },
@@ -199,6 +188,23 @@ export class GoogleDoc {
 						startIndex: messageStartIndex,
 						endIndex: messageEndIndex,
 					},
+				},
+			},
+		];
+	}
+
+	private formatEntry({ heading, body }: DocEntry): docs_v1.Schema$Request[] {
+		return [
+			{
+				insertText: {
+					endOfSegmentLocation: {},
+					text: heading,
+				},
+			},
+			{
+				insertText: {
+					endOfSegmentLocation: {},
+					text: body,
 				},
 			},
 		];
