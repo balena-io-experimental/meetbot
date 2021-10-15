@@ -34,6 +34,7 @@ export const attach = (bot: Bot) => {
 
 	const monitorChat = async (page: Page) => {
 		const chatItems = await page.$$('div.GDhqjd');
+		const events: ChatEvent[] = [];
 		await Promise.all(
 			chatItems.map(async (chatDiv) => {
 				const chatTextItems = await chatDiv.$$('.oIy2qc');
@@ -56,11 +57,14 @@ export const attach = (bot: Bot) => {
 					messages: texts as string[],
 				};
 				const newMessages = chatHandler.updateGroup(messageGroup);
-				for (const text of newMessages) {
-					bot.emit('chat', { meetURL: url, timestamp, sender, text });
-				}
+				newMessages.forEach((m) =>
+					events.push({ meetURL: url, timestamp, sender, text: m }),
+				);
 			}),
 		);
+		for (const event of events) {
+			bot.emit('chat', event);
+		}
 		bot.addJob(monitorChat); // bot removes the job after running it, so re-add it
 	};
 };
