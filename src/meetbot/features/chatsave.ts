@@ -33,7 +33,7 @@ export const attach = (bot: Bot): void => {
 		);
 	});
 	bot.on('chat', async ({ timestamp, sender, text }) => {
-		await doc.addEntry(docId, {
+		await doc.addEntry({
 			timestamp: timestamp as string,
 			author: sender as string,
 			text,
