@@ -172,9 +172,9 @@ export class GoogleDoc {
 
 	private runQueue() {
 		if (this.timer) {
-			clearInterval(this.timer);
+			clearTimeout(this.timer);
 		}
-		this.timer = setInterval(async () => {
+		this.timer = setTimeout(async () => {
 			if (this.messageQueue.length) {
 				const message = this.messageQueue.shift();
 				await this.client.documents.batchUpdate({
