@@ -293,7 +293,13 @@ class MeetBot implements Bot {
 		eventName: K,
 		listener: (arg: T) => void,
 	): this {
-		this.events.on(eventName, listener);
+		this.events.on(eventName, (a: T) => {
+			try {
+				return listener(a);
+			} catch (err) {
+				console.log(`error in '${eventName}':`, err);
+			}
+		});
 		return this;
 	}
 
