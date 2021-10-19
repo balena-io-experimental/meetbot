@@ -2,12 +2,12 @@ import { Bot } from '..';
 import { postToChatJob } from '../pptr-helpers';
 
 export const attach = (bot: Bot) => {
-	console.log('Running eventdemo feature...');
+	console.log('Introducing hubot in the meet - feature');
 
 	bot.on('joined', ({ meetURL }) => {
-		console.log('i joined a meeting!', meetURL);
+		console.log('Joined the meeting: ', meetURL);
 		bot.addJob(
-			postToChatJob('Hello balenistas, its your favorite bot, hubot!!'),
+			postToChatJob("Hello balenistas, it's your favorite bot, hubot!!"),
 		);
 	});
 
@@ -27,14 +27,7 @@ export const attach = (bot: Bot) => {
 		}
 	});
 
-	bot.on('chat', (event) => {
-		console.log('CHAT', event);
-		if (/(do|say)[^a-z]*something[^a-z]*(jarvis|hubot)/i.test(event.text)) {
-			bot.addJob(postToChatJob("I'm ready for your text commands"));
-		}
-	});
-
 	bot.on('left', ({ meetURL }) => {
-		console.log('i left a meeting!', meetURL);
+		console.log('Leaving the meeting:', meetURL);
 	});
 };
