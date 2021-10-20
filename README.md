@@ -4,17 +4,6 @@ Meetbot will listen to google meet urls to join to and perform various tasks.
 
 By default since the bot isn't authenticated it will prompt people in the meet to allow the bot to join.
 
-## TO DO 
-
- - [x] Listen for meeting URLs
- - [ ] Parsing calendar events, find meet URL's and join at designated time. 
- - [x] Join the provided meeting URL's
- - [x] Capture transcribed voice (Only capture the <span> tags, no processing)
-   - [ ] figure out how to properly merge updated CCs
- - [ ] Figure out sane authentication flow
- - [x] Send transcribed voice to storage location (Google docs)
- - [x] Perform a voice command
-
 ## Development
 
 Just start the service (HTTP server) and post a meet url
