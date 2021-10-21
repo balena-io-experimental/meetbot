@@ -123,6 +123,16 @@ class MeetBot implements Bot {
 				await this.page.waitForXPath("//*[contains(text(),'call_end')]");
 			}
 
+			console.log('Changing layout to Spotlight mode');
+			await clickText(this.page, 'more_vert');
+			await this.page.waitForTimeout(1000);
+			await clickText(this.page, 'Change layout');
+			await this.page.waitForTimeout(1000);
+			await clickText(this.page, 'Spotlight');
+			await this.page.waitForTimeout(1000);
+			await clickText(this.page, 'Close');
+			await this.page.waitForTimeout(1000);
+
 			await this.page.waitForTimeout(1500);
 			// await page.screenshot({ path: 'after-join.png' });
 
