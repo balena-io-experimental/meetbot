@@ -123,25 +123,36 @@ class MeetBot implements Bot {
 				await this.page.waitForXPath("//*[contains(text(),'call_end')]");
 			}
 
-			await this.page.waitForTimeout(1500);
-			// await page.screenshot({ path: 'after-join.png' });
+			console.log('Changing layout to Spotlight mode');
+			await clickText(this.page, 'more_vert');
+			await this.page.waitForTimeout(500);
+			await clickText(this.page, 'Change layout');
+			await this.page.waitForTimeout(500);
+			await clickText(this.page, 'Spotlight');
+			await this.page.waitForTimeout(500);
+			await this.page.keyboard.press('Escape');
+			await this.page.waitForTimeout(500);
+			// await this.page.screenshot({ path: 'check-final-layout.png' });
+
+			await this.page.waitForTimeout(1000);
+			// await this.page.screenshot({ path: 'after-join.png' });
 
 			this.joinedAt = new Date().toUTCString();
 
 			console.log('turn on captions');
 			this.emit('joined', { meetURL });
 			await clickText(this.page, 'more_vert');
-			await this.page.waitForTimeout(1000);
+			await this.page.waitForTimeout(500);
 			await clickText(this.page, 'Captions');
-			await this.page.waitForTimeout(1000);
+			await this.page.waitForTimeout(500);
 			await clickText(this.page, 'English');
-			await this.page.waitForTimeout(1000);
+			await this.page.waitForTimeout(500);
 			await clickText(this.page, 'Apply');
-			await this.page.waitForTimeout(1000);
+			await this.page.waitForTimeout(500);
 
 			console.log('open people list to activate feature');
 			await clickText(this.page, 'people_outline');
-			await this.page.waitForTimeout(1000);
+			await this.page.waitForTimeout(500);
 
 			// ------------- Inject stenographer script into the page, and expose a function
 			// that can be executed as a callback whenever a caption is available.

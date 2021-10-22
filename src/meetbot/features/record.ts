@@ -15,7 +15,7 @@ const startRecording = async (page: Page) => {
 		'Rec' ===
 		(await (await page.$('.F9AaL'))?.evaluate((element) => element.textContent))
 	) {
-		console.log('Recording is on, not trying to to record.');
+		console.log('Recording is already turned on. Not trying to record.');
 		return;
 	}
 
