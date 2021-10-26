@@ -4,16 +4,25 @@ Meetbot will listen to google meet urls to join to and perform various tasks.
 
 By default since the bot isn't authenticated it will prompt people in the meet to allow the bot to join.
 
-## Development
+## Setup
 
-Just start the service (HTTP server) and post a meet url
+After cloning the repository install the dependencies:
 
-```bash
-export GOOGLE_LOGIN="hubot@balena.io"
-export GOOGLE_PASSWORD="THE PASSWORD from passpack"
-export GOOGLE_TOTP_SECRET="THE TOTP SECRET in a separate passpack entry"
+```
+npm ci
+```
+
+## Running the bot 
+
+```
 npm start
-# in another tab
+```
+
+The bot will now be running but functionality is limited until you add additional configurations for [authentication](#authentication).
+
+To get a bot to join a meet send a POST request to the join endpoint with the meet url like:
+
+```
 curl --header "Content-Type: application/json" \
   --request POST \
   --data '{"url":"https://meet.google.com/wtq-bhai-amg"}' \
@@ -22,8 +31,11 @@ curl --header "Content-Type: application/json" \
 
 ## Authentication
 
-Orgs require 2FA so automating that isn't easy...there's no API for this as we're leveraging Puppeteer to navigate google meets like a normal user. 
+Copy `.env.example` to `.env` and populate it with the correct information. This is used by the bot to login to accounts.google.com.
 
-One solution is that we configure the bot to login with email/password (no 2fa) but whatever triggers the POST to this service to get a bot to join can also send a meet invite via an API** which DOES give authorization just for that meet. 
+Finally, for integrations with Google docs and calendar you must create a credentials file called `token.json` containing data for oauth2 flow. See the following docs:
 
-**I don't think there's a public API to do this but from a meet you can invite people via email.
+ - https://developers.google.com/workspace/guides/create-project
+ - https://developers.google.com/workspace/guides/create-credentials#desktop
+ - https://stackoverflow.com/questions/58460476/where-to-find-credentials-json-for-google-api-client
+
