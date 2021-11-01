@@ -1,0 +1,25 @@
+{
+	"compilerOptions": {
+		"module": "ESNext",
+		"outDir": "build",
+		"noUnusedParameters": true,
+		"noUnusedLocals": true,
+		"removeComments": true,
+		"sourceMap": true,
+		"strict": true,
+		"target": "esnext",
+		"declaration": true,
+		"moduleResolution": "node",
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"forceConsistentCasingInFileNames": true,
+		"skipLibCheck": false,
+		"isolatedModules": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"jsx": "react"
+	},
+	"include": [
+		"src/**/*.ts",
+		"types/**/*.d.ts"
+	]
+}
