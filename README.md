@@ -4,7 +4,9 @@ Meetbot will listen to google meet urls to join to and perform various tasks.
 
 By default since the bot isn't authenticated it will prompt people in the meet to allow the bot to join.
 
-## Setup
+![](img/diagram.drawio.png)
+
+## Development
 
 After cloning the repository install the dependencies:
 
@@ -38,4 +40,3 @@ Finally, for integrations with Google docs and calendar you must create a creden
  - https://developers.google.com/workspace/guides/create-project
  - https://developers.google.com/workspace/guides/create-credentials#desktop
  - https://stackoverflow.com/questions/58460476/where-to-find-credentials-json-for-google-api-client
-
