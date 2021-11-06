@@ -2,18 +2,18 @@
 FROM balenalib/%%BALENA_MACHINE_NAME%%-alpine-node:14-build as builder
 WORKDIR /usr/src
 
-RUN install_packages chromium
+# RUN install_packages chromium
 
-COPY token.json .
-COPY credentials.json .
+# COPY token.json .
+# COPY credentials.json .
+COPY public public
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 #dev-cmd-live=npm run watch
 
 COPY src src
 COPY tsconfig.json .
-COPY public public
 
 # Build project for run stage
 RUN npm run build
@@ -24,10 +24,12 @@ WORKDIR /usr/src
 
 RUN install_packages chromium
 
-COPY token.json .
-COPY credentials.json .
-COPY package*.json ./
+# COPY credentials.json .
+# COPY package*.json ./
+COPY *.json ./
+COPY public public
+COPY .env .
 COPY --from=builder /usr/src/build /usr/src/build
-RUN npm install --production
+COPY --from=builder /usr/src/node_modules /usr/src/node_modules
 
 CMD [ "npm", "run", "start:prod" ]
