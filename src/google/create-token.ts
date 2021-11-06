@@ -1,6 +1,6 @@
 import fs = require('fs');
 import readline = require('readline');
-import { Auth, google } from 'googleapis';
+import { Auth } from 'googleapis';
 
 // If modifying these scopes, delete token.json. Create a fresh one. At the moment, we only use the Google Docs API, hence the scope is for documents only.
 const SCOPES = ['https://www.googleapis.com/auth/documents'];
@@ -15,16 +15,11 @@ const TOKEN_PATH = process.env.TOKEN_PATH || 'token.json';
  *
  * @remark The file token.json stores the user's access and refresh tokens, and is
  * created automatically when the authorization flow completes for the first time.
+ *
+ * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
  */
-export async function getNewToken() {
+export async function getNewToken(auth: Auth.OAuth2Client) {
 	try {
-		const credentialsFile = fs.readFileSync('credentials.json').toString();
-		const credentials = JSON.parse(credentialsFile).installed;
-		const auth: Auth.OAuth2Client = new google.auth.OAuth2(
-			credentials.client_id,
-			credentials.client_secret,
-			credentials.redirect_uris[0],
-		);
 		const authUrl = auth.generateAuthUrl({
 			access_type: 'offline',
 			scope: SCOPES,
@@ -48,11 +43,9 @@ export async function getNewToken() {
 			});
 		});
 	} catch (err) {
-		console.log(
-			'Cannot read credentials.json - required to authenticate Google API',
-			err,
-		);
+		console.log('Cannot create token.json file: ', err);
 	}
 }
 
+// If someone needs to just generate a token.json file, they can uncomment the next line and run this file as per the instruction in the README.md file to create token.json file.
 // getNewToken();
