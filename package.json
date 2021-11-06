@@ -32,7 +32,7 @@
     "test:fast": "npm run build && npm run test:node",
     "prepack": "npm run build",
     "start": "npm run build && node -r dotenv/config build/index.js",
-    "start:prod": "node build/index.js",
+    "start:prod": "node -r dotenv/config build/index.js",
     "watch": "nodemon --watch src --ext js,ts,json --exec node -r ts-node/register/transpile-only src/index.ts"
   },
   "devDependencies": {

@@ -35,8 +35,41 @@ curl --header "Content-Type: application/json" \
 
 Copy `.env.example` to `.env` and populate it with the correct information. This is used by the bot to login to accounts.google.com.
 
-Finally, for integrations with Google docs and calendar you must create a credentials file called `token.json` containing data for oauth2 flow. See the following docs:
+Finally, for integrations with Google docs and calendar you must download the credentials file containing data for oauth2 flow. This is used to authenticate requests to the Google API. See the following docs to create the credentials needed:
 
- - https://developers.google.com/workspace/guides/create-project
- - https://developers.google.com/workspace/guides/create-credentials#desktop
- - https://stackoverflow.com/questions/58460476/where-to-find-credentials-json-for-google-api-client
+- Step 1: https://developers.google.com/workspace/guides/create-project
+- Step 2: https://developers.google.com/workspace/guides/create-credentials#desktop
+- Step 3: At the end of the process, download the JSON file and place it at the root of the project directory with name as "credentials.json".
+
+Troubleshooting: https://stackoverflow.com/questions/58460476/where-to-find-credentials-json-for-google-api-client
+
+Run the command below and follow the instructions to generate a `token.json` file. This authentication process is one time only and after this the token.json file will be used for all authentication process. 
+
+```
+ts-node src/google/create-token.ts
+```
+
+## Deployment
+
+Before deployment, create an `.env` file using the available `.env.example` file in the repository with the descriptions as mentioned below:
+
+```
+GOOGLE_PASSWORD=              # Password for your bot/user that is used to join Google Meet. 
+GOOGLE_TOTP_SECRET=           # If the bot has 2FA, then the 2FA secret goes here.
+GOOGLE_LOGIN=                 # Email-ID/username of your bot/user
+TOKEN_PATH=token.json         # [Default] Path to token file 
+RUNNING_ALPINE=0              # [Default] If base image is alpine. If not, then set 1. 
+HTTP_PORT=80                  # Port to run express server on. For prod, use port 80.
+```
+
+Run the command below and follow the instructions to generate a `token.json` file. This authentication process is one time only and after this the token.json file will be used for all authentication process. 
+
+```
+ts-node src/google/create-token.ts
+```
+
+To deploy on balenaCloud, run the command:
+
+```
+balena push <Name of fleet>
+```
