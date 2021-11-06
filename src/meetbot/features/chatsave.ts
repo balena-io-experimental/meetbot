@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import { Bot } from '..';
-import { Credentials, GoogleDoc } from '../google-doc';
+import { Credentials, GoogleDoc } from '../../google/google-doc';
 import { postToChatJob } from '../pptr-helpers';
 
 export const attach = (bot: Bot): void => {

@@ -2,7 +2,7 @@ import { Bot } from '..';
 import * as fs from 'fs';
 import * as moment from 'moment';
 import { postToChatJob } from '../pptr-helpers';
-import { Credentials, GoogleDoc } from '../google-doc';
+import { Credentials, GoogleDoc } from '../../google/google-doc';
 
 export const attach = async (bot: Bot) => {
 	let credentials: Credentials | null = null;
