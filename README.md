@@ -55,11 +55,11 @@ Before deployment, create an `.env` file using the available `.env.example` file
 
 ```
 GOOGLE_PASSWORD=              # Password for your bot/user that is used to join Google Meet. 
-GOOGLE_TOTP_SECRET=           # If the bot has 2FA, then the 2FA secret goes here.
+GOOGLE_TOTP_SECRET=           # [Optional] If the bot account has 2FA auth, then add 2FA secret here.
 GOOGLE_LOGIN=                 # Email-ID/username of your bot/user
 TOKEN_PATH=token.json         # [Default] Path to token file 
-RUNNING_ALPINE=0              # [Default] If base image is alpine. If not, then set 1. 
 HTTP_PORT=80                  # Port to run express server on. For prod, use port 80.
+RUNNING_ALPINE=0              # [Default] If base image is alpine then set the env var, otherwise don't. 
 ```
 
 Run the command below and follow the instructions to generate a `token.json` file. This authentication process is one time only and after this the token.json file will be used for all authentication process. 
