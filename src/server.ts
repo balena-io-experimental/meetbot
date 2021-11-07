@@ -20,12 +20,19 @@ server.post('/join', async (req, res) => {
 	let meetMetadata;
 	// Validate body
 	if (!req.body.url) {
-		return res.status(400).send('Missing `url` value in payload body.');
+		return res
+			.status(400)
+			.send('Unable to join. Missing `url` value in payload body.');
 	}
 	try {
 		meetMetadata = new URL(req.body.url);
+		if (meetMetadata.hostname !== 'meet.google.com') {
+			return res
+				.status(400)
+				.send('Unable to join. Invalid Google Meet url value in payload body.');
+		}
 	} catch (e) {
-		return res.status(400).send('Invalid URL provided: ${url}');
+		return res.status(400).send('Unable to join. Invalid URL provided: ${url}');
 	}
 	// Try to spawn a meetbot for location
 	try {
@@ -42,7 +49,7 @@ server.post('/join', async (req, res) => {
 		}
 	}
 	// Meetbot is joining the meet soon
-	return res.status(202).send('A meetbot will be right there');
+	return res.status(202).send('A meetbot will be right there.\n');
 });
 
 server.get('/meets', async (_req, res) => {
