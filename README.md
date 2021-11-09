@@ -8,7 +8,7 @@ By default since the bot isn't authenticated it will prompt people in the meet t
 
 ## Development
 
-After cloning the repository install the dependencies:
+After cloning the repository, install the dependencies:
 
 ```
 npm ci
@@ -22,7 +22,7 @@ npm start
 
 The bot will now be running but functionality is limited until you add additional configurations for [authentication](#authentication).
 
-To get a bot to join a meet send a POST request to the join endpoint with the meet url like:
+To get a bot to join a Google Meet, send a POST request to the join endpoint with the meet url as mentioned below:
 
 ```
 curl --header "Content-Type: application/json" \
@@ -30,6 +30,8 @@ curl --header "Content-Type: application/json" \
   --data '{"url":"https://meet.google.com/wtq-bhai-amg"}' \
   http://localhost:8080/join
 ```
+
+A meetbot should request to join the Google Meet.
 
 ## Authentication
 
@@ -43,7 +45,7 @@ Finally, for integrations with Google docs and calendar you must download the cr
 
 Troubleshooting: https://stackoverflow.com/questions/58460476/where-to-find-credentials-json-for-google-api-client
 
-Run the command below and follow the instructions to generate a `token.json` file. This authentication process is one time only and after this the token.json file will be used for all authentication process. 
+After following the steps, run the command below and follow the instructions to generate a `token.json` file. This authentication process is one time only and after this the token.json file will be used for any further authentication process. 
 
 ```
 ts-node src/google/create-token.ts
@@ -51,7 +53,7 @@ ts-node src/google/create-token.ts
 
 ## Deployment
 
-Before deployment, create an `.env` file using the available `.env.example` file in the repository with the descriptions as mentioned below:
+Before deployment, create an `.env` file using the fields mentioned below:
 
 ```
 GOOGLE_PASSWORD=              # Password for your bot/user that is used to join Google Meet. 
@@ -62,13 +64,14 @@ HTTP_PORT=80                  # Port to run express server on. For prod, use por
 RUNNING_ALPINE=0              # [Default] If base image is alpine then set the env var, otherwise don't. 
 ```
 
-Run the command below and follow the instructions to generate a `token.json` file. This authentication process is one time only and after this the token.json file will be used for all authentication process. 
+Run the command below and follow the instructions to generate a `token.json` file. This authentication process is one time only.
 
 ```
 ts-node src/google/create-token.ts
 ```
 
-To deploy on balenaCloud, run the command:
+To deploy, use the dockerfiles present in the repository. Tweak the base image and other details as per your deployment platform (AWS, Heroku etc.) and deploy. 
+To deploy on balenaCloud, run the command below:
 
 ```
 balena push <Name of fleet>

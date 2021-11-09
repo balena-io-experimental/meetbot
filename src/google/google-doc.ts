@@ -1,14 +1,11 @@
 import * as fs from 'fs';
-import * as readline from 'readline';
 import { Auth, docs_v1, google } from 'googleapis';
-
-// If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/documents'];
+import { getNewToken } from './token-generator';
 
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = 'token.json';
+const TOKEN_PATH = process.env.TOKEN_PATH || 'token.json';
 
 export interface Credentials {
 	client_secret: string;
@@ -37,30 +34,8 @@ export class GoogleDoc {
 			});
 			this.auth.setCredentials(JSON.parse(token));
 		} catch (error) {
-			this.getNewToken();
+			getNewToken(this.auth);
 		}
-	}
-
-	private getNewToken() {
-		const authUrl = this.auth.generateAuthUrl({
-			access_type: 'offline',
-			scope: SCOPES,
-		});
-		console.log('Authorize this app by visiting this url:', authUrl);
-		const rl = readline.createInterface({
-			input: process.stdin,
-			output: process.stdout,
-		});
-		rl.question('Enter the code from that page here: ', (code) => {
-			rl.close();
-			this.auth.getToken(code, (err, token) => {
-				if (err || !token) {
-					return console.error('Error retrieving access token', err, token);
-				}
-				fs.writeFileSync(TOKEN_PATH, JSON.stringify(token));
-				this.auth.setCredentials(token);
-			});
-		});
 	}
 
 	async create(docName: string): Promise<string> {
