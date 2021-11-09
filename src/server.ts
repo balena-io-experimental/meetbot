@@ -20,12 +20,23 @@ server.post('/join', async (req, res) => {
 	let meetMetadata;
 	// Validate body
 	if (!req.body.url) {
-		return res.status(400).send('Missing `url` value in payload body.');
+		return res
+			.status(400)
+			.send('Unable to join. Missing `url` value in payload body.');
 	}
 	try {
 		meetMetadata = new URL(req.body.url);
+		if (meetMetadata.hostname !== 'meet.google.com') {
+			throw new Error(
+				'Unable to join. Invalid Google Meet URL in payload body.',
+			);
+		}
 	} catch (e) {
-		return res.status(400).send('Invalid URL provided: ${url}');
+		return res
+			.status(400)
+			.send(
+				`Unable to join. Invalid Google Meet URL provided: ${req.body.url}`,
+			);
 	}
 	// Try to spawn a meetbot for location
 	try {
@@ -42,7 +53,7 @@ server.post('/join', async (req, res) => {
 		}
 	}
 	// Meetbot is joining the meet soon
-	return res.status(202).send('A meetbot will be right there');
+	return res.status(202).send('A meetbot will be right there.');
 });
 
 server.get('/meets', async (_req, res) => {
@@ -59,7 +70,7 @@ server.post('/leave', async (req, res) => {
 	try {
 		meetMetadata = new URL(req.body.url);
 	} catch (e) {
-		return res.status(400).send('Invalid URL provided: ${url}');
+		return res.status(400).send(`Invalid URL provided: ${req.body.url}`);
 	}
 	// Try to kill meetbot for location
 	try {
@@ -67,14 +78,14 @@ server.post('/leave', async (req, res) => {
 	} catch (e: any) {
 		switch (e.message) {
 			case 'Could not find bot at specified location!':
-				return res.status(400).send('No meetbot found at that location');
+				return res.status(400).send('No meetbot found at that location.');
 			default:
 				console.error(e);
-				return res.status(500).send('Something unexpected happened');
+				return res.status(500).send('Something unexpected happened.');
 		}
 	}
 	// Meetbot will be leaving the meet soon
-	return res.status(202).send('Asking meetbot to leave');
+	return res.status(202).send('Asking meetbot to leave.');
 });
 
 export async function start() {
