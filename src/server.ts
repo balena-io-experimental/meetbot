@@ -1,5 +1,4 @@
 import * as express from 'express';
-import { URL } from 'url';
 import * as path from 'path';
 
 import * as meetbotManager from './meetbot-manager';
@@ -17,32 +16,23 @@ server.get('/', (_req, res) => {
 });
 
 server.post('/join', async (req, res) => {
-	let meetMetadata;
 	// Validate body
 	if (!req.body.url) {
 		return res
 			.status(400)
 			.send('Unable to join. Missing `url` value in payload body.');
 	}
-	try {
-		meetMetadata = new URL(req.body.url);
-		if (meetMetadata.hostname !== 'meet.google.com') {
-			throw new Error(
-				'Unable to join. Invalid Google Meet URL in payload body.',
-			);
-		}
-	} catch (e) {
-		return res
-			.status(400)
-			.send(
-				`Unable to join. Invalid Google Meet URL provided: ${req.body.url}`,
-			);
-	}
 	// Try to spawn a meetbot for location
 	try {
-		await meetbotManager.spawnBot(meetMetadata.href);
+		await meetbotManager.spawnBot(req.body.url);
 	} catch (e: any) {
 		switch (e.message) {
+			case 'Invalid Google Meet URL.':
+				return res
+					.status(400)
+					.send(
+						`Unable to join. Invalid Google Meet URL provided: ${req.body.url}`,
+					);
 			case 'Maximum bot queue reached!':
 				return res.status(503).send('Max number of active meetbots reached');
 			case 'A bot is already in that location!':

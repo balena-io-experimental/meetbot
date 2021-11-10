@@ -1,4 +1,5 @@
 import { Browser } from 'puppeteer';
+import { URL } from 'url';
 
 import MeetBot from './meetbot';
 import { newBrowser } from './browser';
@@ -8,10 +9,10 @@ const MAX_BOTS = process.env.MAX_BOTS || 5;
 const ACTIVE_BOTS = new Map<string, MeetBot>();
 
 type MeetBotListItem = {
-	url : string | null;
+	url: string | null;
 	transcriptUrl: string | null;
 	joinedAt: string | null;
-}
+};
 
 let browser: Browser | null = null;
 
@@ -22,23 +23,25 @@ export async function init(): Promise<void> {
 }
 
 export async function listBots() {
-
-	const results : MeetBotListItem[] = []
+	const results: MeetBotListItem[] = [];
 
 	ACTIVE_BOTS.forEach((value: MeetBot, _key: string) => {
 		results.push({
 			url: value.url,
 			transcriptUrl: value.transcriptUrl,
 			joinedAt: value.joinedAt,
-		})
+		});
 	});
 
-	return results
+	return results;
 }
 
 export async function spawnBot(url: string) {
+	const meetURL = new URL(url);
 
-	if (ACTIVE_BOTS.size >= MAX_BOTS) {
+	if (meetURL.hostname !== 'meet.google.com') {
+		throw new Error('Invalid Google Meet URL.');
+	} else if (ACTIVE_BOTS.size >= MAX_BOTS) {
 		throw new Error(`Maximum bot queue reached!`);
 	} else if (ACTIVE_BOTS.has(url)) {
 		throw new Error(`A bot is already in that location!`);
@@ -57,8 +60,8 @@ export async function spawnBot(url: string) {
 	});
 
 	bot.on('transcript_doc_ready', (data) => {
-		console.log("setting transcript url to" + data.transcriptUrl)
-		bot.transcriptUrl = data.transcriptUrl
+		console.log('setting transcript url to' + data.transcriptUrl);
+		bot.transcriptUrl = data.transcriptUrl;
 	});
 
 	bot.on('end', () => {
