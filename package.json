@@ -23,9 +23,8 @@
   ],
   "scripts": {
     "clean": "rimraf build",
-    "build:ui": "npm --prefix src/ui install && npm --prefix src/ui run build && cp -r src/ui/dist/ build/www",
-    "build:backend": "npm run clean && tsc && cp -r src/stenographer build/stenographer",
-    "build": "npm run build:backend && npm run build:ui",
+    "build": "npm run clean && tsc && npm run build:ui && cp -r src/stenographer build/stenographer", 
+    "build:ui": "vite build",
     "lint": "balena-lint --typescript src tests",
     "lint-fix": "balena-lint --typescript --fix src tests",
     "test:node": "mocha -r ts-node/register --reporter spec tests/**/*.spec.ts",
@@ -34,8 +33,10 @@
     "test:fast": "npm run build && npm run test:node",
     "prepack": "npm run build",
     "start": "npm run build && node -r dotenv/config build/index.js",
-    "start:prod": "node -r dotenv/config build/index.js",
-    "watch": "nodemon --watch src --ext js,ts,json --exec node -r ts-node/register/transpile-only src/index.ts"
+    "start:prod": "node build/index.js",
+    "watch": "nodemon --watch src --ext js,ts,json --exec node -r ts-node/register/transpile-only src/index.ts",
+    "serve:ui": "vite preview",
+    "dev-ui": "vite"
   },
   "devDependencies": {
     "@balena/lint": "^5.4.2",
@@ -57,7 +58,13 @@
     "rimraf": "^3.0.2",
     "ts-node": "^9.1.1",
     "typescript": "^4.2.4",
-    "vite-plugin-babel-macros": "^1.0.5"
+    "vite-plugin-babel-macros": "^1.0.5",
+    "@types/faker": "^5.5.9",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@vitejs/plugin-react": "^1.0.0",
+    "vite": "^2.6.4",
+    "vite-plugin-svgr": "^0.4.0"
   },
   "dependencies": {
     "dotenv": "^10.0.0",
@@ -67,6 +74,20 @@
     "puppeteer": "^10.4.0",
     "puppeteer-extra": "^3.2.3",
     "puppeteer-extra-plugin-stealth": "^2.8.2",
-    "totp-generator": "^0.0.10"
+    "totp-generator": "^0.0.10",
+    "@types/luxon": "^2.0.5",
+    "axios": "^0.24.0",
+    "faker": "^5.5.3",
+    "luxon": "^2.0.2",
+    "miragejs": "^0.1.42",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
+    "react-query": "^3.28.0",
+    "react-router-dom": "^5.3.0",
+    "react-toastify": "^8.0.3",
+    "rendition": "^21.9.2",
+    "styled-components": "^5.3.3",
+    "styled-reset": "^4.3.4",
+    "with-query": "^1.3.0"
   }
 }

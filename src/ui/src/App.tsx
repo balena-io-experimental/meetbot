@@ -19,7 +19,7 @@ const StyledNavbar = styled((props) => <Navbar {...props} />)`
 function App() {
 	return (
 		<>
-			<Router basename="/ui">
+			<Router>
 				<StyledNavbar
 					brand={
 						<Box display="flex">

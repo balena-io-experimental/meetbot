@@ -5,6 +5,9 @@ import macrosPlugin from 'vite-plugin-babel-macros';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	base: '/ui/',
+	root: 'src/ui/',
+	build: {
+		outDir: '../../build/www',
+	},
 	plugins: [react(), svgr(), macrosPlugin()],
 });
