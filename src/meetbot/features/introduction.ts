@@ -11,22 +11,6 @@ export const attach = (bot: Bot) => {
 		);
 	});
 
-	let sayHelloInProgress = 0;
-	bot.on('raw_caption', ({ caption }) => {
-		if (!caption) {
-			return;
-		}
-		const helloCmd = /can[^a-z]*you[^a-z]*hear[^a-z]*me/i;
-		if (
-			helloCmd.test(caption.text) &&
-			new Date().getTime() - sayHelloInProgress > 30_000
-		) {
-			console.log('Dropping some shade to my masters');
-			sayHelloInProgress = new Date().getTime();
-			bot.addJob(postToChatJob('"Can you hear me??"\nLinux User Detected 🤣'));
-		}
-	});
-
 	bot.on('left', ({ meetURL }) => {
 		console.log('Leaving the meeting:', meetURL);
 	});
