@@ -4,7 +4,7 @@ import StealthPlugin = require('puppeteer-extra-plugin-stealth');
 
 puppeteer.use(StealthPlugin());
 
-const RUNNING_ALPINE = !!process.env.RUNNING_ALPINE;
+const RUNNING_ALPINE = process.env.RUNNING_ALPINE || true;
 
 export async function newBrowser(): Promise<Browser> {
 	const puppeteerOptions = {

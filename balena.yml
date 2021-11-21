@@ -1,0 +1,30 @@
+
+name: meetbot
+type: sw.application
+description: >-
+  Meetbot is a highly configurable Google meet bot that reduces friction in meetings.
+assets:
+  repository:
+    type: blob.asset
+    data:
+      url: 'https://github.com/balena-io-playground/meetbot'
+  logo:
+    type: blob.asset
+    data:
+      url: >-
+        https://raw.githubusercontent.com/balena-io-playground/meetbot/master/public/logo.png
+data:
+  applicationEnvironmentVariables:
+    - GOOGLE_PASSWORD=ENTER_YOUR_GOOGLE_PASSWORD
+    - GOOGLE_TOTP_SECRET=ENTER_THE_TOTP_SECRET
+    - GOOGLE_LOGIN=ENTER_YOUR_GOOGLE_LOGIN
+    - TOKEN_PATH=token.json
+    - HTTP_PORT=80
+    - RUNNING_ALPINE=0
+    - MAX_BOTS=5
+  defaultDeviceType: intel-nuc
+  supportedDeviceTypes:
+    - generic-x86-64
+    - generic-x86
+    - intel-nuc
+version: 1.0.0
