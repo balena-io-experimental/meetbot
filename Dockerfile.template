@@ -8,7 +8,7 @@ RUN npm ci
 #dev-cmd-live=npm run watch
 
 COPY tsconfig.json .
-COPY public public
+COPY vite.config.ts .
 COPY src src
 
 # Build project for run stage
@@ -24,6 +24,5 @@ COPY --from=builder /usr/src/build /usr/src/build
 COPY --from=builder /usr/src/node_modules /usr/src/node_modules
 COPY *.json ./
 COPY .env .
-COPY public public
 
 CMD [ "npm", "run", "start:prod" ]

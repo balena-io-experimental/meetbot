@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "clean": "rimraf build",
-    "build": "npm run clean && tsc && npm run build:ui && cp -r src/stenographer build/stenographer", 
+    "build": "npm run clean && tsc && npm run build:ui && cp -r src/stenographer build/stenographer",
     "build:ui": "vite build",
     "lint": "balena-lint --typescript src tests",
     "lint-fix": "balena-lint --typescript --fix src tests",
@@ -35,7 +35,7 @@
     "start": "npm run build && node -r dotenv/config build/index.js",
     "start:prod": "node -r dotenv/config build/index.js",
     "watch": "nodemon --watch src --ext js,ts,json --exec node -r ts-node/register/transpile-only src/index.ts",
-    "serve:ui": "vite preview",
+    "serve:ui": "vite preview --port 3000",
     "dev-ui": "vite"
   },
   "devDependencies": {
