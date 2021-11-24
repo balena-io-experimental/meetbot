@@ -28,8 +28,10 @@ To get a bot to join a Google Meet, send a POST request to the join endpoint wit
 curl --header "Content-Type: application/json" \
   --request POST \
   --data '{"url":"https://meet.google.com/wtq-bhai-amg"}' \
-  http://localhost:8080/join
+  http://localhost:8080/api/join
 ```
+## UI Development
+To develop the UI, run `npm run dev-ui`. This will spin up the development server. You should then be able to access the dashboard at `http://localhost:3000/`. Note that the data you will see on the tables are actually being mocked by MirageJS, and not actual request is going to the API. This makes it easier to develop both components in an entirely decoupled way.
 
 A meetbot should request to join the Google Meet.
 
