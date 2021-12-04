@@ -1,6 +1,6 @@
 {
   "name": "meetbot",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "A helper bot for Google Meet that makes meetings frictionless.",
   "homepage": "https://github.com/balena-io-playground/meetbot",
   "main": "build/index.js",
