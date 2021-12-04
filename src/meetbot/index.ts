@@ -3,7 +3,7 @@ import { Browser, Page } from 'puppeteer';
 
 import { newPage } from '../browser';
 import { Feature } from './features';
-import { clickText } from './pptr-helpers';
+import { clickText } from './meetbot-helpers';
 import totp = require('totp-generator');
 
 import { promises as fs } from 'fs';
@@ -21,12 +21,9 @@ export interface Bot {
 		eventName: K,
 		listener: (arg: T) => void,
 	): this;
-	getContext(): {
-		calendarText: string;
-	};
 }
 
-const login = process.env.GOOGLE_LOGIN;
+const login = process.env.GOOGLE_EMAIL;
 const password = process.env.GOOGLE_PASSWORD;
 const totpSecret = process.env.GOOGLE_TOTP_SECRET;
 
@@ -58,16 +55,6 @@ class MeetBot implements Bot {
 		}, 1000);
 	}
 
-	// TODO this is currently dummy data
-	getContext(): { calendarText: string } {
-		return {
-			calendarText: `A fantastic calendar entry
-			https://jel.ly.fish/improvement-meetbot-511eb36
-
-			hubot-data: {"data":"will be parsed and available somewhere in context, too"}`,
-		};
-	}
-
 	async init() {
 		this.page = await newPage(this.browser);
 	}
@@ -77,7 +64,6 @@ class MeetBot implements Bot {
 	}
 
 	// TODOs
-	// * replace every HACK
 	// * replace all selector queries as they are bound to break
 	async joinMeet(meetURL: string) {
 		if (this.page === null) {
@@ -140,7 +126,7 @@ class MeetBot implements Bot {
 
 			this.joinedAt = new Date().toUTCString();
 
-			console.log('turn on captions');
+			console.log('Turning on captions');
 			this.emit('joined', { meetURL });
 			await clickText(this.page, 'more_vert');
 			await this.page.waitForTimeout(500);
@@ -155,16 +141,13 @@ class MeetBot implements Bot {
 			await clickText(this.page, 'people_outline');
 			await this.page.waitForTimeout(500);
 
-			// ------------- Inject stenographer script into the page, and expose a function
-			// that can be executed as a callback whenever a caption is available.
-
+			// Inject stenographer into the meet page
+			// Function handleCaption can be executed as a callback whenever captions are available.
 			const handleCaption = (caption: SteganographerEvent) => {
-				// console.log('[caption passed to puppeteer script] => ' + caption);
 				this.emit('raw_caption', {
 					meetURL,
 					caption,
 				});
-
 				const existingCaption = this.captions.find(
 					(c) => c.caption.id === caption.id,
 				);
@@ -180,14 +163,10 @@ class MeetBot implements Bot {
 			};
 
 			await this.page.exposeFunction('handleCaption', handleCaption);
-
 			const script = (
 				await fs.readFile(path.join(__dirname, '../stenographer/index.js'))
 			).toString();
-
 			await this.page.evaluate(script);
-
-			// -------------
 
 			console.log('captions are on');
 			await this.page.waitForTimeout(1000);
