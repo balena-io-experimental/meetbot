@@ -12,16 +12,15 @@ assets:
     type: blob.asset
     data:
       url: >-
-        https://raw.githubusercontent.com/balena-io-playground/meetbot/master/public/logo.png
+        https://raw.githubusercontent.com/balena-io-playground/meetbot/master/img/logo.png
 data:
   applicationEnvironmentVariables:
     - GOOGLE_PASSWORD=ENTER_YOUR_GOOGLE_PASSWORD
     - GOOGLE_TOTP_SECRET=ENTER_THE_TOTP_SECRET
-    - GOOGLE_LOGIN=ENTER_YOUR_GOOGLE_LOGIN
-    - TOKEN_PATH=token.json
+    - GOOGLE_EMAIL=ENTER_YOUR_GOOGLE_EMAIL
     - HTTP_PORT=80
-    - RUNNING_ALPINE=0
     - MAX_BOTS=5
+    - GREETING_MESSAGE=Hello folks, I am meetbot!
   defaultDeviceType: intel-nuc
   supportedDeviceTypes:
     - generic-x86-64

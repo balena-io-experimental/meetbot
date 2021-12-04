@@ -23,6 +23,6 @@ RUN install_packages chromium
 COPY --from=builder /usr/src/build /usr/src/build
 COPY --from=builder /usr/src/node_modules /usr/src/node_modules
 COPY *.json ./
-# COPY .env .
+COPY .env .
 
 CMD [ "npm", "run", "start:prod" ]

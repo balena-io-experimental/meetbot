@@ -1,11 +1,11 @@
 # Meetbot 
 
-Meetbot joins your Google Meet meetings to help reduce friction and helps you eliminate the need for everyday questions like: 
+Meetbot is a Google Meet bot that eliminates the need for such questions in your video calls:
 
-_1. Can you resend those links again?_ Meetbot records chat transcript.
-_2. Do you have notes the call?_ Also, records voice captions/transcript.
-_3. Was the meeting recorded?_ Auto-records meetings. 
-_4. Can you hear me? ... Can you hear us?_ Validates audio input of attendees minus the awkward silence.
+_1. Can you hear me? ... Can you hear us?_ Validates audio input of attendees minus the awkward silence.
+_2. Can you resend those links again?_ Meetbot records chat transcript.
+_3. Do you have notes the call?_ Also, records voice captions/transcript.
+_4. Was the meeting recorded?_ Auto-records meetings. 
 _5. Does anyone have the links shared in the meeting?_ Saves it all to Google Docs
 
 And, many more features.
@@ -14,17 +14,30 @@ And, many more features.
 
 ## Try it out!
 
+Running this project is as simple as deploying it to a balenaCloud application. You can do it in just one click by using the button below:
+
 [![balena deploy button](https://www.balena.io/deploy.svg)](https://dashboard.balena-cloud.com/deploy?repoUrl=https://github.com/balena-io-playground/meetbot)
 
-By default, meetbot will function and joins meetings as an unauthenticated user. Follow the [authentication instrucitons](#authentication) below to enable all the features. 
+### Configuration
 
-## Development
+By default, meetbot will join meetings as an unauthenticated user and won't be able to perform some features. To enable all features, follow the [authentication instructions](#authentication). 
 
-To add new features to the bot. Fork the repository and add your feature to `src/meetbot/features`. After finishing your changes, [run the bot locally](#running-the-bot-locally) to check if your feature loads and test your changes. 
+| Environment Variable | Description                                                                                                 | Default value                                       |
+| -------------------- | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| GOOGLE_PASSWORD      | Password of the Google account meetbot uses for running [authenticated features](#authentication).          | NA                                                  |
+| GOOGLE_EMAIL         | Email address of the Google account meetbot uses for for running [authenticated features](#authentication). | NA                                                  |
+| GOOGLE_TOTP_SECRET   | If the Google account has 2FA security, then the TOTP secret that is configured for 2FA goes here.          | NA                                                  |
+| HTTP_PORT            | Port on which the meetbot server starts running. For balena devices, the server needs to run on port 80.    | 8080                                                |
+| MAX_BOTS             | Maximum number of meetbots to run parallely on the server                                                   | 5                                                   |
+| GREETING_MESSAGE     | Greeting message which is posted when meetbot joins the Google Meet                                         | "Hello balenistas, it's your favorite bot, meetbot" |
 
-To develop the UI, run `npm run dev-ui`. This will spin up the development server. You should then be able to access the dashboard at `http://localhost:3000/`. Note that the data you will see on the tables are actually being mocked by MirageJS, and not actual request is going to the API. This makes it easier to develop both components in an entirely decoupled way.
+## Getting Started
 
-A meetbot should request to join the Google Meet.
+After getting the bot server [up and running](#deployment), it will start listening for requests to provision new meetbots. 
+
+To get a meetbot in your meeting, navigate to the Meetbot dashboard using the [public device URL](https://www.balena.io/docs/learn/manage/actions/#enable-public-device-url) or the port you configured for the server to run on. 
+
+Click the "Join Meeting" button and enter the Google Meet URL in the text box. Click "Join Meeting" and wait for a few seconds for the bot to join. When the bot joins the meeting or prompts to join the meeting, it will post a message to the chat to signal that's it's ready to go.
 
 ### Running the bot locally
 
@@ -39,6 +52,13 @@ The bot will now be running but functionality is limited until the bot is [authe
 
 
 ## Authentication
+
+Authentication is needed to:
+
+1. Record meetings
+2. Creating Google Docs to save transcripts
+3. Checking the calendar to join meetings automatically
+4. Joining the Google Meet automatically without the "Allow User" prompt
 
 Finally, for integrations with Google docs and calendar you must download the credentials file containing data for oauth2 flow. This is used to authenticate requests to the Google API. See the following docs to create the credentials needed:
 
@@ -55,12 +75,24 @@ After following the steps, run the command below and follow the instructions to 
 ts-node src/google/create-token.ts
 ```
 
+## Development
+
+To add new features to the bot. Fork the repository and add your feature to `src/meetbot/features`. After finishing your changes, [run the bot locally](#running-the-bot-locally) to check if your feature loads and test your changes. 
+
+To develop the UI, run `npm run dev-ui`. This will spin up the development server. You should then be able to access the dashboard at `http://localhost:3000/`. Note that the data you will see on the tables are actually being mocked by MirageJS, and not actual request is going to the API. This makes it easier to develop both components in an entirely decoupled way.
+
 ## Deployment
 
-To activate all the features of meetbot, [authenticate the meetbot](#authentication) and create the `token.json` file before deployment.
+To activate all the features of meetbot, [authenticate the meetbot](#authentication) and create the `token.json` file before deployment. 
 
-To deploy a new release on balenaCloud, run the command below:
+To deploy on balenaCloud, use the balena CLI and balena push command as stated below. For more information [check out the docs](https://www.balena.io/docs/learn/deploy/deployment/).
 
 ```
 balena push <Name of fleet>
 ```
+
+To deploy on a server, create and fill the `.env` file in the root of the project directory using the `.env.example` file and deploy using the Dockerfile present in the root directory of this repository. 
+
+## Credits
+
+Meetbot's google meet voice caption capture is implemented using [dzaman/google-meet](https://github.com/dzaman/google-meet-transcripts)'s stenographer implementation licensed under GNU GPLv3.
