@@ -1,6 +1,6 @@
 import { Page } from 'puppeteer-extra-plugin/dist/puppeteer';
 import { Bot } from '..';
-import { clickText } from '../pptr-helpers';
+import { clickText } from '../meetbot-helpers';
 
 export const attach = (bot: Bot) => {
 	console.log('Running record feature..');
@@ -43,6 +43,5 @@ const startRecording = async (page: Page) => {
 		}
 	}
 	await page.waitForTimeout(2000);
-	// for debugging
 	// await page.screenshot({ path: 'after-recording-start.png' });
 };

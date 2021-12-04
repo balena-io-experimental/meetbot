@@ -1,5 +1,5 @@
 import { Bot } from '..';
-import { postToChatJob } from '../pptr-helpers';
+import { postToChatJob } from '../meetbot-helpers';
 
 // Feature to auto validate audio input from attendees in meetings when folks ask the question: Can you hear me?
 

@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { Bot } from '..';
 import { Credentials, GoogleDoc } from '../../google/google-doc';
-import { postToChatJob } from '../pptr-helpers';
+import { postToChatJob } from '../meetbot-helpers';
 
 export const attach = (bot: Bot): void => {
 	let credentials: Credentials | null = null;

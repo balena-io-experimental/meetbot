@@ -1,7 +1,7 @@
 import { Bot } from '..';
 import * as fs from 'fs';
 import * as moment from 'moment';
-import { postToChatJob } from '../pptr-helpers';
+import { postToChatJob } from '../meetbot-helpers';
 import { Credentials, GoogleDoc } from '../../google/google-doc';
 
 export const attach = async (bot: Bot) => {
@@ -35,7 +35,7 @@ export const attach = async (bot: Bot) => {
 			meetURL,
 		});
 
-		bot.addJob(postToChatJob(`Transcript is available at: ${documentUrl}`));
+		bot.addJob(postToChatJob(`Meet Transcript: ${documentUrl}`));
 	});
 	bot.on('caption', (data: CaptionEvent) => {
 		if (
