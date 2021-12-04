@@ -8,7 +8,7 @@ export const clickText = async (page: Page, text: string, retries = 3) => {
 			await el.click();
 			clicked = true;
 		} catch {
-			// sometimes we find stuff with the same text which is not clickable
+			// sometimes elements with the same text are found which are not clickable
 		}
 	}
 	if ((elems.length === 0 || !clicked) && retries > 0) {
@@ -19,7 +19,7 @@ export const clickText = async (page: Page, text: string, retries = 3) => {
 
 export const postToChatJob = (text: string) => {
 	return async (page: Page) => {
-		console.log('open chat section and send a message to all');
+		console.log('Sending a message through the chat section');
 		await clickText(page, 'chat');
 		await page.waitForTimeout(1500);
 		// await page.screenshot({ path: 'after-chat-open.png' });
@@ -28,7 +28,6 @@ export const postToChatJob = (text: string) => {
 		await page.keyboard.press('Enter');
 		// await page.screenshot({ path: 'after-chat.png' });
 
-		console.log('close chat section again');
 		await clickText(page, 'chat');
 		await page.waitForTimeout(1500);
 		// await page.screenshot({ path: 'after-chat-open.png' });
