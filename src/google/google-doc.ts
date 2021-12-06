@@ -1,11 +1,12 @@
 import * as fs from 'fs';
 import { Auth, docs_v1, google } from 'googleapis';
 import { getNewToken } from './token-generator';
+import { resolve } from 'path';
 
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
-const TOKEN_PATH = 'token.json';
+const TOKEN_PATH = resolve('token.json');
 
 export interface Credentials {
 	client_secret: string;

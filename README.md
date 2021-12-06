@@ -4,11 +4,11 @@ Meetbot is a Google Meet bot that makes meetings frictionless.
 
 Meetbot aims to eliminate questions in video calls like:
 
-_1. Can you hear me? Can you hear us?_ Validates audio input of attendees minus the awkward silence.
-_2. Can you resend those links again?_ Meetbot records chat transcript.
-_3. Do you have any notes from the call?_ Also, records voice caption transcript.
-_4. Was the meeting recorded?_ Auto-records meetings. 
-_5. Does anyone have the links shared in the meeting?_ Saves it all to Google Docs. Easy sharing.
+1. _Can you hear me? Can you hear us?_ Validates audio input of attendees minus the awkward silence.
+2. _Can you resend those links again?_ Meetbot records chat transcript.
+3. _Do you have any notes from the call?_ Also, records voice caption transcript.
+4. _Was the meeting recorded?_ Auto-records meetings.
+5. _Does anyone have the links shared in the meeting?_ Saves it all to Google Docs. Easy sharing.
 
 And, many more features.
 
@@ -24,14 +24,14 @@ Running this project is as simple as deploying it to a balenaCloud application. 
 
 By default, meetbot will join meetings as an unauthenticated user and won't be able to perform some features. To enable all features, follow the [authentication instructions](#authentication). 
 
-| Environment Variable | Description                                                                                                 | Default value                                       |
-| -------------------- | ----------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| GOOGLE_PASSWORD      | Password of the Google account meetbot uses for running [authenticated features](#authentication).          | NA                                                  |
-| GOOGLE_EMAIL         | Email address of the Google account meetbot uses for for running [authenticated features](#authentication). | NA                                                  |
-| GOOGLE_TOTP_SECRET   | If the Google account has 2FA security, then the TOTP secret that is configured for 2FA goes here.          | NA                                                  |
-| HTTP_PORT            | Port on which the meetbot server starts running. For balena devices, the server needs to run on port 80.    | 8080                                                |
-| MAX_BOTS             | Maximum number of meetbots to run parallely on the server                                                   | 5                                                   |
-| GREETING_MESSAGE     | Greeting message which is posted when meetbot joins the Google Meet                                         | "Hello balenistas, it's your favorite bot, meetbot" |
+| Environment Variable | Description                                                                                                | Default value                                  |
+| -------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| GOOGLE_PASSWORD      | Password of the Google account meetbot uses for running [authenticated features](#authentication)          | NA                                             |
+| GOOGLE_EMAIL         | Email address of the Google account meetbot uses for for running [authenticated features](#authentication) | NA                                             |
+| GOOGLE_TOTP_SECRET   | If the Google account has 2FA security, then the TOTP secret that is configured for 2FA goes here          | NA                                             |
+| HTTP_PORT            | Port on which the meetbot server starts running. For balena devices, the server needs to run on port 80    | 8080                                           |
+| MAX_BOTS             | Maximum number of meetbots to run parallely on the server                                                  | 5                                              |
+| GREETING_MESSAGE     | Greeting message which is posted when meetbot joins the Google Meet                                        | "Hello folks, it's your favorite bot, hubot!!" |
 
 ## Getting Started
 
@@ -58,9 +58,9 @@ The bot will now be running but functionality is limited until the bot is [authe
 Authentication is needed to:
 
 1. Record meetings
-2. Creating Google Docs to save transcripts
-3. Checking the calendar to join meetings automatically
-4. Joining the Google Meet automatically without the "Allow User" prompt
+2. Create Google Docs to save transcripts
+3. Check the Google calendar to join meetings automatically
+4. Join Google Meet automatically without the "Allow User" prompt
 
 Finally, for integrations with Google docs and calendar you must download the credentials file containing data for oauth2 flow. This is used to authenticate requests to the Google API. See the following docs to create the credentials needed:
 
@@ -81,7 +81,7 @@ ts-node src/google/create-token.ts
 
 To add new features to the bot. Fork the repository and add your feature to `src/meetbot/features`. After finishing your changes, [run the bot locally](#running-the-bot-locally) to check if your feature loads and test your changes. 
 
-To develop the UI, run `npm run dev-ui`. This will spin up the development server. You should then be able to access the dashboard at `http://localhost:3000/`. Note that the data you will see on the tables are actually being mocked by MirageJS, and not actual request is going to the API. This makes it easier to develop both components in an entirely decoupled way.
+To develop the UI, run `npm run dev-ui`. This will spin up the development server. You should then be able to access the dashboard at `http://localhost:3000/`. Note that the data you will see on the tables is only mocked and no actual requests are sent to the API. This makes it easier to develop the UI independently.
 
 ## Deployment
 

@@ -1,9 +1,9 @@
 import { Bot } from '..';
-import { postToChatJob } from '../meetbot-helpers';
+import { postToChatJob } from '../google-meet-helpers';
 
 const GREETING_MESSAGE =
 	process.env.GREETING_MESSAGE ||
-	"Hello balenistas, it's your favorite bot, hubot!!";
+	"Hello folks, it's your favorite bot, hubot!!";
 
 export const attach = (bot: Bot) => {
 	console.log('Introducing hubot in the meet - feature');

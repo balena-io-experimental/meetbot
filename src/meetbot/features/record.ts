@@ -1,6 +1,6 @@
 import { Page } from 'puppeteer-extra-plugin/dist/puppeteer';
 import { Bot } from '..';
-import { clickText } from '../meetbot-helpers';
+import { clickText } from '../google-meet-helpers';
 
 export const attach = (bot: Bot) => {
 	console.log('Running record feature..');

@@ -3,7 +3,7 @@ import { Browser, Page } from 'puppeteer';
 
 import { newPage } from '../browser';
 import { Feature } from './features';
-import { clickText } from './meetbot-helpers';
+import { clickText } from './google-meet-helpers';
 import totp = require('totp-generator');
 
 import { promises as fs } from 'fs';

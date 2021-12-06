@@ -1,5 +1,5 @@
 import { Bot } from '..';
-import { postToChatJob } from '../meetbot-helpers';
+import { postToChatJob } from '../google-meet-helpers';
 
 // Feature to auto validate audio input from attendees in meetings when folks ask the question: Can you hear me?
 

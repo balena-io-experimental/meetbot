@@ -1,10 +1,11 @@
 import fs = require('fs');
 import readline = require('readline');
 import { Auth } from 'googleapis';
+import { resolve } from 'path';
 
 // If modifying these scopes, delete token.json. Create a fresh one. At the moment, we only use the Google Docs API, hence the scope is for documents only.
 const SCOPES = ['https://www.googleapis.com/auth/documents'];
-const TOKEN_PATH = 'token.json';
+const TOKEN_PATH = resolve('token.json');
 
 // Scopes with the calendar included will become:
 // const SCOPES = ['https://www.googleapis.com/auth/documents', 'https://www.googleapis.com/auth/calendar.readonly'];

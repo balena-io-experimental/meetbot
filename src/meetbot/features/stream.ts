@@ -1,7 +1,7 @@
 import { Bot } from '..';
 import * as fs from 'fs';
 import * as moment from 'moment';
-import { postToChatJob } from '../meetbot-helpers';
+import { postToChatJob } from '../google-meet-helpers';
 import { Credentials, GoogleDoc } from '../../google/google-doc';
 
 export const attach = async (bot: Bot) => {

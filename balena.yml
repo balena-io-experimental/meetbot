@@ -2,7 +2,7 @@
 name: meetbot
 type: sw.application
 description: >-
-  Meetbot is a highly configurable Google meet bot that reduces friction in meetings.
+  Meetbot is a configurable Google Meet bot aimed at reducing friction in video meetings.
 assets:
   repository:
     type: blob.asset
@@ -20,7 +20,7 @@ data:
     - GOOGLE_EMAIL=ENTER_YOUR_GOOGLE_EMAIL
     - HTTP_PORT=80
     - MAX_BOTS=5
-    - GREETING_MESSAGE=Hello folks, I am meetbot!
+    - GREETING_MESSAGE=Hello folks, it's your favorite bot, hubot!!
   defaultDeviceType: intel-nuc
   supportedDeviceTypes:
     - generic-x86-64
