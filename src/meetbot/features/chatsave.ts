@@ -27,10 +27,16 @@ export const attach = (bot: Bot): void => {
 		const docName = `Meeting ${meetId} (${new Date().toISOString()}) Chat`;
 		docId = await doc.create(docName);
 		doc.addTitle('Chat Transcript\n\n');
+
+		const documentUrl = `https://docs.google.com/document/d/${docId}`;
+
+		bot.emit('chat_transcript_doc_ready', {
+			transcriptUrl: documentUrl,
+			meetURL,
+		});
+
 		bot.addJob(
-			postToChatJob(
-				`Chat history is available at: https://docs.google.com/document/d/${docId}`,
-			),
+			postToChatJob(`Chat transcript is available at: ${documentUrl}`),
 		);
 	});
 	bot.on('chat', ({ timestamp, sender, text }) => {
