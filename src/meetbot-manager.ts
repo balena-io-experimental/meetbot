@@ -11,6 +11,7 @@ const ACTIVE_BOTS = new Map<string, MeetBot>();
 type MeetBotListItem = {
 	url: string | null;
 	transcriptUrl: string | null;
+	chatTranscriptUrl: string | null;
 	joinedAt: string | null;
 };
 
@@ -29,6 +30,7 @@ export async function listBots() {
 		results.push({
 			url: value.url,
 			transcriptUrl: value.transcriptUrl,
+			chatTranscriptUrl: value.chatTranscriptUrl,
 			joinedAt: value.joinedAt,
 		});
 	});
@@ -62,6 +64,11 @@ export async function spawnBot(url: string) {
 	bot.on('transcript_doc_ready', (data) => {
 		console.log('setting transcript url to' + data.transcriptUrl);
 		bot.transcriptUrl = data.transcriptUrl;
+	});
+
+	bot.on('chat_transcript_doc_ready', (data) => {
+		console.log('setting chat transcript url to' + data.transcriptUrl);
+		bot.chatTranscriptUrl = data.transcriptUrl;
 	});
 
 	bot.on('end', () => {

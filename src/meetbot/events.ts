@@ -35,6 +35,7 @@ interface BotEvents {
 	joined: JoinEvent;
 	active: ActiveEvent;
 	transcript_doc_ready: StreamEvent;
+	chat_transcript_doc_ready: StreamEvent;
 	end: EndEvent;
 	participants: ParticipantsEvent;
 	raw_caption: CaptionEvent;

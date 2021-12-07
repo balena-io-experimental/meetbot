@@ -138,7 +138,7 @@ const renderMeetTranscriptsColumn = (value: any, row: any): JSX.Element => {
 				Voice
 			</Link>
 			{"  "}
-			<Link href={row.transcriptUrl}>Chat</Link>
+			<Link href={row.chatTranscriptUrl}>Chat</Link>
 		</StyledBox>
 	);
 };

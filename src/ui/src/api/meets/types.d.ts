@@ -4,6 +4,7 @@ export type Meet = {
 	joinedAt: Date;
 	leftAt: Date;
 	transcriptUrl: string | null;
+	chatTranscriptUrl: string | null;
 };
 
 export type MeetsListResponse = {
