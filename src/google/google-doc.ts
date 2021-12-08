@@ -53,7 +53,7 @@ export class GoogleDoc {
 		}
 
 		console.log(
-			`${docName} is available at \nhttps://docs.google.com/document/d/${this.documentId}`,
+			`${docName}: https://docs.google.com/document/d/${this.documentId}`,
 		);
 		this.runQueue();
 		return this.documentId;

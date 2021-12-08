@@ -35,7 +35,9 @@ export const attach = (bot: Bot): void => {
 		});
 
 		bot.addJob(
-			postToChatJob(`Chat transcript is available at: ${documentUrl}`),
+			postToChatJob(
+				`Chat transcript is available at: ${documentUrl} (Type "/reping" to resend)`,
+			),
 		);
 	});
 	bot.on('chat', ({ timestamp, sender, text }) => {
