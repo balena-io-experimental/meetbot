@@ -24,14 +24,14 @@ Running this project is as simple as deploying it to a balenaCloud application. 
 
 By default, meetbot will join meetings as an unauthenticated user and won't be able to perform some features. To enable all features, follow the [authentication instructions](#authentication). 
 
-| Environment Variable | Description                                                                                                | Default value                                  |
-| -------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
-| GOOGLE_PASSWORD      | Password of the Google account meetbot uses for running [authenticated features](#authentication)          | NA                                             |
-| GOOGLE_EMAIL         | Email address of the Google account meetbot uses for for running [authenticated features](#authentication) | NA                                             |
-| GOOGLE_TOTP_SECRET   | If the Google account has 2FA security, then the TOTP secret that is configured for 2FA goes here          | NA                                             |
-| HTTP_PORT            | Port on which the meetbot server starts running. For balena devices, the server needs to run on port 80    | 8080                                           |
-| MAX_BOTS             | Maximum number of meetbots to run parallely on the server                                                  | 5                                              |
-| GREETING_MESSAGE     | Greeting message which is posted when meetbot joins the Google Meet                                        | "Hello folks, it's your favorite bot, hubot!!" |
+| Environment Variable | Description                                                                                                        | Default value                                  |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------- |
+| GOOGLE_PASSWORD      | Password of the Google account meetbot uses for running [authenticated features](#authentication)                  | NA                                             |
+| GOOGLE_EMAIL         | Email address of the Google account meetbot uses for for running [authenticated features](#authentication)         | NA                                             |
+| GOOGLE_TOTP_SECRET   | If the Google account has 2FA security, then the TOTP secret that is configured for 2FA goes here                  | NA                                             |
+| HTTP_PORT            | (Optional) Port on which the meetbot server starts running. For balena devices, the server needs to run on port 80 | 80                                             |
+| MAX_BOTS             | (Optional) Maximum number of meetbots to run parallely on the server                                               | 5                                              |
+| GREETING_MESSAGE     | (Optional) Greeting message which is posted when meetbot joins the Google Meet                                     | "Hello folks, it's your favorite bot, hubot!!" |
 
 ## Getting Started
 
