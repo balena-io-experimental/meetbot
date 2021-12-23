@@ -16,7 +16,7 @@ And, many more features.
 
 ## Try it out!
 
-Running this project is as simple as deploying it to a balenaCloud application. You can do it in just one click by using the button below:
+To deploy this project on balenaCloud, use the button below.
 
 [![balena deploy button](https://www.balena.io/deploy.svg)](https://dashboard.balena-cloud.com/deploy?repoUrl=https://github.com/balena-io-playground/meetbot)
 
@@ -87,7 +87,7 @@ To develop the UI, run `npm run dev-ui`. This will spin up the development serve
 
 To activate all the features of meetbot, [authenticate the meetbot](#authentication) and create the `token.json` file before deployment. 
 
-To deploy on balenaCloud, use the balena CLI and balena push command as stated below. For more information [check out the docs](https://www.balena.io/docs/learn/deploy/deployment/).
+To deploy to your device with the help of [balenaCloud](https://www.balena.io/cloud/), use [balena CLI](https://github.com/balena-io/balena-cli/blob/master/INSTALL.md)'s `balena push` command as stated below. For more information check out the [balena docs](https://www.balena.io/docs/learn/deploy/deployment/).
 
 ```
 balena push <Name of fleet>
