@@ -97,4 +97,4 @@ To deploy on a server, create and fill the `.env` file in the root of the projec
 
 ## Credits
 
-Meetbot's google meet voice caption capture is implemented using [dzaman/google-meet](https://github.com/dzaman/google-meet-transcripts)'s stenographer implementation licensed under GNU GPLv3.
+Meetbot is free software, and may be redistributed under the terms specified in the [license](./LICENSE).

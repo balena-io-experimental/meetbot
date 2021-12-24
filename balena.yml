@@ -2,7 +2,12 @@
 name: meetbot
 type: sw.application
 description: >-
-  Meetbot is a configurable Google Meet bot aimed at reducing friction in video meetings.
+  Meetbot is a configurable Google Meet bot aimed at reducing friction in video calls.
+post-provisioning: >-
+  ## Usage instructions
+
+  Allow a few minutes for your device to download the application. Once it's
+  completed, the meetbot dashboard should be accessible on the public device URL.
 assets:
   repository:
     type: blob.asset
@@ -11,8 +16,7 @@ assets:
   logo:
     type: blob.asset
     data:
-      url: >-
-        https://raw.githubusercontent.com/balena-io-playground/meetbot/master/img/logo.png
+      url: 'https://raw.githubusercontent.com/balena-io-playground/meetbot/master/img/logo.png'
 data:
   applicationEnvironmentVariables:
     - GOOGLE_PASSWORD=
