@@ -254,7 +254,7 @@ const Home = () => {
 			</Container>
 			{isModalOpen && (
 				<Modal
-					action="Join!"
+					action="Join meeting"
 					title="Join meeting"
 					done={() => handleJoinButtonClick(urlToJoin)}
 					cancel={() => setModalOpen(false)}
