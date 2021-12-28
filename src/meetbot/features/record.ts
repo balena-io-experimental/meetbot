@@ -21,6 +21,7 @@ const startRecording = async (page: Page) => {
 		return;
 	}
 
+	console.log('Starting the recording...');
 	// await page.screenshot({ path: 'recording-0.png' });
 	await clickText(page, 'themes');
 	await page.waitForTimeout(2000);
@@ -34,18 +35,11 @@ const startRecording = async (page: Page) => {
 	await btn?.click();
 	await page.waitForTimeout(2000);
 
-	// HACK: this is so terrible...
-	const btns = await page.$$('.RveJvd.snByac');
-	for (const b of btns) {
-		if (await b.evaluate((n) => n.innerHTML === 'Start')) {
-			try {
-				await b.click();
-				break;
-			} catch {
-				// ...
-			}
-		}
-	}
+	// Accept the Google Meet consent notice
+	await page.keyboard.press('Enter');
+	await page.waitForTimeout(500);
+
 	await page.waitForTimeout(2000);
+	console.log('Started recording');
 	// await page.screenshot({ path: 'recording-3.png' });
 };
