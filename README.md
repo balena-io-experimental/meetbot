@@ -50,7 +50,7 @@ npm ci
 HTTP_PORT=8080 npm start
 ```
 
-The bot will now be running but functionality is limited until the bot is [authenticated](#authentication). To get a bot to join a Google Meet, head to the Meetbot dashboard available on `http://localhost:8080` and click the `Join` button.
+The bot will now be running but functionality is limited until the bot is [authenticated](#authentication). To get a bot to join a Google Meet, head to the Meetbot dashboard available on `http://localhost:8080` and click the `Join` button. The project is configured using [dotenv](https://www.npmjs.com/package/dotenv). To configure the bot, add the variables to a `.env` file in the root of the project with the [variables](#configuration) listed above.
 
 ## Development
 

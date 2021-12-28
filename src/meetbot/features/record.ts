@@ -15,16 +15,20 @@ const startRecording = async (page: Page) => {
 		'Rec' ===
 		(await (await page.$('.F9AaL'))?.evaluate((element) => element.textContent))
 	) {
-		console.log('Recording is already turned on. Not trying to record.');
+		console.log(
+			'Recording is already turned on. Not trying to start recording.',
+		);
 		return;
 	}
 
-	console.log('starting the recording...');
+	// await page.screenshot({ path: 'recording-0.png' });
 	await clickText(page, 'themes');
 	await page.waitForTimeout(2000);
+	// await page.screenshot({ path: 'recording-1.png' });
 
 	await clickText(page, 'Recording');
 	await page.waitForTimeout(2000);
+	// await page.screenshot({ path: 'recording-2.png' });
 
 	const btn = await page.waitForXPath("//*[@aria-label='Start recording']");
 	await btn?.click();
@@ -43,5 +47,5 @@ const startRecording = async (page: Page) => {
 		}
 	}
 	await page.waitForTimeout(2000);
-	// await page.screenshot({ path: 'after-recording-start.png' });
+	// await page.screenshot({ path: 'recording-3.png' });
 };

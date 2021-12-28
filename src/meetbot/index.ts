@@ -76,7 +76,11 @@ class MeetBot implements Bot {
 			await this.login();
 
 			console.log('going to Meet after signing in');
-			await this.page.goto(meetURL + '?hl=en');
+			await this.page.screenshot({ path: 'start-meet.png' });
+			await this.page.goto(meetURL + '?hl=en', {
+				waitUntil: 'networkidle0',
+				timeout: 30000,
+			});
 			// await page.screenshot({ path: 'meet-loaded.png' });
 
 			await this.page.keyboard.type('Hubot', { delay: 10 });
