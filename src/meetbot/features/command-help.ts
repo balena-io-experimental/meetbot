@@ -20,7 +20,6 @@ function commandParser(): CommandHelp[] {
 	return commandHelp;
 }
 
-
 /**
  * Print help message for meetbot commands
  */

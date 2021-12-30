@@ -26,7 +26,6 @@ export const attach = (bot: Bot) => {
 	let url: string;
 
 	bot.on('joined', ({ meetURL }) => {
-		console.log('Chatlog joined a meeting', meetURL);
 		chatHandler = new Messenger();
 		url = meetURL;
 		bot.addJob(monitorChat);

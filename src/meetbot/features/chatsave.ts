@@ -23,7 +23,7 @@ export const attach = (bot: Bot): void => {
 
 	bot.on('joined', async ({ meetURL }) => {
 		const meetId = meetURL.split('/').pop();
-		const docName = `Meeting ${meetId} (${new Date().toISOString()}) Chat`;
+		const docName = `Meeting ${meetId} (${new Date().toISOString()}) Chat Transcript`;
 		docId = await doc.create(docName);
 		doc.addTitle('Chat Transcript\n\n');
 
@@ -36,7 +36,7 @@ export const attach = (bot: Bot): void => {
 
 		bot.addJob(
 			postToChatJob(
-				`Chat transcript is available at: ${documentUrl} (Type "/reping" to resend)`,
+				`Chat transcript: ${documentUrl} (Type "/reping" to resend)`,
 			),
 		);
 	});

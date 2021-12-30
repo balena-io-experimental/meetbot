@@ -23,7 +23,7 @@ export interface Bot {
 	): this;
 }
 
-const login = process.env.GOOGLE_EMAIL;
+const login = process.env.GOOGLE_LOGIN;
 const password = process.env.GOOGLE_PASSWORD;
 const totpSecret = process.env.GOOGLE_TOTP_SECRET;
 

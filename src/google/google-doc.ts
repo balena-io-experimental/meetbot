@@ -53,7 +53,7 @@ export class GoogleDoc {
 		}
 
 		console.log(
-			`${docName}: https://docs.google.com/document/d/${this.documentId}`,
+			`${docName.substring(48, docName.length)}: https://docs.google.com/document/d/${this.documentId}`,
 		);
 		this.runQueue();
 		return this.documentId;
