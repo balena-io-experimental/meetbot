@@ -3,7 +3,6 @@ import { Bot } from '..';
 import { clickText } from '../google-meet-helpers';
 
 export const attach = (bot: Bot) => {
-	console.log('Running record feature..');
 	bot.on('joined', () => {
 		console.log('queuing: starting the recording...');
 		bot.addJob(startRecording);

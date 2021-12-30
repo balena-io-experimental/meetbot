@@ -85,14 +85,14 @@ class MeetBot implements Bot {
 
 			await this.page.keyboard.type('Hubot', { delay: 10 });
 
-			console.log('turn off cam using Ctrl+E');
+			// console.log('turn off cam using Ctrl+E');
 			await this.page.waitForTimeout(3000);
 			await this.page.keyboard.down('ControlLeft');
 			await this.page.keyboard.press('KeyE');
 			await this.page.keyboard.up('ControlLeft');
 			await this.page.waitForTimeout(100);
 
-			console.log('turn off mic using Ctrl+D');
+			// console.log('turn off mic using Ctrl+D');
 			await this.page.waitForTimeout(1000);
 			await this.page.keyboard.down('ControlLeft');
 			await this.page.keyboard.press('KeyD');
@@ -114,7 +114,7 @@ class MeetBot implements Bot {
 				await this.page.waitForXPath("//*[contains(text(),'call_end')]");
 			}
 
-			console.log('Changing layout to Spotlight mode');
+			// console.log('Changing layout to Spotlight mode');
 			await clickText(this.page, 'more_vert');
 			await this.page.waitForTimeout(500);
 			await clickText(this.page, 'Change layout');
@@ -141,7 +141,7 @@ class MeetBot implements Bot {
 			await clickText(this.page, 'Apply');
 			await this.page.waitForTimeout(500);
 
-			console.log('open people list to activate feature');
+			// console.log('open people list to activate feature');
 			await clickText(this.page, 'people_outline');
 			await this.page.waitForTimeout(500);
 
@@ -172,7 +172,7 @@ class MeetBot implements Bot {
 			).toString();
 			await this.page.evaluate(script);
 
-			console.log('captions are on');
+			// console.log('captions are on');
 			await this.page.waitForTimeout(1000);
 			// await page.screenshot({ path: 'end.png' });
 

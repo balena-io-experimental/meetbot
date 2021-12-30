@@ -21,7 +21,6 @@ export const attach = async (bot: Bot) => {
 	}
 	const doc = new GoogleDoc(credentials);
 	let docId: string;
-	console.log('Attached Transcript Streamer');
 
 	bot.on('joined', async ({ meetURL }) => {
 		const meetId = meetURL.split('/').pop();

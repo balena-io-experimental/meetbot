@@ -20,7 +20,6 @@ export const attach = (bot: Bot): void => {
 	}
 	const doc = new GoogleDoc(credentials);
 	let docId: string;
-	console.log('Attached Chat Saver');
 
 	bot.on('joined', async ({ meetURL }) => {
 		const meetId = meetURL.split('/').pop();

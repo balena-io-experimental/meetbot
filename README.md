@@ -1,12 +1,20 @@
 # Meetbot 
 
-Meetbot is a Google Meet bot that makes your meetings frictionless. Features include eliminating questions in video calls like:
+Meetbot is a Google Meet bot that makes your meetings frictionless. We've all been there, we've all heard these questions being repeated over and over again on video calls:
 
-1. _Can you hear me? Can you hear us?_ Validates audio input of attendees minus the awkward silence.
-2. _Can you resend those links again?_ Meetbot records chat transcript.
-3. _Do you have any notes from the call?_ Also, records voice caption transcript.
-4. _Was the meeting recorded?_ Auto-records meetings.
-5. _Does anyone have the links shared in the meeting?_ Saves it all to Google Docs. Easy sharing.
+1. _Can you hear me?_
+2. _Can you resend those links?_
+3. _Do you have the notes from the call?_
+4. _Was the meeting recorded?_
+5. _Does anyone have the links shared in the meeting?_
+
+Meetbot helps you out by:
+
+1. Validating audio input of attendees minus the awkward silence.
+2. Recording chat transcript.
+3. Recording voice caption transcript.
+4. Auto-recording meetings.
+5. Saving it all to Google Docs for easy sharing!
 
 And, many more features.
 

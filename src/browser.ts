@@ -25,7 +25,7 @@ export async function newBrowser(): Promise<Browser> {
 	};
 
 	if (existsSync('/usr/bin/chromium-browser')) {
-		console.log('Running on Alpine, altering puppeteer chromium path...');
+		console.log('Altering puppeteer chromium path...');
 		/* @ts-ignore */
 		puppeteerOptions.executablePath = '/usr/bin/chromium-browser';
 	}
