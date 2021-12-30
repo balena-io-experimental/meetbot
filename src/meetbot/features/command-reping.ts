@@ -1,8 +1,10 @@
 import { Bot } from '..';
 import { postToChatJob } from '../pptr-helpers';
 
-// Chat command to resend important messages again
 
+/**
+ * Resend important messages
+ */
 export const attach = (bot: Bot) => {
 	let chatTranscriptUrl: string | null;
 
@@ -13,9 +15,6 @@ export const attach = (bot: Bot) => {
 	bot.on('chat', ({ text }) => {
 		if (text === '/reping') {
 			console.log('Reping requested');
-			// console.log(typeof(bot));
-			// // console.log('This is' + bot.chatTranscriptUrl);
-			// console.log('This is' + bot.getContext().chatTranscriptUrl);
 			bot.addJob(
 				postToChatJob(`Resending chat transcript: ${chatTranscriptUrl}`),
 			);
