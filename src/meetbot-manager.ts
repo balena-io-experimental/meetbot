@@ -1,12 +1,23 @@
 import { Browser } from 'puppeteer';
 import { URL } from 'url';
+import * as fs from 'fs';
 
 import MeetBot from './meetbot';
 import { newBrowser } from './browser';
 import { all as allFeatures } from './meetbot/features';
+import {
+	GoogleCalendar,
+	Credentials,
+	DataPacket,
+} from './google/google-calendar';
 
 const MAX_BOTS = process.env.MAX_BOTS || 5;
 const Bots = new Map<string, MeetBot>();
+
+const CALENDAR_POLLING_INTERVAL = parseInt(
+	process.env.CALENDAR_POLLING_INTERVAL || `${5 * 60000}`,
+	10,
+);
 
 type MeetBotListItem = {
 	url: string | null;
@@ -95,4 +106,53 @@ export async function killBot(url: string) {
 	} else {
 		throw new Error(`Could not find bot at specified location!`);
 	}
+}
+
+export async function scheduleBotsForMeetings() {
+	let credentials: Credentials | null = null;
+	try {
+		const credentialsFile = fs.readFileSync('credentials.json').toString();
+		credentials = JSON.parse(credentialsFile).installed;
+	} catch (err) {
+		console.log(
+			'Cannot read credentials.json - required to use Google Calendar',
+			err,
+		);
+	}
+	if (!credentials || !process.env.GOOGLE_CALENDAR_NAME) {
+		console.log(
+			'deactivating google calender feature due to missing credentials/calendar name',
+		);
+		return;
+	}
+
+	const calendar = new GoogleCalendar(credentials);
+	let meetingSchedule: DataPacket[] = await calendar.listEvents(
+		process.env.GOOGLE_CALENDAR_NAME,
+	);
+	console.log('Start Meeting Scheduler');
+
+	// Check for events on the calendar every 60 seconds
+	setInterval(async () => {
+		meetingSchedule = await calendar.listEvents(
+			process.env.GOOGLE_CALENDAR_NAME,
+		);
+	}, CALENDAR_POLLING_INTERVAL);
+
+	// Checking the meeting schedule every X seconds
+	setInterval(async () => {
+		if (meetingSchedule.length) {
+			for (const meeting of meetingSchedule) {
+				if (
+					new Date(meeting.startTime).getTime() + CALENDAR_POLLING_INTERVAL >=
+					new Date().getTime()
+				) {
+					console.log(`Spawning bot for ${meeting.name}`);
+					await spawnBot(meeting.meetUrl);
+				}
+			}
+		} else {
+			// Do nothing
+		}
+	}, 1000);
 }
