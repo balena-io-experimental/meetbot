@@ -1,5 +1,5 @@
 import { Bot } from '..';
-import { postToChatJob } from '../pptr-helpers';
+import { postToChatJob } from '../google-meet-helpers';
 
 // Feature to auto validate audio input from attendees in meetings when folks ask the question: Can you hear me?
 
@@ -14,7 +14,6 @@ export const attach = (bot: Bot) => {
 			helloCmd.test(caption.text) &&
 			new Date().getTime() - sayHelloInProgress > 30_000
 		) {
-			console.log('Someone in the meet has faulty audio.');
 			sayHelloInProgress = new Date().getTime();
 			bot.addJob(postToChatJob('"Can you hear me??"\nLinux User Detected 🤣'));
 			// bot.addJob(postToChatJob('"Can you hear me??"\nYes, I can hear you.'));

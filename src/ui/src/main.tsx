@@ -1,14 +1,14 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import { Provider } from "rendition";
-import { setupMockServer } from "./mocks";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { DEV } from "./env";
-import App from "./App";
-import { createGlobalStyle } from "styled-components";
-import reset from "styled-reset";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'rendition';
+import { setupMockServer } from './mocks';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { DEV } from './env';
+import App from './App';
+import { createGlobalStyle } from 'styled-components';
+import reset from 'styled-reset';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 if (DEV) {
 	setupMockServer();
@@ -41,5 +41,5 @@ ReactDOM.render(
 			</Provider>
 		</QueryClientProvider>
 	</React.StrictMode>,
-	document.getElementById("root")
+	document.getElementById('root'),
 );

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { useMutation, useQuery } from "react-query";
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
+import { useMutation, useQuery } from 'react-query';
 import {
 	Badge,
 	Box,
@@ -13,11 +13,11 @@ import {
 	Spinner,
 	Table,
 	Txt,
-} from "rendition";
+} from 'rendition';
 import { toast } from 'react-toastify';
-import { fetchAllMeets, joinMeet, leaveMeet } from "../api/meets";
-import { Disconnect, Logo, Plus } from "../assets/icons";
-import { MeetListStub, MeetsListResponse } from "../api/meets/types";
+import { fetchAllMeets, joinMeet, leaveMeet } from '../api/meets';
+import { Disconnect, Logo, Plus } from '../assets/icons';
+import { MeetListStub, MeetsListResponse } from '../api/meets/types';
 
 const StyledBox = styled((props) => <Box {...props} />)`
 	display: flex;
@@ -55,11 +55,11 @@ const SpinnerContainer = styled((props) => <Container {...props} />)`
 `;
 
 const meetStatus = (joinedAt: Date, leftAt: Date): string => {
-	let status = "waiting";
+	let status = 'waiting';
 	if (leftAt) {
-		status = "finished";
+		status = 'finished';
 	} else if (joinedAt) {
-		status = "ongoing";
+		status = 'ongoing';
 	}
 	return status;
 };
@@ -71,8 +71,8 @@ const renderMeetDetailsColumn = (value: any, row: any): JSX.Element => {
 				<Logo height="32px"></Logo>
 			</IconContainer>
 			<Box>
-				<Txt bold>{row.url.split("/").pop()}</Txt>
-				<Link fontSize={"10px"} href={row.url}>
+				<Txt bold>{row.url.split('/').pop()}</Txt>
+				<Link fontSize={'10px'} href={row.url}>
 					{row.url}
 				</Link>
 			</Box>
@@ -98,7 +98,7 @@ const renderMeetStatusColumn = (value: any, row: any): JSX.Element => {
 
 const renderMeetActionsColumn = (
 	row: any,
-	onLeave: (url: string) => void
+	onLeave: (url: string) => void,
 ): JSX.Element => {
 	const status = meetStatus(row.joinedAt, row.leftAt);
 	const handleLeaveButtonClick = () => {
@@ -106,13 +106,13 @@ const renderMeetActionsColumn = (
 	};
 	return (
 		<StyledBox>
-			{status === "ongoing" && (
+			{status === 'ongoing' && (
 				<Button
 					onClick={handleLeaveButtonClick}
 					icon={
 						<Disconnect
-							width={"16px"}
-							height={"16px"}
+							width={'16px'}
+							height={'16px'}
 							fill="#BA0C00"
 						></Disconnect>
 					}
@@ -126,7 +126,7 @@ const renderMeetActionsColumn = (
 const renderMeetParticipantsColumn = (value: any, row: any): JSX.Element => {
 	return (
 		<StyledBox>
-			<Txt mx="auto">{row.participants || "-"}</Txt>
+			<Txt mx="auto">{row.participants || '-'}</Txt>
 		</StyledBox>
 	);
 };
@@ -148,7 +148,7 @@ const Home = () => {
 	const [urlToJoin, setUrlToJoin] = useState(null);
 
 	const getMeetsQuery = useQuery<MeetsListResponse, any>(
-		"meets",
+		'meets',
 		fetchAllMeets,
 	);
 
@@ -191,31 +191,31 @@ const Home = () => {
 
 	const tableColumns = [
 		{
-			field: "url",
-			label: "URL",
+			field: 'url',
+			label: 'URL',
 			render: renderMeetDetailsColumn,
 			sortable: false,
 		},
 		{
-			field: "transcripts",
-			label: "Transcripts",
+			field: 'transcripts',
+			label: 'Transcripts',
 			render: renderMeetTranscriptsColumn,
 			sortable: false,
 		},
 		{
-			field: "status",
-			label: "Status",
+			field: 'status',
+			label: 'Status',
 			render: renderMeetStatusColumn,
 			sortable: false,
 		},
 		{
-			field: "participants",
-			label: "People",
+			field: 'participants',
+			label: 'People',
 			render: renderMeetParticipantsColumn,
 			sortable: false,
 		},
 		{
-			label: "Actions",
+			label: 'Actions',
 			render: (_value: any, row: any): JSX.Element => {
 				return renderMeetActionsColumn(row, handleLeaveMeetButtonClick);
 			},
@@ -228,7 +228,7 @@ const Home = () => {
 	return (
 		<Container px="120px" pt="64px" pb="100px">
 			<Box display="flex">
-				<Heading.h2 mb={"48px"}>Meetings</Heading.h2>
+				<Heading.h2 mb={'48px'}>Meetings</Heading.h2>
 				<StyledButton
 					ml="auto"
 					icon={<Plus height="14px" width="14px" fill="#2A506F" />}
@@ -254,13 +254,13 @@ const Home = () => {
 			</Container>
 			{isModalOpen && (
 				<Modal
-					action="Join!"
+					action="Join meeting"
 					title="Join meeting"
 					done={() => handleJoinButtonClick(urlToJoin)}
 					cancel={() => setModalOpen(false)}
 				>
 					<React.Fragment key=".0">
-						<Box style={{ gridArea: "header", alignItems: "center" }}>
+						<Box style={{ gridArea: 'header', alignItems: 'center' }}>
 							<Input
 								value={urlToJoin}
 								onChange={(el) => setUrlToJoin(el.target.value)}

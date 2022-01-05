@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { Bot } from '..';
 import { Credentials, GoogleDoc } from '../../google/google-doc';
-import { postToChatJob } from '../pptr-helpers';
+import { postToChatJob } from '../google-meet-helpers';
 
 export const attach = (bot: Bot): void => {
 	let credentials: Credentials | null = null;
@@ -20,7 +20,6 @@ export const attach = (bot: Bot): void => {
 	}
 	const doc = new GoogleDoc(credentials);
 	let docId: string;
-	console.log('Attached Chat Saver');
 
 	bot.on('joined', async ({ meetURL }) => {
 		const meetId = meetURL.split('/').pop();

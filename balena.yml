@@ -1,0 +1,32 @@
+
+name: meetbot
+type: sw.application
+description: >-
+  Meetbot is a configurable Google Meet bot aimed at reducing friction in video calls.
+post-provisioning: >-
+  ## Usage instructions
+
+  Allow a few minutes for your device to download the application. Once it's
+  completed, the meetbot dashboard should be accessible on the public device URL.
+assets:
+  repository:
+    type: blob.asset
+    data:
+      url: 'https://github.com/balena-io-playground/meetbot'
+  logo:
+    type: blob.asset
+    data:
+      url: 'https://raw.githubusercontent.com/balena-io-playground/meetbot/master/img/logo.png'
+data:
+  applicationEnvironmentVariables:
+    - GOOGLE_PASSWORD=
+    - GOOGLE_TOTP_SECRET=
+    - GOOGLE_EMAIL=
+    - MAX_BOTS=5
+    - GREETING_MESSAGE=Hello folks, it's your favorite bot, hubot!!
+  defaultDeviceType: intel-nuc
+  supportedDeviceTypes:
+    - generic-x86-64
+    - generic-x86
+    - intel-nuc
+version: 1.0.0

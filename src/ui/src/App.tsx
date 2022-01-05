@@ -1,16 +1,16 @@
-import { Box, Button, Navbar } from "rendition";
-import { Logo } from "./assets/icons";
+import { Box, Button, Navbar } from 'rendition';
+import { Logo } from './assets/icons';
 import {
 	BrowserRouter as Router,
 	Redirect,
 	Switch,
 	Route,
 	Link,
-} from "react-router-dom";
-import Meetings from "./views/Meetings";
-import Settings from "./views/Settings";
-import NotFound from "./views/NotFound";
-import styled from "styled-components";
+} from 'react-router-dom';
+import Meetings from './views/Meetings';
+import Settings from './views/Settings';
+import NotFound from './views/NotFound';
+import styled from 'styled-components';
 
 const StyledNavbar = styled((props) => <Navbar {...props} />)`
 	background-color: transparent;

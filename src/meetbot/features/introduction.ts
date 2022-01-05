@@ -1,14 +1,14 @@
 import { Bot } from '..';
-import { postToChatJob } from '../pptr-helpers';
+import { postToChatJob } from '../google-meet-helpers';
+
+const GREETING_MESSAGE =
+	process.env.GREETING_MESSAGE ||
+	"Hello folks, it's your favorite bot, hubot!! \n (Type /help for a list of available commands)";
 
 export const attach = (bot: Bot) => {
-	console.log('Introducing hubot in the meet - feature');
-
 	bot.on('joined', ({ meetURL }) => {
 		console.log('Joined the meeting: ', meetURL);
-		bot.addJob(
-			postToChatJob("Hello balenistas, it's your favorite bot, hubot!!"),
-		);
+		bot.addJob(postToChatJob(GREETING_MESSAGE));
 	});
 
 	bot.on('left', ({ meetURL }) => {

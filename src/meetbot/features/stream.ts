@@ -1,7 +1,7 @@
 import { Bot } from '..';
 import * as fs from 'fs';
 import * as moment from 'moment';
-import { postToChatJob } from '../pptr-helpers';
+import { postToChatJob } from '../google-meet-helpers';
 import { Credentials, GoogleDoc } from '../../google/google-doc';
 
 export const attach = async (bot: Bot) => {
@@ -21,7 +21,6 @@ export const attach = async (bot: Bot) => {
 	}
 	const doc = new GoogleDoc(credentials);
 	let docId: string;
-	console.log('Attached Transcript Streamer');
 
 	bot.on('joined', async ({ meetURL }) => {
 		const meetId = meetURL.split('/').pop();
@@ -35,7 +34,7 @@ export const attach = async (bot: Bot) => {
 			meetURL,
 		});
 
-		bot.addJob(postToChatJob(`Transcript is available at: ${documentUrl}`));
+		bot.addJob(postToChatJob(`Meet Transcript: ${documentUrl}`));
 	});
 	bot.on('caption', (data: CaptionEvent) => {
 		if (

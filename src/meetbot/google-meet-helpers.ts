@@ -8,7 +8,7 @@ export const clickText = async (page: Page, text: string, retries = 3) => {
 			await el.click();
 			clicked = true;
 		} catch {
-			// sometimes we find stuff with the same text which is not clickable
+			// sometimes elements with the same text are found which are not clickable
 		}
 	}
 	if ((elems.length === 0 || !clicked) && retries > 0) {
@@ -19,18 +19,23 @@ export const clickText = async (page: Page, text: string, retries = 3) => {
 
 export const postToChatJob = (text: string) => {
 	return async (page: Page) => {
-		console.log('open chat section and send a message to all');
+		// Close the suggestion tip dialog box from meet
+		await page.keyboard.press('Escape');
+		await page.waitForTimeout(500);
+
+		// await page.screenshot({ path: 'chat-before-open.png' });
 		await clickText(page, 'chat');
 		await page.waitForTimeout(1500);
-		// await page.screenshot({ path: 'after-chat-open.png' });
+		// await page.screenshot({ path: 'chat-open.png' });
 
 		await page.keyboard.type(text, { delay: 10 });
+		// await page.screenshot({ path: 'chat-write-text.png' });
 		await page.keyboard.press('Enter');
-		// await page.screenshot({ path: 'after-chat.png' });
+		// await page.screenshot({ path: 'chart-send-text.png' });
 
-		console.log('close chat section again');
 		await clickText(page, 'chat');
 		await page.waitForTimeout(1500);
-		// await page.screenshot({ path: 'after-chat-open.png' });
+		// await page.screenshot({ path: 'chat-close.png' });
+		console.log('Message sent on the chat');
 	};
 };

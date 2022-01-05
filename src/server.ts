@@ -4,7 +4,7 @@ import * as path from 'path';
 import * as meetbotManager from './meetbot-manager';
 import api from './api';
 
-const HTTP_PORT = process.env.HTTP_PORT || 8080;
+const HTTP_PORT = process.env.HTTP_PORT || 80;
 
 const server = express();
 server.use(express.json());

@@ -1,10 +1,9 @@
 import { Browser, Page } from 'puppeteer';
 import puppeteer from 'puppeteer-extra';
+import { existsSync } from 'fs';
+
 import StealthPlugin = require('puppeteer-extra-plugin-stealth');
-
 puppeteer.use(StealthPlugin());
-
-const RUNNING_ALPINE = !!process.env.RUNNING_ALPINE;
 
 export async function newBrowser(): Promise<Browser> {
 	const puppeteerOptions = {
@@ -25,13 +24,13 @@ export async function newBrowser(): Promise<Browser> {
 		defaultViewport: { height: 912, width: 1480 },
 	};
 
-	if (RUNNING_ALPINE) {
-		console.log('Running on Alpine, altering puppeteer chromium path...');
+	if (existsSync('/usr/bin/chromium-browser')) {
+		console.log('Altering puppeteer chromium path...');
 		/* @ts-ignore */
 		puppeteerOptions.executablePath = '/usr/bin/chromium-browser';
 	}
-	const browser = await puppeteer.launch(puppeteerOptions);
 
+	const browser = await puppeteer.launch(puppeteerOptions);
 	browser
 		.defaultBrowserContext()
 		.overridePermissions('https://meet.google.com/', [
@@ -39,10 +38,6 @@ export async function newBrowser(): Promise<Browser> {
 			'camera',
 			'notifications',
 		]);
-
-	// maybe we could pass a list of cookies as an option so browser is authenticated for a domain
-	// "cookie": "CONSENT=PENDING+954; SMSV=ADHTe-...............
-	// browser.defaultBrowserContext().setCookie ?
 
 	return browser;
 }

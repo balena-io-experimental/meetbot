@@ -1,26 +1,18 @@
 {
   "name": "meetbot",
-  "version": "0.0.1",
-  "description": "A bot for Google Meets",
-  "homepage": "https://github.com/balena-io/balena-typescript-skeleton#readme",
+  "version": "1.0.0",
+  "description": "A helper bot for Google Meet that makes meetings frictionless.",
+  "homepage": "https://github.com/balena-io-playground/meetbot",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "keywords": [
-    "balena",
-    "typescript"
-  ],
-  "author": "",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/balena-io/balena-typescript-skeleton.git"
+    "url": "git+https://github.com/balena-io-playground/meetbot.git"
   },
   "bugs": {
-    "url": "https://github.com/balena-io/balena-typescript-skeleton/issues"
+    "url": "https://github.com/balena-io-playground/meetbot/issues"
   },
-  "files": [
-    "build/"
-  ],
   "scripts": {
     "clean": "rimraf build",
     "build": "npm run clean && tsc && npm run build:ui && cp -r src/stenographer build/stenographer",

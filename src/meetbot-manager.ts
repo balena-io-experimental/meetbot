@@ -62,12 +62,12 @@ export async function spawnBot(url: string) {
 	});
 
 	bot.on('transcript_doc_ready', (data) => {
-		console.log('setting transcript url to' + data.transcriptUrl);
+		console.log('setting transcript url');
 		bot.transcriptUrl = data.transcriptUrl;
 	});
 
 	bot.on('chat_transcript_doc_ready', (data) => {
-		console.log('setting chat transcript url to' + data.transcriptUrl);
+		console.log('setting chat transcript url');
 		bot.chatTranscriptUrl = data.transcriptUrl;
 	});
 
