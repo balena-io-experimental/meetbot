@@ -24,13 +24,13 @@ interface StreamEvent extends BotEvent {
 	transcriptUrl: string | null;
 }
 
-interface CommandHelp {
-	command: string,
-	description: string
+interface ChatCommandHelp {
+	command: string;
+	description: string;
 }
 
 interface HelpEvent {
-	meetbotCommands: CommandHelp[];
+	meetbotChatCommands: ChatCommandHelp[];
 }
 
 type LeaveEvent = BotEvent;

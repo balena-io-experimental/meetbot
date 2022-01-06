@@ -23,7 +23,7 @@ data:
     - GOOGLE_TOTP_SECRET=
     - GOOGLE_EMAIL=
     - MAX_BOTS=5
-    - GREETING_MESSAGE=Hello folks, it's your favorite bot, hubot!!
+    - GREETING_MESSAGE=Hello folks, it's your favorite bot, hubot!! \n (Type /help for a list of available commands)
   defaultDeviceType: intel-nuc
   supportedDeviceTypes:
     - generic-x86-64

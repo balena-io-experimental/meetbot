@@ -34,7 +34,7 @@ export const attach = async (bot: Bot) => {
 			meetURL,
 		});
 
-		bot.addJob(postToChatJob(`Voice Transcript: ${documentUrl}`));
+		bot.addJob(postToChatJob(`Meet Transcript: ${documentUrl}`));
 	});
 	bot.on('caption', (data: CaptionEvent) => {
 		if (

@@ -1,6 +1,5 @@
 import { Bot } from '..';
-import { postToChatJob } from '../pptr-helpers';
-
+import { postToChatJob } from '../google-meet-helpers';
 
 /**
  * Resend important messages
