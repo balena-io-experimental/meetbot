@@ -37,7 +37,7 @@ By default, meetbot will join meetings as an unauthenticated user and won't be a
 | GOOGLE_TOTP_SECRET   | If the Google account has 2FA security, then the TOTP secret that is configured for 2FA goes here                  | NA                                             |
 | HTTP_PORT            | (Optional) Port on which the meetbot server starts running. For balena devices, the server needs to run on port 80 | 80                                             |
 | MAX_BOTS             | (Optional) Maximum number of meetbots to run parallely on the server                                               | 5                                              |
-| GREETING_MESSAGE     | (Optional) Greeting message which is posted when meetbot joins the Google Meet                                     | "Hello folks, it's your favorite bot, hubot!!" |
+| GREETING_MESSAGE     | (Optional) Greeting message which is posted when meetbot joins the Google Meet                                     | "Hello folks, it's your favorite bot, hubot!! \n (Type /help for a list of available commands)" |
 
 Read more about [variables](https://www.balena.io/docs/learn/manage/variables/) in balenaCloud Dashboard. 
 
@@ -65,6 +65,8 @@ The bot will now be running but functionality is limited until the bot is [authe
 Meetbot is based on a plugin event driven architecture. Most features work independently either creating events or using events to perform a specific function. To add new features to meetbot, start by adding it in `src/meetbot/features`. Check out other features for help in understanding how things work. After finishing your changes, [run the bot locally](#running-the-bot-locally) to check if your feature loads and test your changes. 
 
 To develop the UI, run `npm run dev-ui`. This will spin up the development server. You should then be able to access the dashboard at `http://localhost:3000/`. Note that the data you will see on the tables is only mocked and no actual requests are sent to the API. This makes it easier to develop the UI independently.
+
+To create new chat commands for meetbot, start by creating a file in `src/meetbot/features` with the name `chat-command-<feature-name>.ts`. Use the `chat` event and parse the data in order to perform a specific action when a specific chat message is sent. Don't forget to add a comment in tsdoc format to indicate what the chat command does. These files are parsed by the help chat command and are used to populate the help message automatically. The help message can be triggered using the using the `/help` chat command.
 
 ## Authentication
 

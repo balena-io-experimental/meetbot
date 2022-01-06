@@ -24,6 +24,15 @@ interface StreamEvent extends BotEvent {
 	transcriptUrl: string | null;
 }
 
+interface ChatCommandHelp {
+	command: string;
+	description: string;
+}
+
+interface HelpEvent {
+	meetbotChatCommands: ChatCommandHelp[];
+}
+
 type LeaveEvent = BotEvent;
 type JoinEvent = BotEvent;
 type ActiveEvent = BotEvent;
@@ -36,6 +45,7 @@ interface BotEvents {
 	active: ActiveEvent;
 	transcript_doc_ready: StreamEvent;
 	chat_transcript_doc_ready: StreamEvent;
+	help_event: HelpEvent;
 	end: EndEvent;
 	participants: ParticipantsEvent;
 	raw_caption: CaptionEvent;

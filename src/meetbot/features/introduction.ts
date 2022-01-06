@@ -3,7 +3,7 @@ import { postToChatJob } from '../google-meet-helpers';
 
 const GREETING_MESSAGE =
 	process.env.GREETING_MESSAGE ||
-	"Hello folks, it's your favorite bot, hubot!! \n (Type /help for a list of available commands)";
+	"Hello folks, it's your favorite bot, hubot!!\n(Type /help for available chat commands)";
 
 export const attach = (bot: Bot) => {
 	bot.on('joined', ({ meetURL }) => {
