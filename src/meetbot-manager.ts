@@ -14,8 +14,15 @@ import {
 const MAX_BOTS = process.env.MAX_BOTS || 5;
 const Bots = new Map<string, MeetBot>();
 
+// Time between intervals to check for new events using Google Calendar API
 const CALENDAR_POLLING_INTERVAL = parseInt(
-	process.env.CALENDAR_POLLING_INTERVAL || `${5 * 60000}`,
+	process.env.CALENDAR_POLLING_INTERVAL || `${60000}`, // Value needs to be in milliseconds
+	10,
+);
+
+// Time between intervals to parse the schedule and spawn bots when the time comes
+const SCHEDULE_PARSING_INTERVAL = parseInt(
+	process.env.SCHEDULE_PARSING_INTERVAL || `${1500}`, // Value needs to be in milliseconds
 	10,
 );
 
@@ -130,29 +137,51 @@ export async function scheduleBotsForMeetings() {
 	let meetingSchedule: DataPacket[] = await calendar.listEvents(
 		process.env.GOOGLE_CALENDAR_NAME,
 	);
-	console.log('Start Meeting Scheduler');
+	console.log(meetingSchedule);
+	console.log(`
+		Start Meeting Scheduler${
+			meetingSchedule.length
+				? `: Tracking ${meetingSchedule.length}+ meetings`
+				: `: (No meetings found)`
+		}
+	`);
 
-	// Check for events on the calendar every 60 seconds
+	// Check for events on the calendar and refresh schedule
 	setInterval(async () => {
 		meetingSchedule = await calendar.listEvents(
 			process.env.GOOGLE_CALENDAR_NAME,
 		);
 	}, CALENDAR_POLLING_INTERVAL);
 
-	// Checking the meeting schedule every X seconds
-	setInterval(async () => {
-		if (meetingSchedule.length) {
+	// Checking the meeting schedule and spawn bots when the time comes
+	if (meetingSchedule.length) {
+		setInterval(async () => {
 			for (const meeting of meetingSchedule) {
-				if (
-					new Date(meeting.startTime).getTime() + CALENDAR_POLLING_INTERVAL >=
-					new Date().getTime()
-				) {
-					console.log(`Spawning bot for ${meeting.name}`);
-					await spawnBot(meeting.meetUrl);
+				if (new Date(meeting.startTime).getTime() <= new Date().getTime()) {
+					const activeBots = await listBots();
+					if (activeBots.length) {
+						for (const bot of activeBots) {
+							if (bot.url !== meeting.meetUrl) {
+								console.log(
+									`Spawning meetbot for ${meeting.name} at ${meeting.meetUrl}`,
+								);
+								await spawnBot(meeting.meetUrl);
+							}
+						}
+					} else {
+						console.log(
+							`Spawning meetbot for ${meeting.name} at ${meeting.meetUrl}`,
+						);
+						await spawnBot(meeting.meetUrl);
+					}
+				} else {
+					// The meeting schedule is ordered by startTime
+					// So if the meeting is very far we can stop checking at the first event
+					return;
 				}
 			}
-		} else {
-			// Do nothing
-		}
-	}, 1000);
+		}, SCHEDULE_PARSING_INTERVAL);
+	} else {
+		// Do nothing
+	}
 }
