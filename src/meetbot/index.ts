@@ -26,10 +26,6 @@ export interface Bot {
 const login = process.env.GOOGLE_EMAIL;
 const password = process.env.GOOGLE_PASSWORD;
 const totpSecret = process.env.GOOGLE_TOTP_SECRET;
-const LEAVE_TIMER = parseInt(
-	process.env.LEAVE_TIMER || `${450000}`, // Value needs to be in milliseconds
-	10,
-);
 
 class MeetBot implements Bot {
 	public page: Page | null = null;
@@ -188,7 +184,7 @@ class MeetBot implements Bot {
 				await this.page.waitForTimeout(500);
 
 				// names of participants in list
-				const participants = await this.page.$$('span.ZjFb7c');
+				const participants = await this.page.$$('span.zWGUib');
 				this.emit('participants', { participants: participants.length });
 
 				if (participants.length === 1) {

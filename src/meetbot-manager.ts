@@ -137,13 +137,12 @@ export async function scheduleBotsForMeetings() {
 	let meetingSchedule: DataPacket[] = await calendar.listEvents(
 		process.env.GOOGLE_CALENDAR_NAME,
 	);
-	console.log(meetingSchedule);
-	console.log(`
-		Start Meeting Scheduler${
-			meetingSchedule.length
-				? `: Tracking ${meetingSchedule.length}+ meetings`
-				: `: (No meetings found)`
-		}
+
+	console.log(`Start Meeting Scheduler${
+		meetingSchedule.length
+			? `: Tracking ${meetingSchedule.length}+ meetings`
+			: `: (No meetings found)`
+	}
 	`);
 
 	// Check for events on the calendar and refresh schedule
@@ -157,27 +156,31 @@ export async function scheduleBotsForMeetings() {
 	if (meetingSchedule.length) {
 		setInterval(async () => {
 			for (const meeting of meetingSchedule) {
-				if (new Date(meeting.startTime).getTime() <= new Date().getTime()) {
+				// Add 60 seconds to delay meetbot spawn
+				if (
+					new Date(meeting.startTime).getTime() + 60000 <=
+					new Date().getTime()
+				) {
 					const activeBots = await listBots();
+					const botURLs = activeBots.map((bot) => bot.url);
+					console.log(botURLs);
 					if (activeBots.length) {
-						for (const bot of activeBots) {
-							if (bot.url !== meeting.meetUrl) {
-								console.log(
-									`Spawning meetbot for ${meeting.name} at ${meeting.meetUrl}`,
-								);
-								await spawnBot(meeting.meetUrl);
-							}
+						if (botURLs.includes(meeting.meetUrl)) {
+							continue;
+						} else {
+							console.log(
+								`Spawning meetbot for ${meeting.name} at ${meeting.meetUrl}`,
+							);
+							await spawnBot(meeting.meetUrl);
 						}
 					} else {
 						console.log(
-							`Spawning meetbot for ${meeting.name} at ${meeting.meetUrl}`,
+							`No active meetbots found. Spawning one for ${meeting.name} at ${meeting.meetUrl}`,
 						);
 						await spawnBot(meeting.meetUrl);
 					}
 				} else {
-					// The meeting schedule is ordered by startTime
-					// So if the meeting is very far we can stop checking at the first event
-					return;
+					// Do Nothing
 				}
 			}
 		}, SCHEDULE_PARSING_INTERVAL);

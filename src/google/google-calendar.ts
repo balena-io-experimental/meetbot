@@ -1,6 +1,5 @@
 import * as fs from 'fs';
 import { Auth, google, calendar_v3 } from 'googleapis';
-// import { GaxiosResponse } from 'gaxios';
 import { getNewToken } from './token-generator';
 
 // The file token.json stores the user's access and refresh tokens, and is
@@ -54,7 +53,6 @@ export class GoogleCalendar {
 			calendarId: `${calendarName}`,
 			timeMin: new Date().toISOString(),
 			maxResults: 15,
-			// maxResults: 100,
 			singleEvents: true,
 			orderBy: 'startTime',
 		});

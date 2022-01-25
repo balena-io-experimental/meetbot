@@ -13,8 +13,10 @@ Meetbot helps you out by:
 1. Validating audio input of attendees minus the awkward silence.
 2. Recording chat transcript.
 3. Recording voice caption transcript.
-4. Auto-recording meetings.
-5. Saving it all to Google Docs for easy sharing!
+4. Chat commands to resend transcripts for folks joining late.
+5. Auto-record meetings.
+6. Auto-join meetings using Google Calendar API. 
+7. Saving it all to Google Docs for easy sharing!
 
 And, many more features.
 
@@ -37,6 +39,7 @@ By default, meetbot will join meetings as an unauthenticated user and won't be a
 | GOOGLE_TOTP_SECRET   | If the Google account has 2FA security, then the TOTP secret that is configured for 2FA goes here                  | NA                                             |
 | HTTP_PORT            | (Optional) Port on which the meetbot server starts running. For balena devices, the server needs to run on port 80 | 80                                             |
 | MAX_BOTS             | (Optional) Maximum number of meetbots to run parallely on the server                                               | 5                                              |
+| GOOGLE_CALENDAR_NAME | (Optional) The Google calendar ID that meetbot parses to auto-join events in that calendar                         | 5                                              |
 | GREETING_MESSAGE     | (Optional) Greeting message which is posted when meetbot joins the Google Meet                                     | "Hello folks, it's your favorite bot, hubot!!" |
 
 Read more about [variables](https://www.balena.io/docs/learn/manage/variables/) in balenaCloud Dashboard. 
