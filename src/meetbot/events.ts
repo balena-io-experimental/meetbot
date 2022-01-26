@@ -46,7 +46,7 @@ interface BotEvents {
 	transcript_doc_ready: StreamEvent;
 	chat_transcript_doc_ready: StreamEvent;
 	help_event: HelpEvent;
-	end: EndEvent;
+	error: ErrorEvent;
 	participants: ParticipantsEvent;
 	raw_caption: CaptionEvent;
 	caption: CaptionEvent;
