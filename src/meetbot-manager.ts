@@ -69,9 +69,12 @@ export async function spawnBot(url: string) {
 		bot.chatTranscriptUrl = data.transcriptUrl;
 	});
 
-	bot.on('end', () => {
-		console.log(`Removing ${url} from active bot queue`);
-		ACTIVE_BOTS.delete(url);
+	bot.on('error', (err) => {
+		console.error('Unrecoverable bot error occured:', err.message);
+		if (bot.url && ACTIVE_BOTS.get(bot.url)) {
+			console.log(`Removing ${bot.url} from active bot queue`);
+			ACTIVE_BOTS.delete(bot.url);
+		}
 	});
 
 	// Tell bot to start running

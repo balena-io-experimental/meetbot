@@ -214,12 +214,10 @@ class MeetBot implements Bot {
 			}
 		} catch (err) {
 			await this.page.screenshot({ path: 'exception.png' });
-			console.log('ERROR in meet! Exiting...', meetURL, err);
-			this.emit('end', { meetURL });
+			this.emit('error', err as ErrorEvent);
 		} finally {
 			clearInterval(this.captionTimer);
 			await this.page.close();
-			this.emit('end', { meetURL });
 			// TODO detach features?
 		}
 	}
