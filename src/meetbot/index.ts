@@ -173,6 +173,13 @@ class MeetBot implements Bot {
 			console.log('streaming captions');
 
 			while (!this.leaveRequested) {
+				const removedMessage = await this.page.$x(
+					'//div[text()="You\'ve been removed from the meeting"]',
+				);
+				if (removedMessage.length > 0) {
+					this.leaveRequested = true;
+					break;
+				}
 				await this.page.waitForTimeout(500);
 
 				// names of participants in list
