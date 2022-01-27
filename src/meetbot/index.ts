@@ -29,7 +29,7 @@ const totpSecret = process.env.GOOGLE_TOTP_SECRET;
 
 class MeetBot implements Bot {
 	public page: Page | null = null;
-	public url: string | null = null;
+	public url: string;
 	public joinedAt: string | null = null;
 	public transcriptUrl: string | null = null;
 	public chatTranscriptUrl: string | null = null;
@@ -40,7 +40,8 @@ class MeetBot implements Bot {
 	private captionTimer: NodeJS.Timer;
 	private events = new EventEmitter();
 
-	constructor(private browser: Browser, features: Feature[]) {
+	constructor(meetURL: string, private browser: Browser, features: Feature[]) {
+		this.url = meetURL;
 		for (const feature of features) {
 			feature.attach(this);
 		}
@@ -65,19 +66,18 @@ class MeetBot implements Bot {
 
 	// TODOs
 	// * replace all selector queries as they are bound to break
-	async joinMeet(meetURL: string) {
+	async joinMeet() {
 		if (this.page === null) {
 			throw new Error('Meetbot cannot join a meet without an initialized page');
 		}
-		this.url = meetURL;
 		try {
-			this.emit('active', { meetURL });
+			this.emit('joining', null);
 
 			await this.login();
 
 			console.log('going to Meet after signing in');
 			await this.page.screenshot({ path: 'start-meet.png' });
-			await this.page.goto(meetURL + '?hl=en', {
+			await this.page.goto(this.url + '?hl=en', {
 				waitUntil: 'networkidle0',
 				timeout: 30000,
 			});
@@ -131,7 +131,7 @@ class MeetBot implements Bot {
 			this.joinedAt = new Date().toUTCString();
 
 			console.log('Turning on captions');
-			this.emit('joined', { meetURL });
+			this.emit('joined', null);
 			await clickText(this.page, 'more_vert');
 			await this.page.waitForTimeout(500);
 			await clickText(this.page, 'Captions');
@@ -148,10 +148,7 @@ class MeetBot implements Bot {
 			// Inject stenographer into the meet page
 			// Function handleCaption can be executed as a callback whenever captions are available.
 			const handleCaption = (caption: SteganographerEvent) => {
-				this.emit('raw_caption', {
-					meetURL,
-					caption,
-				});
+				this.emit('raw_caption', { caption });
 				const existingCaption = this.captions.find(
 					(c) => c.caption.id === caption.id,
 				);
@@ -159,10 +156,7 @@ class MeetBot implements Bot {
 					existingCaption.caption.text = caption.text;
 					existingCaption.caption.endedAt = caption.endedAt;
 				} else {
-					this.captions.push({
-						meetURL,
-						caption,
-					});
+					this.captions.push({ caption });
 				}
 			};
 
@@ -183,14 +177,10 @@ class MeetBot implements Bot {
 
 				// names of participants in list
 				const participants = await this.page.$$('span.ZjFb7c');
-				this.emit('participants', {
-					meetURL,
-					participants: participants.length,
-				});
+				this.emit('participants', { participants: participants.length });
 
 				if (participants.length === 1) {
 					console.log("nobody else is here - I'm leaving...");
-					this.emit('left', { meetURL });
 					break;
 				}
 
@@ -218,6 +208,7 @@ class MeetBot implements Bot {
 		} finally {
 			clearInterval(this.captionTimer);
 			await this.page.close();
+			this.emit('left', null);
 			// TODO detach features?
 		}
 	}
@@ -298,7 +289,7 @@ class MeetBot implements Bot {
 
 	emit<K extends keyof BotEvents, T extends BotEvents[K]>(
 		eventName: K,
-		event: T,
+		event: T | null, // This is to allow events with no data
 	): boolean {
 		return this.events.emit(eventName, event);
 	}

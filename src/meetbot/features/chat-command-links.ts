@@ -1,10 +1,10 @@
-import { Bot } from '..';
+import MeetBot from '..';
 import { postToChatJob } from '../google-meet-helpers';
 
 /**
  * Sends transcript links to chat again
  */
-export const attach = (bot: Bot) => {
+export const attach = (bot: MeetBot) => {
 	let chatTranscriptUrl: string | null;
 	let transcriptUrl: string | null;
 

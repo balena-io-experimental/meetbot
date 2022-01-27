@@ -1,8 +1,8 @@
 import { Page } from 'puppeteer-extra-plugin/dist/puppeteer';
-import { Bot } from '..';
+import MeetBot from '..';
 import { clickText } from '../google-meet-helpers';
 
-export const attach = (bot: Bot) => {
+export const attach = (bot: MeetBot) => {
 	bot.on('joined', () => {
 		console.log('queuing: starting the recording...');
 		bot.addJob(startRecording);

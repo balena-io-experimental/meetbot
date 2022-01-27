@@ -52,11 +52,11 @@ export async function spawnBot(url: string) {
 	}
 
 	// Create a new bot instance with the already created browser instance
-	const bot = new MeetBot(browser, allFeatures);
+	const bot = new MeetBot(url, browser, allFeatures);
 	// Initialize bot (opens a new page)
 	await bot.init();
 
-	bot.on('active', () => {
+	bot.on('joined', () => {
 		ACTIVE_BOTS.set(url, bot);
 		console.log(`Current bot queue size: ${ACTIVE_BOTS.size}`);
 	});
@@ -69,16 +69,21 @@ export async function spawnBot(url: string) {
 		bot.chatTranscriptUrl = data.transcriptUrl;
 	});
 
+	bot.on('left', () => {
+		console.log(`Removing ${bot.url} from active bot list`);
+		ACTIVE_BOTS.delete(bot.url);
+	});
+
 	bot.on('error', (err) => {
 		console.error('Unrecoverable bot error occured:', err.message);
-		if (bot.url && ACTIVE_BOTS.get(bot.url)) {
+		if (ACTIVE_BOTS.get(bot.url)) {
 			console.log(`Removing ${bot.url} from active bot queue`);
 			ACTIVE_BOTS.delete(bot.url);
 		}
 	});
 
 	// Tell bot to start running
-	bot.joinMeet(url);
+	bot.joinMeet();
 }
 
 export async function killBot(url: string) {
