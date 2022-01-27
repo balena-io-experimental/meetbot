@@ -6,13 +6,14 @@ import { newBrowser } from './browser';
 import { all as allFeatures } from './meetbot/features';
 
 const MAX_BOTS = process.env.MAX_BOTS || 5;
-const ACTIVE_BOTS = new Map<string, MeetBot>();
+const Bots = new Map<string, MeetBot>();
 
 type MeetBotListItem = {
 	url: string | null;
 	transcriptUrl: string | null;
 	chatTranscriptUrl: string | null;
 	joinedAt: string | null;
+	leftAt: string | null;
 };
 
 let browser: Browser | null = null;
@@ -26,12 +27,13 @@ export async function init(): Promise<void> {
 export async function listBots() {
 	const results: MeetBotListItem[] = [];
 
-	ACTIVE_BOTS.forEach((value: MeetBot, _key: string) => {
+	Bots.forEach((value: MeetBot, _key: string) => {
 		results.push({
 			url: value.url,
 			transcriptUrl: value.transcriptUrl,
 			chatTranscriptUrl: value.chatTranscriptUrl,
 			joinedAt: value.joinedAt,
+			leftAt: value.leftAt,
 		});
 	});
 
@@ -43,9 +45,9 @@ export async function spawnBot(url: string) {
 
 	if (meetURL.hostname !== 'meet.google.com') {
 		throw new Error('Invalid Google Meet URL.');
-	} else if (ACTIVE_BOTS.size >= MAX_BOTS) {
+	} else if (Bots.size >= MAX_BOTS) {
 		throw new Error(`Maximum bot queue reached!`);
-	} else if (ACTIVE_BOTS.has(url)) {
+	} else if (Bots.has(url)) {
 		throw new Error(`A bot is already in that location!`);
 	} else if (browser === null) {
 		throw new Error('Browser instance has not been initialized!');
@@ -57,8 +59,8 @@ export async function spawnBot(url: string) {
 	await bot.init();
 
 	bot.on('joined', () => {
-		ACTIVE_BOTS.set(url, bot);
-		console.log(`Current bot queue size: ${ACTIVE_BOTS.size}`);
+		Bots.set(url, bot);
+		console.log(`Current bot queue size: ${Bots.size}`);
 	});
 
 	bot.on('transcript_doc_ready', (data) => {
@@ -70,15 +72,14 @@ export async function spawnBot(url: string) {
 	});
 
 	bot.on('left', () => {
-		console.log(`Removing ${bot.url} from active bot list`);
-		ACTIVE_BOTS.delete(bot.url);
+		// nothing to do when a bot leaves
 	});
 
 	bot.on('error', (err) => {
 		console.error('Unrecoverable bot error occured:', err.message);
-		if (ACTIVE_BOTS.get(bot.url)) {
+		if (Bots.get(bot.url)) {
 			console.log(`Removing ${bot.url} from active bot queue`);
-			ACTIVE_BOTS.delete(bot.url);
+			Bots.delete(bot.url);
 		}
 	});
 
@@ -87,7 +88,7 @@ export async function spawnBot(url: string) {
 }
 
 export async function killBot(url: string) {
-	const bot = ACTIVE_BOTS.get(url);
+	const bot = Bots.get(url);
 	if (bot) {
 		console.log(`Killing bot for ${url}`);
 		bot.leaveMeet();

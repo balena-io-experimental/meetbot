@@ -31,6 +31,7 @@ class MeetBot implements Bot {
 	public page: Page | null = null;
 	public url: string;
 	public joinedAt: string | null = null;
+	public leftAt: string | null = null;
 	public transcriptUrl: string | null = null;
 	public chatTranscriptUrl: string | null = null;
 
@@ -215,6 +216,7 @@ class MeetBot implements Bot {
 		} finally {
 			clearInterval(this.captionTimer);
 			await this.page.close();
+			this.leftAt = new Date().toUTCString();
 			this.emit('left', null);
 			// TODO detach features?
 		}
