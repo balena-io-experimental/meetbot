@@ -1,10 +1,10 @@
 import { promises as fs } from 'fs';
-import { Bot } from '..';
+import MeetBot from '..';
 
-export const attach = (bot: Bot) => {
+export const attach = (bot: MeetBot) => {
 	let filename: string | null;
-	bot.on('joined', (joined) => {
-		const id = joined.meetURL.split('/').pop();
+	bot.on('joined', () => {
+		const id = bot.url.split('/').pop();
 		filename = `meet-${id}.log`;
 	});
 

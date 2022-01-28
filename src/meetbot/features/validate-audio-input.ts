@@ -1,9 +1,9 @@
-import { Bot } from '..';
+import MeetBot from '..';
 import { postToChatJob } from '../google-meet-helpers';
 
 // Feature to auto validate audio input from attendees in meetings when folks ask the question: Can you hear me?
 
-export const attach = (bot: Bot) => {
+export const attach = (bot: MeetBot) => {
 	let sayHelloInProgress = 0;
 	bot.on('raw_caption', ({ caption }) => {
 		if (!caption) {

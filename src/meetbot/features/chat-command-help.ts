@@ -1,4 +1,4 @@
-import { Bot } from '..';
+import MeetBot from '..';
 import { postToChatJob } from '../google-meet-helpers';
 import fs = require('fs');
 import { parse } from 'comment-parser';
@@ -24,7 +24,7 @@ function parseChatCommands(): ChatCommandHelp[] {
 /**
  * Print help message for meetbot commands
  */
-export const attach = (bot: Bot) => {
+export const attach = (bot: MeetBot) => {
 	const helpText = parseChatCommands();
 	bot.on('chat', ({ text }) => {
 		if (text === '/help') {

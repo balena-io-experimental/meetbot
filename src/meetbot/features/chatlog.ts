@@ -1,5 +1,5 @@
 import { Page } from 'puppeteer';
-import { Bot } from '..';
+import MeetBot from '..';
 
 interface MessageGroup {
 	timestamp: string;
@@ -21,13 +21,11 @@ class Messenger {
 	}
 }
 
-export const attach = (bot: Bot) => {
+export const attach = (bot: MeetBot) => {
 	let chatHandler: Messenger;
-	let url: string;
 
-	bot.on('joined', ({ meetURL }) => {
+	bot.on('joined', () => {
 		chatHandler = new Messenger();
-		url = meetURL;
 		bot.addJob(monitorChat);
 	});
 
@@ -56,9 +54,7 @@ export const attach = (bot: Bot) => {
 					messages: texts as string[],
 				};
 				const newMessages = chatHandler.updateGroup(messageGroup);
-				newMessages.forEach((m) =>
-					events.push({ meetURL: url, timestamp, sender, text: m }),
-				);
+				newMessages.forEach((m) => events.push({ timestamp, sender, text: m }));
 			}),
 		);
 		for (const event of events) {

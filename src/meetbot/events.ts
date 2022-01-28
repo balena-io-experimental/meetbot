@@ -1,15 +1,12 @@
-interface BotEvent {
-	meetURL: string;
-}
-interface ChatEvent extends BotEvent {
+interface ChatEvent {
 	timestamp: string | null;
 	sender: string | null;
 	text: string;
 }
-interface ParticipantsEvent extends BotEvent {
+interface ParticipantsEvent {
 	participants: number;
 }
-interface CaptionEvent extends BotEvent {
+interface CaptionEvent {
 	caption: SteganographerEvent;
 }
 interface SteganographerEvent {
@@ -20,7 +17,7 @@ interface SteganographerEvent {
 	endedAt: string;
 	id: string;
 }
-interface StreamEvent extends BotEvent {
+interface StreamEvent {
 	transcriptUrl: string | null;
 }
 
@@ -33,20 +30,15 @@ interface HelpEvent {
 	meetbotChatCommands: ChatCommandHelp[];
 }
 
-type LeaveEvent = BotEvent;
-type JoinEvent = BotEvent;
-type ActiveEvent = BotEvent;
-type EndEvent = BotEvent;
-
 interface BotEvents {
 	chat: ChatEvent;
-	left: LeaveEvent;
-	joined: JoinEvent;
-	active: ActiveEvent;
+	left: {};
+	joined: {};
+	joining: {};
 	transcript_doc_ready: StreamEvent;
 	chat_transcript_doc_ready: StreamEvent;
 	help_event: HelpEvent;
-	end: EndEvent;
+	error: ErrorEvent;
 	participants: ParticipantsEvent;
 	raw_caption: CaptionEvent;
 	caption: CaptionEvent;
