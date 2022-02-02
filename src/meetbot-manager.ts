@@ -161,21 +161,14 @@ export async function scheduleBotsForMeetings() {
 					new Date(meeting.startTime).getTime() + 60000 <=
 					new Date().getTime()
 				) {
-					const activeBots = await listBots();
-					const botURLs = activeBots.map((bot) => bot.url);
-					console.log(botURLs);
-					if (activeBots.length) {
-						if (botURLs.includes(meeting.meetUrl)) {
-							continue;
-						} else {
-							console.log(
-								`Spawning meetbot for ${meeting.name} at ${meeting.meetUrl}`,
-							);
-							await spawnBot(meeting.meetUrl);
-						}
+					if (Bots.get(meeting.meetUrl)) {
+						// Logic can be added for bots to rejoin meet IF
+						// Bots left the meet in the 5 minute range of the meeting starttime
+						// Bots.leftAt < meeting.StartTime + 300000
+						continue;
 					} else {
 						console.log(
-							`No active meetbots found. Spawning one for ${meeting.name} at ${meeting.meetUrl}`,
+							`Spawning meetbot for ${meeting.name} at ${meeting.meetUrl}`,
 						);
 						await spawnBot(meeting.meetUrl);
 					}

@@ -104,7 +104,6 @@ class MeetBot implements Bot {
 
 			await clickText(this.page, 'Ask to join');
 
-			// either the call is recorded and we need to confirm or we eventually get in
 			const confirmOrIn = await this.page.waitForXPath(
 				"//*[contains(text(),'call_end')]|//*[contains(text(),'Join now')]",
 			);
@@ -113,6 +112,25 @@ class MeetBot implements Bot {
 			) {
 				await clickText(this.page, 'Join now');
 				await this.page.waitForXPath("//*[contains(text(),'call_end')]");
+			}
+
+			// If meetbot is alone then leave
+			const peopleInMeet = await this.page.$$('span.zWGUib');
+
+			// For the time, when the selector stops working
+			if (!peopleInMeet) {
+				console.error(
+					"Won't be able to leave automatically. please contact admin to resolve issue.",
+				);
+			} else if (peopleInMeet.length === 1) {
+				console.log("nobody else is here - I'm leaving...");
+
+				// Instead of duplicating this code from the finally block
+				// We can throw a error instead
+				await this.page.close();
+				this.leftAt = new Date().toUTCString();
+				this.emit('left', null);
+				return;
 			}
 
 			// console.log('Changing layout to Spotlight mode');
