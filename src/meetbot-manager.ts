@@ -73,6 +73,8 @@ export async function spawnBot(url: string) {
 
 	// Create a new bot instance with the already created browser instance
 	const bot = new MeetBot(url, browser, allFeatures);
+	Bots.set(url, bot);
+
 	// Initialize bot (opens a new page)
 	await bot.init();
 
@@ -137,11 +139,10 @@ export async function scheduleBotsForMeetings() {
 	let meetingSchedule: DataPacket[] = await calendar.listEvents(
 		process.env.GOOGLE_CALENDAR_NAME,
 	);
-
 	console.log(`Start Meeting Scheduler${
 		meetingSchedule.length
 			? `: Tracking ${meetingSchedule.length}+ meetings`
-			: `: (No meetings found)`
+			: `: (No meetings found on ${process.env.GOOGLE_CALENDAR_NAME})`
 	}
 	`);
 
@@ -163,8 +164,9 @@ export async function scheduleBotsForMeetings() {
 				) {
 					if (Bots.get(meeting.meetUrl)) {
 						// Logic can be added for bots to rejoin meet IF
-						// Bots left the meet in the 5 minute range of the meeting starttime
+						// Bots left the meet in the 5 minute range of the meeting startTime
 						// Bots.leftAt < meeting.StartTime + 300000
+						// Bots.leftAt > meeting.EndTime
 						continue;
 					} else {
 						console.log(

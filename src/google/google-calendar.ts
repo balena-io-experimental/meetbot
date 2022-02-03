@@ -16,7 +16,9 @@ export interface Credentials {
 export interface DataPacket {
 	name: string;
 	startTime: string;
+	endTime: string;
 	meetUrl: string;
+	eventUrl: string;
 }
 
 export class GoogleCalendar {
@@ -60,14 +62,17 @@ export class GoogleCalendar {
 		if (events.data.items.length) {
 			return events.data.items
 				.map((event: any) => {
-					if (event.hangoutLink && event.status === 'confirmed') {
-						if (event.hangoutLink.includes('meet.google.com')) {
-							return {
-								name: event.summary,
-								startTime: event.start.dateTime,
-								meetUrl: event.hangoutLink,
-							};
-						}
+					if (
+						event.hangoutLink.includes('meet.google.com') &&
+						event.status === 'confirmed'
+					) {
+						return {
+							name: event.summary,
+							startTime: event.start.dateTime,
+							endTime: event.end.dateTime,
+							meetUrl: event.hangoutLink,
+							eventUrl: event.htmlLink,
+						};
 					}
 				})
 				.filter((item: DataPacket) => item !== undefined);
