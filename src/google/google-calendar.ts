@@ -47,10 +47,8 @@ export class GoogleCalendar {
 	 *
 	 * @param calendarID The calendar ID to fetch events from.
 	 */
-	async listEvents(calendarName: string | undefined): Promise<DataPacket[]> {
+	async listEvents(calendarName: string): Promise<DataPacket[]> {
 		this.calendar = google.calendar({ version: 'v3', auth: this.auth });
-		// Need help with Google types, they are making me crazy
-		// const events: GaxiosResponse<calendar_v3.Schema$Event> =  await this.calendar.events.list({
 		const events: any = await this.calendar.events.list({
 			calendarId: `${calendarName}`,
 			timeMin: new Date().toISOString(),
@@ -59,26 +57,22 @@ export class GoogleCalendar {
 			orderBy: 'startTime',
 		});
 
-		if (events.data.items.length) {
-			return events.data.items
-				.map((event: any) => {
-					if (
-						event.hangoutLink.includes('meet.google.com') &&
-						event.status === 'confirmed'
-					) {
-						return {
-							name: event.summary,
-							startTime: event.start.dateTime,
-							endTime: event.end.dateTime,
-							meetUrl: event.hangoutLink,
-							eventUrl: event.htmlLink,
-						};
-					}
-				})
-				.filter((item: DataPacket) => item !== undefined);
-		} else {
-			return [];
-			// Do nothing
-		}
+		return events.data.items
+			.filter(
+				(item: any) =>
+					item.hangoutLink.includes('meet.google.com') &&
+					item.status === 'confirmed',
+			)
+			.map((event: any) => {
+				{
+					return {
+						name: event.summary,
+						startTime: event.start.dateTime,
+						endTime: event.end.dateTime,
+						meetUrl: event.hangoutLink,
+						eventUrl: event.htmlLink,
+					};
+				}
+			});
 	}
 }

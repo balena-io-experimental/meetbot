@@ -117,20 +117,9 @@ class MeetBot implements Bot {
 			// If meetbot is alone then leave
 			const peopleInMeet = await this.page.$$('span.zWGUib');
 
-			// For the time, when the selector stops working
-			if (!peopleInMeet) {
-				console.error(
-					"Won't be able to leave automatically. please contact admin to resolve issue.",
-				);
-			} else if (peopleInMeet.length === 1) {
+			if (peopleInMeet.length === 1) {
 				console.log("nobody else is here - I'm leaving...");
-
-				// Instead of duplicating this code from the finally block
-				// We can throw a error instead
-				await this.page.close();
-				this.leftAt = new Date().toUTCString();
-				this.emit('left', null);
-				return;
+				throw new Error('nobody else is here - I am leaving');
 			}
 
 			// console.log('Changing layout to Spotlight mode');

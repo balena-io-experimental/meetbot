@@ -39,7 +39,7 @@ By default, meetbot will join meetings as an unauthenticated user and won't be a
 | GOOGLE_TOTP_SECRET   | If the Google account has 2FA security, then the TOTP secret that is configured for 2FA goes here                  | NA                                             |
 | HTTP_PORT            | (Optional) Port on which the meetbot server starts running. For balena devices, the server needs to run on port 80 | 80                                             |
 | MAX_BOTS             | (Optional) Maximum number of meetbots to run parallely on the server                                               | 5                                              |
-| GOOGLE_CALENDAR_NAME | (Optional) The Google calendar ID that meetbot parses to auto-join events in that calendar                         | 5                                              |
+| GOOGLE_CALENDAR_NAME | (Optional) The Google calendar ID that meetbot parses to auto-join events in that calendar                         | NA                                             |
 | GREETING_MESSAGE     | (Optional) Greeting message which is posted when meetbot joins the Google Meet                                     | "Hello folks, it's your favorite bot, hubot!!" |
 
 Read more about [variables](https://www.balena.io/docs/learn/manage/variables/) in balenaCloud Dashboard. 

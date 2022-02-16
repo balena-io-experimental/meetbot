@@ -17,7 +17,6 @@ server.get('/*', (_req, res) =>
 
 export async function start() {
 	await meetbotManager.init();
-	await meetbotManager.scheduleBotsForMeetings();
 	server.listen(HTTP_PORT, () => {
 		console.log(`Listening for requests on port ${HTTP_PORT}`);
 	});

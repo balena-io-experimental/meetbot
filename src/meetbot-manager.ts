@@ -40,6 +40,7 @@ export async function init(): Promise<void> {
 	if (browser === null) {
 		browser = await newBrowser();
 	}
+	await scheduleBotsForMeetings();
 }
 
 export async function listBots() {
@@ -128,29 +129,26 @@ export async function scheduleBotsForMeetings() {
 			err,
 		);
 	}
+
 	if (!credentials || !process.env.GOOGLE_CALENDAR_NAME) {
 		console.log(
 			'deactivating google calender feature due to missing credentials/calendar name',
 		);
 		return;
 	}
-
+	const calendarName: string = process.env.GOOGLE_CALENDAR_NAME as string;
 	const calendar = new GoogleCalendar(credentials);
-	let meetingSchedule: DataPacket[] = await calendar.listEvents(
-		process.env.GOOGLE_CALENDAR_NAME,
-	);
+	let meetingSchedule: DataPacket[] = await calendar.listEvents(calendarName);
 	console.log(`Start Meeting Scheduler${
 		meetingSchedule.length
 			? `: Tracking ${meetingSchedule.length}+ meetings`
-			: `: (No meetings found on ${process.env.GOOGLE_CALENDAR_NAME})`
+			: `: (No meetings found on ${calendarName})`
 	}
 	`);
 
 	// Check for events on the calendar and refresh schedule
 	setInterval(async () => {
-		meetingSchedule = await calendar.listEvents(
-			process.env.GOOGLE_CALENDAR_NAME,
-		);
+		meetingSchedule = await calendar.listEvents(calendarName);
 	}, CALENDAR_POLLING_INTERVAL);
 
 	// Checking the meeting schedule and spawn bots when the time comes
@@ -163,10 +161,7 @@ export async function scheduleBotsForMeetings() {
 					new Date().getTime()
 				) {
 					if (Bots.get(meeting.meetUrl)) {
-						// Logic can be added for bots to rejoin meet IF
-						// Bots left the meet in the 5 minute range of the meeting startTime
-						// Bots.leftAt < meeting.StartTime + 300000
-						// Bots.leftAt > meeting.EndTime
+						// Add rejoin mechanism here if meetbot emits the left event
 						continue;
 					} else {
 						console.log(
