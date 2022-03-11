@@ -3,5 +3,6 @@
 **/dist/
 
 tests/
+img/
 *.png
 *.log
