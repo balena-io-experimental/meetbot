@@ -1,6 +1,7 @@
 
 name: meetbot
 type: sw.application
+joinable: false
 description: >-
   Meetbot is a configurable Google Meet bot aimed at reducing friction in video calls.
 post-provisioning: >-
@@ -21,7 +22,7 @@ data:
   applicationEnvironmentVariables:
     - GOOGLE_PASSWORD: 
     - GOOGLE_TOTP_SECRET: 
-    - GOOGLE_EMAIL: 
+    - GOOGLE_EMAIL:  
     - MAX_BOTS: 5
     - GREETING_MESSAGE: "Hello folks, it's your favorite bot, hubot!!"
   defaultDeviceType: intel-nuc
