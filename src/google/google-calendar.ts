@@ -60,7 +60,7 @@ export class GoogleCalendar {
 		return events.data.items
 			.filter(
 				(item: any) =>
-					item.hangoutLink.includes('meet.google.com') &&
+					item.hangoutLink?.includes('meet.google.com') &&
 					item.status === 'confirmed',
 			)
 			.map((event: any) => {
