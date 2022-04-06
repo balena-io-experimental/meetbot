@@ -9,7 +9,7 @@ export const attach = (bot: MeetBot) => {
 		if (!caption) {
 			return;
 		}
-		const helloCmd = /can[^a-z]*you[^a-z]*hear[^a-z]*(me|us)/i;
+		const helloCmd = /can[^a-z]*(you|anyone)[^a-z]*hear[^a-z]*(me|us)/i;
 		if (
 			helloCmd.test(caption.text) &&
 			new Date().getTime() - sayHelloInProgress > 30_000
