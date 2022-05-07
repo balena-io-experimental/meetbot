@@ -41,5 +41,7 @@ export const postToChatJob = (text: string) => {
 };
 
 export const peopleInMeet = async (page: Page) => {
-	return await page.$$('span.zWGUib');
+	return (await page.$$('span.zWGUib'))
+		? await page.$$('span.zWGUib')
+		: Promise.reject(new Error('peopleInMeet function failed'));
 };

@@ -8,7 +8,6 @@ import totp = require('totp-generator');
 
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { people } from 'googleapis/build/src/apis/people';
 
 export type JobHandler = (page: Page) => Promise<void>;
 export type JobQueueFunc = (h: JobHandler) => void;
@@ -127,6 +126,7 @@ class MeetBot implements Bot {
 			// If meetbot is alone when it joins then kill the bot
 			if ((await peopleInMeet(this.page)).length === 1) {
 				console.log("nobody else is here - I'm leaving...");
+				// Making sure when this logic breaks, we know about it.
 				throw new Error('nobody else is here - I am leaving');
 			}
 
