@@ -100,7 +100,16 @@ class MeetBot implements Bot {
 			await this.page.keyboard.up('ControlLeft');
 			await this.page.waitForTimeout(100);
 
-			this.page.on('console', (msg) => console.log('PAGE LOG:', msg.text()));
+			// Ignore the console message: [Report Only] This document requires 'TrustedScript' assignment.
+			this.page.on('console', (msg) => {
+				if (
+					!msg
+						.text()
+						.includes("This document requires 'TrustedScript' assignment")
+				) {
+					console.log('PAGE LOG:', msg.text());
+				}
+			});
 
 			await clickText(this.page, 'Ask to join');
 
