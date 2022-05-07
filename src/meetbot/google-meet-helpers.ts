@@ -39,3 +39,9 @@ export const postToChatJob = (text: string) => {
 		console.log('Message sent on the chat');
 	};
 };
+
+export const peopleInMeet = async (page: Page) => {
+	return (await page.$$('span.zWGUib'))
+		? await page.$$('span.zWGUib')
+		: Promise.reject(new Error('peopleInMeet function failed'));
+};

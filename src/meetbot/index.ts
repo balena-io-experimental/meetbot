@@ -3,7 +3,7 @@ import { Browser, Page } from 'puppeteer';
 
 import { newPage } from '../browser';
 import { Feature } from './features';
-import { clickText } from './google-meet-helpers';
+import { clickText, peopleInMeet } from './google-meet-helpers';
 import totp = require('totp-generator');
 
 import { promises as fs } from 'fs';
@@ -123,11 +123,10 @@ class MeetBot implements Bot {
 				await this.page.waitForXPath("//*[contains(text(),'call_end')]");
 			}
 
-			// If meetbot is alone then leave
-			const peopleInMeet = await this.page.$$('span.zWGUib');
-
-			if (peopleInMeet.length === 1) {
+			// If meetbot is alone when it joins then kill the bot
+			if ((await peopleInMeet(this.page)).length === 1) {
 				console.log("nobody else is here - I'm leaving...");
+				// Making sure when this logic breaks, we know about it.
 				throw new Error('nobody else is here - I am leaving');
 			}
 
@@ -200,10 +199,11 @@ class MeetBot implements Bot {
 				await this.page.waitForTimeout(500);
 
 				// names of participants in list
-				const participants = await this.page.$$('span.zWGUib');
-				this.emit('participants', { participants: participants.length });
+				this.emit('peopleInMeet', {
+					peopleInMeet: (await peopleInMeet(this.page)).length,
+				});
 
-				if (participants.length === 1) {
+				if ((await peopleInMeet(this.page)).length === 1) {
 					console.log("nobody else is here - I'm leaving...");
 					break;
 				}

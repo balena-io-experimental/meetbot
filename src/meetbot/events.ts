@@ -3,8 +3,8 @@ interface ChatEvent {
 	sender: string | null;
 	text: string;
 }
-interface ParticipantsEvent {
-	participants: number;
+interface PeopleInMeetEvent {
+	peopleInMeet: number;
 }
 interface CaptionEvent {
 	caption: SteganographerEvent;
@@ -39,7 +39,7 @@ interface BotEvents {
 	chat_transcript_doc_ready: StreamEvent;
 	help_event: HelpEvent;
 	error: ErrorEvent;
-	participants: ParticipantsEvent;
+	peopleInMeet: PeopleInMeetEvent;
 	raw_caption: CaptionEvent;
 	caption: CaptionEvent;
 }

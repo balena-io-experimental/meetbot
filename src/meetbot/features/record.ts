@@ -1,6 +1,6 @@
 import { Page } from 'puppeteer-extra-plugin/dist/puppeteer';
 import MeetBot from '..';
-import { clickText } from '../google-meet-helpers';
+import { clickText, peopleInMeet } from '../google-meet-helpers';
 
 export const attach = (bot: MeetBot) => {
 	bot.on('joined', () => {
@@ -20,6 +20,11 @@ const startRecording = async (page: Page) => {
 			'Recording is already turned on. Not trying to start recording.',
 		);
 		return;
+	}
+
+	while ((await peopleInMeet(page)).length <= 2) {
+		// console.log("Only 2 people in the call including me so not recording")
+		// Will wait for more people to join
 	}
 
 	console.log('Starting the recording...');
