@@ -149,6 +149,8 @@ export async function scheduleBotsForMeetings() {
 	// Check for events on the calendar and refresh schedule
 	setInterval(async () => {
 		meetingSchedule = await calendar.listEvents(calendarName);
+		// Saving the meeting schedule to a temp file for future debugging
+		fs.writeFileSync('schedule.json', JSON.stringify(meetingSchedule));
 	}, CALENDAR_POLLING_INTERVAL);
 
 	// Checking the meeting schedule and spawn bots when the time comes
