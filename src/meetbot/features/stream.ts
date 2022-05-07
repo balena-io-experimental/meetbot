@@ -33,12 +33,26 @@ export const attach = async (bot: MeetBot) => {
 
 		bot.addJob(postToChatJob(`Meet Transcript: ${documentUrl}`));
 	});
+
+	/**
+	 * Sample of how the Caption event looks like
+	 *
+	 * {
+	 *  image: 'URL of the image',
+	 *  person: 'Vipul Gupta',
+	 *  text: 'Check check one, two, three.    I am saying something. ',
+	 *  startedAt: '2022-05-07T12:17:53.070Z',
+	 *  endedAt: '2022-05-07T12:18:09.070Z',
+	 * }
+	 *
+	 */
 	bot.on('caption', (data: CaptionEvent) => {
 		if (
 			!data.caption ||
 			!data.caption.text.trim() ||
 			!data.caption.startedAt ||
 			!data.caption.person ||
+			!data.caption.image ||
 			data.caption.person.trim().toLowerCase() === 'Meeting host'.toLowerCase()
 		) {
 			return;
