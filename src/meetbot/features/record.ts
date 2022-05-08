@@ -9,6 +9,12 @@ export const attach = (bot: MeetBot) => {
 	});
 };
 
+// Start the recording when the number of people is greater than the prescribed limit
+const PEOPLEINMEET_BEFORE_RECORDING = parseInt(
+	process.env.PEOPLEINMEET_BEFORE_RECORDING || `${2}`,
+	10,
+);
+
 const startRecording = async (page: Page) => {
 	if (
 		'REC' ===
@@ -22,12 +28,16 @@ const startRecording = async (page: Page) => {
 		return;
 	}
 
-	while ((await peopleInMeet(page)).length <= 2) {
+	while ((await peopleInMeet(page)).length <= PEOPLEINMEET_BEFORE_RECORDING) {
 		// console.log("Only 2 people in the call including me so not recording")
 		// Will wait for more people to join
 	}
 
-	console.log('Starting the recording...');
+	console.log(
+		`Threshold reached (${
+			(await peopleInMeet(page)).length
+		}), starting to record...`,
+	);
 	// await page.screenshot({ path: 'recording-0.png' });
 	await clickText(page, 'themes');
 	await page.waitForTimeout(2000);
