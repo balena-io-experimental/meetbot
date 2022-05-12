@@ -32,7 +32,7 @@ class MeetBot implements Bot {
 	public url: string;
 	public joinedAt: string | null = null;
 	public leftAt: string | null = null;
-	public transcriptUrl: string | null = null;
+	// public transcriptUrl: string | null = null;
 	public chatTranscriptUrl: string | null = null;
 
 	private pendingJobs: JobHandler[] = [];

@@ -28,7 +28,7 @@ const SCHEDULE_PARSING_INTERVAL = parseInt(
 
 type MeetBotListItem = {
 	url: string | null;
-	transcriptUrl: string | null;
+	// transcriptUrl: string | null;
 	chatTranscriptUrl: string | null;
 	joinedAt: string | null;
 	leftAt: string | null;
@@ -49,7 +49,7 @@ export async function listBots() {
 	Bots.forEach((value: MeetBot, _key: string) => {
 		results.push({
 			url: value.url,
-			transcriptUrl: value.transcriptUrl,
+			// transcriptUrl: value.transcriptUrl,
 			chatTranscriptUrl: value.chatTranscriptUrl,
 			joinedAt: value.joinedAt,
 			leftAt: value.leftAt,
@@ -84,9 +84,9 @@ export async function spawnBot(url: string) {
 		console.log(`Current bot queue size: ${Bots.size}`);
 	});
 
-	bot.on('transcript_doc_ready', (data) => {
-		bot.transcriptUrl = data.transcriptUrl;
-	});
+	// bot.on('transcript_doc_ready', (data) => {
+	// 	bot.transcriptUrl = data.transcriptUrl;
+	// });
 
 	bot.on('chat_transcript_doc_ready', (data) => {
 		bot.chatTranscriptUrl = data.transcriptUrl;

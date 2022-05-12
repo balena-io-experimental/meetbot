@@ -15,6 +15,7 @@
 		"src/**/*.ts"
 	],
 	"exclude": [
-		"src/ui/*"
+		"src/ui/*",
+		"src/meetbot/features/stream-disabled"
 	]
 }
