@@ -86,9 +86,9 @@ export const setupMockServer = () => {
 									.minus({ minutes: Math.round(60 * Math.random()) })
 									.toJSDate();
 				},
-				get transcriptUrl() {
-					return () => 'http://www.google.com';
-				},
+				// get transcriptUrl() {
+				// 	return () => 'http://www.google.com';
+				// },
 			}),
 		},
 		serializers: {

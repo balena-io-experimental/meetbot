@@ -123,21 +123,17 @@ const renderMeetActionsColumn = (
 	);
 };
 
-const renderMeetParticipantsColumn = (value: any, row: any): JSX.Element => {
-	return (
-		<StyledBox>
-			<Txt mx="auto">{row.participants || '-'}</Txt>
-		</StyledBox>
-	);
-};
+// const renderMeetParticipantsColumn = (value: any, row: any): JSX.Element => {
+// 	return (
+// 		<StyledBox>
+// 			<Txt mx="auto">{row.participants || '-'}</Txt>
+// 		</StyledBox>
+// 	);
+// };
 
 const renderMeetTranscriptsColumn = (value: any, row: any): JSX.Element => {
 	return (
-		<StyledBox ml="auto">
-			<Link href={row.transcriptUrl} mr="8px">
-				Voice
-			</Link>
-			{"  "}
+		<StyledBox>
 			<Link href={row.chatTranscriptUrl}>Chat</Link>
 		</StyledBox>
 	);
@@ -208,12 +204,12 @@ const Home = () => {
 			render: renderMeetStatusColumn,
 			sortable: false,
 		},
-		{
-			field: 'participants',
-			label: 'People',
-			render: renderMeetParticipantsColumn,
-			sortable: false,
-		},
+		// {
+		// 	field: 'participants',
+		// 	label: 'People',
+		// 	render: renderMeetParticipantsColumn,
+		// 	sortable: false,
+		// },
 		{
 			label: 'Actions',
 			render: (_value: any, row: any): JSX.Element => {

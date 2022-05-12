@@ -3,7 +3,7 @@ export type Meet = {
 	url: string;
 	joinedAt: Date;
 	leftAt: Date;
-	transcriptUrl: string | null;
+	// transcriptUrl: string | null;
 	chatTranscriptUrl: string | null;
 };
 
@@ -17,7 +17,6 @@ export type MeetListStub = {
 	url: string;
 	status: string;
 	transcripts: {
-		voice: string;
 		chat: string;
 	};
 	createdAt: Date;

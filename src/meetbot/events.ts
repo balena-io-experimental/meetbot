@@ -35,7 +35,7 @@ interface BotEvents {
 	left: {};
 	joined: {};
 	joining: {};
-	transcript_doc_ready: StreamEvent;
+	// transcript_doc_ready: StreamEvent;
 	chat_transcript_doc_ready: StreamEvent;
 	help_event: HelpEvent;
 	error: ErrorEvent;
