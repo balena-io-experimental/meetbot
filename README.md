@@ -1,4 +1,10 @@
-# Meetbot 
+The idea for meetbot came to us from our internal company hackathon. We wanted to make meetings better for our peers and we built a bot that could join scheduled meetings, perform actions and provide the features that Google Meet sorely was missing. Meetbot performed well at first but with changes coming into Google Meet's UI. Our features started breaking as Meetbot is powered by puppeteer automating a browser instance to do its bidding. With maintainence burden ever increasing and Google Meet introducing official support for features. We decided to archive this project. I have tried to document the project as much as I could and it would be great to have a maintainer interested in keeping this alive. But, till then this is the end of the line for Meetbot. 
+
+---
+
+**TLDR**: Meetbot has increasingly become hard to maintain with changing Google Meet UI and features breaking. Hence, the project has been archived. The project is open to new maintainers as well as individuals looking to build further on it. Reach out to @vipulgupta2048 for a briefing or any questions you have. 
+
+# [Archived] Meetbot 
 
 Meetbot is a Google Meet bot that makes your meetings frictionless. We've all been there, we've all heard these questions being repeated over and over again on video calls:
 
